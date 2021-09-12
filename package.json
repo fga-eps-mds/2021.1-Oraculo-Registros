@@ -1,0 +1,23 @@
+{
+  "name": "2021.1-oraculo-processos",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "jest",
+    "start": "node index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/fga-eps-mds/2021.1-Oraculo-Processos.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/fga-eps-mds/2021.1-Oraculo-Processos/issues"
+  },
+  "homepage": "https://github.com/fga-eps-mds/2021.1-Oraculo-Processos#readme",
+  "devDependencies": {
+    "jest": "^27.1.1"
+  }
+}
