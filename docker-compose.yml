@@ -4,13 +4,13 @@ services:
 
   banco:
     image: postgres:latest
-    container_name: banco
+    container_name: oraculo-banco
     restart: always
     environment: 
-      POSTGRES_DATABASE: ${DB_NAME}
+      POSTGRES_DB: ${DB_NAME}
       POSTGRES_USER: ${DB_USER}
       POSTGRES_PASSWORD: ${DB_PASS}
-      POSTGRES_HOST: ${DB_HOSTNAME}
+      DATABASE_HOST: ${DB_HOST}
     ports:
       - "5432:${DB_PORT}"
     networks: 
@@ -18,18 +18,33 @@ services:
     volumes:
       - postgresdb:/var/lib/postgresql/data
 
+  pgadmin:
+    image: dpage/pgadmin4
+    restart: always
+    container_name: oraculo-pgadmin
+    environment:
+      - PGADMIN_DEFAULT_EMAIL=${PGADMIN_DEFAULT_EMAIL}
+      - PGADMIN_DEFAULT_PASSWORD=${PGADMIN_DEFAULT_PASSWORD}
+    depends_on:
+      - banco
+    ports:
+      - "${PGADMIN_PORT}:80"
+    networks:
+      - processos-network
+
   processos:
-    container_name: processos
+    container_name: oraculo-processos
     build: .
     restart: always
-    depends_on: [ banco ]
+    depends_on: 
+      - banco
     volumes:
       - ./:/app/
-      - node_modules:/src/node_modules
+      - node_modules:/app/node_modules
     networks:
       - processos-network
     links:
-      - banco
+      - banco:${DB_HOST}
     ports: 
       - "8000:${APP_PORT}"
     command: npm start
