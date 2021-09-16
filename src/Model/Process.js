@@ -29,7 +29,7 @@ class Process extends Model {
             },
         
             seiNumber: {
-                typé: DataTypes.INTEGER,
+                type: DataTypes.INTEGER,
                 allowNull: true,
             },
         
@@ -47,8 +47,8 @@ class Process extends Model {
                 type: DataTypes.TEXT,
                 allowNull: false,
             },
-        
-            timestamps: true,
+        }, {
+            sequelize: db
         });
     }
 }
