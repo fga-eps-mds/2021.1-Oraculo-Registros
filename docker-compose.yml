@@ -1,12 +1,44 @@
 version: '3.8'
 
 services:
+
+  banco:
+    image: postgres:latest
+    container_name: banco
+    restart: always
+    environment: 
+      POSTGRES_DATABASE: ${DB_NAME}
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASS}
+      POSTGRES_HOST: ${DB_HOSTNAME}
+    ports:
+      - "5432:${DB_PORT}"
+    networks: 
+      - processos-network
+    volumes:
+      - postgresdb:/var/lib/postgresql/data
+
   processos:
     container_name: processos
     build: .
+    restart: always
+    depends_on: [ banco ]
     volumes:
       - ./:/app/
-      - node_modules:/app/node_modules
+      - node_modules:/src/node_modules
+    networks:
+      - processos-network
+    links:
+      - banco
+    ports: 
+      - "8000:${APP_PORT}"
+    command: npm start
 
 volumes: 
   node_modules:
+  postgresdb:
+
+networks:
+  processos-network:
+    name: processos-network
+    driver: bridge
