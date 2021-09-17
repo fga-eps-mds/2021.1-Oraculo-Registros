@@ -40,14 +40,13 @@ services:
       - banco
     volumes:
       - ./:/app/
-      - ./node_modules:/app/node_modules
+      - node_modules:/app/node_modules
     networks:
       - processos-network
     links:
       - banco:${DB_HOST}
     ports: 
       - "8000:${APP_PORT}"
-    command: npm start
 
 volumes: 
   node_modules:
