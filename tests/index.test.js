@@ -1,5 +1,13 @@
-const showMessage = require('../app/index.js');
+const app = require('../src/index');
+const request = require('supertest');
 
-test('Successful Message', () => {
-  expect(showMessage("Success!")).toBe("Message: Success!");
+test('Test routes related to processes', async () => {
+
+  const r1 = await request(app).get("/processos");
+  const r2 = await request(app).get("/processos/0");
+  const r3 = await request(app).post("/processos");
+
+  expect(r1.statusCode).toBe(400);
+  expect(r2.statusCode).toBe(400);
+  expect(r3.statusCode).toBe(500);
 });
