@@ -1,46 +1,26 @@
 const express = require('express');
 const cors = require('cors');
 const routes = require('./routes');
-const {Sequelize} = require('sequelize');
 const env  = require('dotenv');
-const Process = require('./Model/Process');
-
-env.config();
-
-const {
-    DB_USER,
-    DB_PASS,
-    DB_HOST,
-    DB_PORT,
-    DB_NAME,
-    APP_PORT,
-} = process.env;
+require('./Database');
 
 const app = express();
+env.config();
+const { APP_PORT } = process.env;
 
-const db = new Sequelize({
-        username: `${DB_USER}`,
-        password: `${DB_PASS}`,
-        database: `${DB_NAME}`,
-        port: `${DB_PORT}`,
-        dialect: "postgres",
-        host: Number.parseInt(`${DB_HOST}`),
-        define: {
-            timestamps: true,
-            underscored: true,
-        }
-    }
-);
+async function start() {
+    app.use(cors());
+    app.use(express.json());
+    app.use(routes);
+    return app.listen(APP_PORT);
+}
 
-db.authenticate().catch((reason) => {
-    console.error(`failed to authenticate: ${reason}`);
+let server = start();
+
+server.then(() => {
+    console.log(`Started HTTP server on port ${APP_PORT}`);
+}, (rejected) => {
+    console.error(`Failed to start HTTP server: ${rejected}`);
 });
-
-Process.init(db);
-
-app.listen(APP_PORT);
-app.use(cors());
-app.use(express.json());
-app.use(routes);
 
 module.exports = app;
