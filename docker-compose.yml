@@ -40,7 +40,7 @@ services:
       - banco
     volumes:
       - ./:/app/
-      - node_modules:/src/node_modules
+      - ./node_modules:/app/node_modules
     networks:
       - processos-network
     links:

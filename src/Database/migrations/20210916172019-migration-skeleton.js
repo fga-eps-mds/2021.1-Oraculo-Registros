@@ -9,7 +9,7 @@ module.exports = {
      * await queryInterface.createTable('users', { id: Sequelize.INTEGER });
      */
 
-    return await queryInterface.createTable('Processes', {
+    return await queryInterface.createTable('processos', {
         registerNumber: {
           type: Sequelize.DataTypes.TEXT,
           allowNull: false,
@@ -63,6 +63,6 @@ module.exports = {
      * await queryInterface.dropTable('users');
      */
 
-    return await queryInterface.dropTable('Processes');
+    return await queryInterface.dropTable('processos');
   }
 };
