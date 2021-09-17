@@ -3,7 +3,7 @@ version: '3.8'
 services:
 
   banco:
-    image: postgres:latest
+    image: bitnami/postgresql:13
     container_name: oraculo-banco
     restart: always
     environment: 
@@ -23,8 +23,8 @@ services:
     restart: always
     container_name: oraculo-pgadmin
     environment:
-      - PGADMIN_DEFAULT_EMAIL=${PGADMIN_DEFAULT_EMAIL}
-      - PGADMIN_DEFAULT_PASSWORD=${PGADMIN_DEFAULT_PASSWORD}
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL}
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD}
     depends_on:
       - banco
     ports:
@@ -40,7 +40,7 @@ services:
       - banco
     volumes:
       - ./:/app/
-      - node_modules:/app/node_modules
+      - node_modules:/src/node_modules
     networks:
       - processos-network
     links:
