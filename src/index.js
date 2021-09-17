@@ -2,7 +2,7 @@ const express = require("express");
 const cors = require("cors");
 const routes = require("./routes");
 const env = require("dotenv");
-//const morgan = require("morgan");
+const morgan = require("morgan");
 require("./Database");
 
 const app = express();
@@ -11,7 +11,7 @@ const { APP_PORT } = process.env;
 
 async function start() {
 	app.use(cors());
-	//app.use(morgan("tiny"));
+	app.use(morgan("short"));
 	app.use(express.json());
 	app.use(routes);
 	return app.listen(APP_PORT);
