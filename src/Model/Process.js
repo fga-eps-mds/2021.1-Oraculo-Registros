@@ -3,7 +3,7 @@ const { Model, DataTypes } = require('sequelize');
 
 class Process extends Model {
 
-    static init(db) {
+    static init(sequelize) {
         super.init({
             registerNumber: {
                 type: DataTypes.TEXT,
@@ -48,7 +48,7 @@ class Process extends Model {
                 allowNull: false,
             },
         }, {
-            sequelize: db
+            sequelize
         });
     }
 }
