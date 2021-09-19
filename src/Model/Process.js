@@ -4,48 +4,15 @@ class Process extends Model {
 	static init(sequelize) {
 		super.init(
 			{
-				registerNumber: {
-					type: DataTypes.TEXT,
-					allowNull: false,
-				},
-				originLocation: {
-					type: DataTypes.TEXT,
-					allowNull: false,
-				},
-				location: {
-					type: DataTypes.TEXT,
-					allowNull: false,
-				},
-
-				sourceDocument: {
-					type: DataTypes.TEXT,
-					allowNull: false,
-				},
-
-				documentDescription: {
-					type: DataTypes.TEXT,
-					allowNull: false,
-				},
-
-				seiNumber: {
-					type: DataTypes.INTEGER,
-					allowNull: true,
-				},
-
-				receivedBy: {
-					type: DataTypes.TEXT,
-					allowNull: false,
-				},
-
-				answerDocument: {
-					type: DataTypes.TEXT,
-					allowNull: true,
-				},
-
-				contactInfo: {
-					type: DataTypes.TEXT,
-					allowNull: false,
-				},
+				registerNumber: { type: DataTypes.TEXT },
+				originLocation: { type: DataTypes.TEXT },
+				location: { type: DataTypes.TEXT },
+				sourceDocument: { type: DataTypes.TEXT },
+				documentDescription: { type: DataTypes.TEXT },
+				seiNumber: { type: DataTypes.INTEGER },
+				receivedBy: { type: DataTypes.TEXT },
+				answerDocument: { type: DataTypes.TEXT },
+				contactInfo: { type: DataTypes.TEXT },
 			},
 			{
 				sequelize,
