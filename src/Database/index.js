@@ -2,21 +2,29 @@ const { Sequelize } = require("sequelize");
 const Process = require("../Model/Process");
 const config = require("./config/database");
 
-console.log("Starting database client");
+async function initializeDb() {
+	const db = new Sequelize(config);
 
-const db = new Sequelize(config);
+	let auth = db.authenticate();
 
-let auth = db.authenticate();
+	return new Promise((resolve, reject) => {
+		auth.then(
+			() => {
+				Process.init(db);
 
-auth.then(
-	() => {
-		console.log(`connected to database`);
+				resolve(0);
+			},
+			(rejected) => {
+				console.error(`failed to authenticate: ${rejected}`);
+				reject(1);
+			}
+		).catch((reason) => {
+			console.error(`Failed to connect: ${reason}`);
+			reject(1);
+		});
+	});
+}
 
-		Process.init(db);
-	},
-	(rejected) => {
-		console.error(`failed to authenticate: ${rejected}`);
-	}
-);
-
-module.exports = db;
+module.exports = {
+	initializeDb,
+};
