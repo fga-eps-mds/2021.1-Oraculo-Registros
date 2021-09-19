@@ -5,24 +5,32 @@ async function getProcessByID(request, response) {
 
 	try {
 		const process = await Process.findOne(id);
+		if (!process) {
+			return response
+				.status(400)
+				.json({ error: `Could not find process with id ${id}` });
+		}
 
 		return response.json(process);
 	} catch (failure) {
 		console.error(`failed to get process by id: ${failure}`);
 
-		return response.status(400).json({ error: "Invalid ID" });
+		return response.status(400).json({ error: "invalid id" });
 	}
 }
 
 async function getAllProcesses(request, response) {
 	try {
 		const processes = await Process.findAll();
+		if (!processes.length) {
+			return response.status(400).json({ error: "could not find any process" });
+		}
 
 		return response.json(processes);
 	} catch (failure) {
 		console.error(`failed to get all processes: ${failure}`);
 
-		return response.status(400).json({ error: "Could not find processes" });
+		return response.status(400).json({ error: "could not find processes" });
 	}
 }
 
@@ -52,6 +60,9 @@ async function createProcess(request, response) {
 			contactInfo,
 		});
 
+		if (!createdProcess) {
+			return response.status(500).json({ error: "could not create process" });
+		}
 		return response.json(createdProcess);
 	} catch (error) {
 		return response
