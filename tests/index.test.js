@@ -1,12 +1,19 @@
-const app = require("../src/index");
 const request = require("supertest");
+const app = require("../src/index");
 
-test("Test routes related to processes", async () => {
-	const r1 = await request(app).get("/processos");
-	const r2 = await request(app).get("/processos/0");
-	const r3 = await request(app).post("/processos");
+describe("Test processes routes", () => {
+	it("GET /processos", async () => {
+		const r1 = await request(app).get("/processos");
+		expect(r1.statusCode).toEqual(401);
+	});
 
-	expect(r1.statusCode).toBe(401);
-	expect(r2.statusCode).toBe(401);
-	expect(r3.statusCode).toBe(401);
+	it("GET /processos/0", async () => {
+		const r2 = await request(app).get("/processos/0");
+		expect(r2.statusCode).toEqual(401);
+	});
+
+	it("POST /processos", async () => {
+		const r3 = await request(app).post("/processos");
+		expect(r3.statusCode).toEqual(401);
+	});
 });
