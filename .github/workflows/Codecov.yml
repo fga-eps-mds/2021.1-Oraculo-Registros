@@ -1,0 +1,38 @@
+name: Testes
+
+on:
+  push:
+    branches:
+      - main
+      - teste-codevoc
+  pull_request:
+    branches:
+      - main
+      - teste-codevoc
+
+jobs:
+  test:
+    name: Verificar Testes
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Conferir repositório
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0  # Evita clones rasos
+
+      - name: Executar teste 
+        run: sudo docker-compose run processos npm run test --coverage --watchAll=false
+
+      - name: SonarCloud Scan
+        uses: SonarSource/sonarcloud-github-action@master
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v1
+        env:
+          CODECOV_TOKEN=${{ secrets.CODECOV_TOKEN }}
+        with:
+          fail_ci_if_error: true
