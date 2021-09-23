@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "jest",
+    "test": "jest --coverage",
     "start": "node index.js"
   },
   "repository": {
@@ -18,6 +18,16 @@
   },
   "homepage": "https://github.com/fga-eps-mds/2021.1-Oraculo-Processos#readme",
   "devDependencies": {
-    "jest": "^27.1.1"
+    "jest": "^27.1.1",
+    "jest-sonar-reporter": "^2.0.0"
+  },
+  "jest": {
+    "testEnvironment": "node",
+    "collectCoverage": true,
+    "testResultsProcessor": "jest-sonar-reporter",
+    "coveragePathIgnorePatterns": [
+      "/node_modules/",
+      "/test/"
+    ]
   }
 }
