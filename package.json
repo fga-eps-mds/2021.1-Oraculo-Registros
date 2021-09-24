@@ -17,9 +17,6 @@
 		"url": "https://github.com/fga-eps-mds/2021.1-Oraculo-Processos/issues"
 	},
 	"homepage": "https://github.com/fga-eps-mds/2021.1-Oraculo-Processos#readme",
-	"devDependencies": {
-		"jest": "^27.1.1"
-	},
 	"dependencies": {
 		"cors": "^2.8.5",
 		"dotenv": "^10.0.0",
@@ -30,5 +27,18 @@
 		"sequelize": "^6.6.5",
 		"sequelize-cli": "^6.2.0",
 		"supertest": "^6.1.6"
-	}
+	},
+    "devDependencies": {
+        "jest": "^27.1.1",
+        "jest-sonar-reporter": "^2.0.0"
+      },
+    "jest": {
+        "testEnvironment": "node",
+        "collectCoverage": true,
+        "testResultsProcessor": "jest-sonar-reporter",
+        "coveragePathIgnorePatterns": [
+          "/node_modules/",
+          "/test/"
+        ]
+    }
 }
