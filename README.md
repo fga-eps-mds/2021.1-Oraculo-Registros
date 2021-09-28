@@ -14,3 +14,73 @@ Caso reste duvidas você também pode entrar em contato conosco criando uma issu
 ## Documentação
 
 A documentação do projeto pode ser acessada pelo nosso site em https://fga-eps-mds.github.io/2021.1-Oraculo/.
+
+
+## Testes
+
+Todas as funções adicionadas nessa API devem ser testadas, o repositŕorio aceita até 10% do total de linhas não testadas. Para rodar os testes nesse repositŕio deve ser executado o comando:
+
+```bash
+docker-compose up -d --build
+npm install
+npx sequelize-cli db:migrate --config src/Database/config/config.json
+npx jest --coverage --forceExit
+```
+
+## Como rodar?
+
+O arquivo .env possui configurações iniciais que podem ser alteradas de acordo com a necessidade. São elas:
+ - SECRET: chave para criptografia das senhas
+ - DB_USER: usuário de acesso ao banco de dados
+ - DB_PASS: senha de acesso ao banco de dados
+ - DB_NAME: nome da base de dados
+ - DB_HOST: host da base de dados
+
+Veja o exemplo abaixo:
+
+```
+SECRET=chavedesegredo
+DB_USER=api_user
+DB_PASS=api_password
+DB_NAME=api_database
+DB_HOST=db_users
+```
+
+Para rodar a API é preciso usar os seguintes comandos usando o docker:
+
+Crie uma network para os containers da API, caso não exista:
+
+```bash
+docker network create processos -network
+```
+
+Suba o container com o comando:
+
+```bash
+docker-compose up
+```
+A API estará rodando na [porta 8000](http://localhost:3000).
+
+## Rotas
+
+**GET: `/processos`**
+
+Para ver todos os processos, envie os dados nesse formato:
+
+```json
+{
+}
+```
+
+**GET: `/processos/:id`**
+
+Para dados de um processo, só precisando do id no link.
+
+**POST: `/processos`**
+
+Para criar um procsso, envie os dados nesse formato:
+
+```json
+{
+}
+```
