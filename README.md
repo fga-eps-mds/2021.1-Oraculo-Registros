@@ -51,7 +51,7 @@ Para rodar a API é preciso usar os seguintes comandos usando o docker:
 Crie uma network para os containers da API, caso não exista:
 
 ```bash
-docker network create processos -network
+docker network create processos-network
 ```
 
 Suba o container com o comando:
