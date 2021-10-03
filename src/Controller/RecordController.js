@@ -1,5 +1,5 @@
 const Record = require("../Model/Record");
-const { records_status } = require("../Model/Situation");
+const { recordStatus } = require("../Model/Situation");
 
 function generateRegisterNumber() {
     const date = new Date();
@@ -66,7 +66,7 @@ async function createRecord(request, response) {
             return response.status(500).json({ error: "could not create record" });
         }
 
-        createdRecord.createSituation({ status: records_status.StatusPending });
+        createdRecord.createSituation({ status: recordStatus.StatusPending });
 
         return response.status(200).json(createdRecord);
     } catch (error) {

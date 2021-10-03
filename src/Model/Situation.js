@@ -20,10 +20,10 @@ class Situation extends Model {
     }
 }
 
-const records_status = {
+const recordStatus = {
     StatusPending: "pending",
     StatusFinished: "finished",
     StatusRunning: "running",
 };
 
-module.exports = { Situation, records_status };
+module.exports = { Situation, recordStatus };

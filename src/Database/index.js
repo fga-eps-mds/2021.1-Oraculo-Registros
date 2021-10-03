@@ -11,8 +11,8 @@ async function setupModels(db) {
     Situation.associate(db.models);
 }
 
-async function setupSequelize(config) {
-    return new Sequelize(config);
+async function setupSequelize(cfg) {
+    return new Sequelize(cfg);
 }
 
 async function configure(auth, db) {
