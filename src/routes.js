@@ -1,11 +1,11 @@
 const express = require("express");
-const ProcessController = require("./Controller/ProcessController");
+const RecordController = require("./Controller/RecordController");
 const check = require("./Utils/jwt");
 
 const routes = express.Router();
 
-routes.get("/processos", check.verifyJWT, ProcessController.getAllProcesses);
-routes.get("/processos/:id/", check.verifyJWT, ProcessController.getProcessByID);
-routes.post("/processos", check.verifyJWT, ProcessController.createProcess);
+routes.get("/records", RecordController.getAllRecords);
+routes.get("/records/:id/", RecordController.getRecordByID);
+routes.post("/records", RecordController.createRecord);
 
 module.exports = routes;
