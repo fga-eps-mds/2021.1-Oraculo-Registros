@@ -4,9 +4,7 @@ const { records_status } = require("../Model/Situation");
 function generateRegisterNumber() {
     const date = new Date();
     const seq = date.getTime();
-    const register_number = `${Math.round(seq)}/${date.getFullYear()}`;
-
-    return register_number;
+    return `${Math.round(seq)}/${date.getFullYear()}`;
 }
 
 async function getRecordByID(request, response) {
@@ -62,7 +60,6 @@ async function createRecord(request, response) {
         record.register_number = generateRegisterNumber();
         record.inclusion_date = new Date();
 
-        console.log(`generated: ${record.register_number}`);
         const createdRecord = await Record.create(record);
 
         if (!createdRecord) {
