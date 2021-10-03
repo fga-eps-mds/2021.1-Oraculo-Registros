@@ -1,6 +1,7 @@
 const app = require("../src");
 const request = require("supertest");
 const { initializeDatabase } = require("../src/Database");
+const express = require("express");
 
 const validRecord1 = {
     register_number: "123121776555673",

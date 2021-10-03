@@ -1,6 +1,5 @@
 const express = require("express");
 const RecordController = require("./Controller/RecordController");
-const check = require("./Utils/jwt");
 
 const routes = express.Router();
 
