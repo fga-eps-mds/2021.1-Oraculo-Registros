@@ -4,6 +4,10 @@ name: SonarCloud
 jobs:
     sonarcloud:
         runs-on: ubuntu-latest
+        env:
+            DATABASE_URL: postgres://oraculo:oraculo123@localhost:5432/oraculo
+            DB_HOST: localhost
+            DB_PORT: 5432
         steps:
             - uses: actions/checkout@v2
               with:
@@ -12,8 +16,11 @@ jobs:
             - name: Run tests
               uses: actions/setup-node@v1
               with:
-                  node-version: "14.x"
-            - run: npm install && npm run test
+                  node-version: ${{ matrix.node-version }}
+            - run: docker-compose up -d --build banco
+            - run: npm install
+            - run: npx sequelize-cli db:migrate --config src/Database/config/config.json
+            - run: npx jest --coverage --forceExit
 
             - name: SonarCloud Scan
               uses: sonarsource/sonarcloud-github-action@master
