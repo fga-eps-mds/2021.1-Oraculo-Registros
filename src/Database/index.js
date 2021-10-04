@@ -1,30 +1,35 @@
 const { Sequelize } = require("sequelize");
-const Process = require("../Model/Process");
+const { Situation } = require("../Model/Situation");
+const Record = require("../Model/Record");
 const config = require("./config/database");
 
-async function initializeDb() {
-	const db = new Sequelize(config);
+async function setupModels(db) {
+    Record.init(db);
+    Situation.init(db);
 
-	let auth = db.authenticate();
+    Record.associate(db.models);
+    Situation.associate(db.models);
+}
 
-	return new Promise((resolve, reject) => {
-		auth.then(
-			() => {
-				Process.init(db);
+async function setupSequelize(cfg) {
+    return new Sequelize(cfg);
+}
 
-				resolve(0);
-			},
-			(rejected) => {
-				console.error(`failed to authenticate: ${rejected}`);
-				reject(1);
-			}
-		).catch((reason) => {
-			console.error(`Failed to connect: ${reason}`);
-			reject(1);
-		});
-	});
+async function configure(auth, db) {
+    return new Promise((resolve, reject) => {
+        auth.then(() => {
+            setupModels(db);
+            resolve(0);
+        });
+    });
+}
+
+async function initializeDatabase() {
+    const db = await setupSequelize(config);
+    const auth = db.authenticate();
+    return configure(auth, db);
 }
 
 module.exports = {
-	initializeDb,
+    initializeDatabase,
 };

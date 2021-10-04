@@ -2,18 +2,28 @@ on: [push, pull_request]
 
 name: SonarCloud
 jobs:
-  sonarcloud:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-        with:
-          # Disabling shallow clone is recommended for improving relevancy of reporting
-          fetch-depth: 0
-      - name: Run tests
-        run: docker-compose run processos npm run test
-        
-      - name: SonarCloud Scan
-        uses: sonarsource/sonarcloud-github-action@master
+    sonarcloud:
+        runs-on: ubuntu-latest
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+            DATABASE_URL: postgres://oraculo:oraculo123@localhost:5432/oraculo
+            DB_HOST: localhost
+            DB_PORT: 5432
+        steps:
+            - uses: actions/checkout@v2
+              with:
+                  # Disabling shallow clone is recommended for improving relevancy of reporting
+                  fetch-depth: 0
+            - name: Run tests
+              uses: actions/setup-node@v1
+              with:
+                  node-version: ${{ matrix.node-version }}
+            - run: docker-compose up -d --build banco
+            - run: npm install
+            - run: npx sequelize-cli db:migrate --config src/Database/config/config.json
+            - run: npx jest --coverage --forceExit
+
+            - name: SonarCloud Scan
+              uses: sonarsource/sonarcloud-github-action@master
+              env:
+                  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+                  SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
