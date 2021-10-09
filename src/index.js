@@ -10,7 +10,7 @@ env.config();
 const { APP_PORT } = process.env;
 
 let corsOptions = {
-    origin: "localhost",
+    origin: "http://localhost:3000",
 };
 
 app.use(cors(corsOptions));
@@ -28,6 +28,7 @@ initializeDatabase().then(
     },
     () => {
         console.error(`could not connect to database`);
+        process.exit(0);
     }
 );
 
