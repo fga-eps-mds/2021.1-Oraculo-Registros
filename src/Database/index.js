@@ -1,18 +1,27 @@
 const { Sequelize } = require("sequelize");
 const { Situation } = require("../Model/Situation");
 const Record = require("../Model/Record");
+const Section = require("../Model/Section");
 const config = require("./config/database");
 
 async function setupModels(db) {
     Record.init(db);
     Situation.init(db);
+    Section.init(db);
 
     Record.associate(db.models);
     Situation.associate(db.models);
+    Section.associate(db.models);
 }
 
 async function setupSequelize(cfg) {
-    return new Sequelize(cfg);
+    try {
+        const sq = new Sequelize(cfg);
+        return sq;
+    } catch (err) {
+        console.error(`could not setup sequelize: ${err}`);
+        process.exit(1);
+    }
 }
 
 async function configure(auth, db) {
