@@ -99,6 +99,24 @@ describe("Main test", () => {
         const res = await request(app).post("/records").send(invalidRecord1);
         expect(res.statusCode).toEqual(500);
     });
+
+    it("POST /records - should not create a record (invalid JSON)", async () => {
+        const res = await request(app).post("/record").send('{test:"abcde}');
+        expect(res.statusCode).toEqual(400);
+    });
+
+    it("POST /records/1/forward - should forward a record", async () => {
+        const payload = {
+            section_id: 2,
+        };
+        const res = await request(app).post("/records/1/forward").send(payload);
+        expect(res.statusCode).toEqual(200);
+    });
+
+    it("GET /records/1/sections - should return section history", async () => {
+        const res = await request(app).get("/records/1/sections");
+        expect(res.statusCode).toEqual(200);
+    });
 });
 
 afterAll((done) => {
