@@ -15,8 +15,7 @@ async function setupModels(db) {
 }
 
 async function setupSequelize(cfg) {
-    const sq = new Sequelize(cfg);
-    return sq;
+    return new Sequelize(cfg);
 }
 
 async function configure(auth, db) {
