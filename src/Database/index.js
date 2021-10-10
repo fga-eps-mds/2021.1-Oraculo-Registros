@@ -15,13 +15,8 @@ async function setupModels(db) {
 }
 
 async function setupSequelize(cfg) {
-    try {
-        const sq = new Sequelize(cfg);
-        return sq;
-    } catch (err) {
-        console.error(`could not setup sequelize: ${err}`);
-        process.exit(1);
-    }
+    const sq = new Sequelize(cfg);
+    return sq;
 }
 
 async function configure(auth, db) {
