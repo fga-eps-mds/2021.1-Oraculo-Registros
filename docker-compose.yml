@@ -11,7 +11,7 @@ services:
             POSTGRES_PASSWORD: ${DB_PASS}
             DATABASE_HOST: ${DB_HOST}
         ports:
-            - "5432:${DB_PORT}"
+            - "${DB_PORT}:5432"
         networks:
             - processos-network
         volumes:
@@ -20,7 +20,7 @@ services:
     pgadmin:
         image: dpage/pgadmin4
         restart: always
-        container_name: oraculo-pgadmin
+        container_name: oraculo-pgadmin-processos
         environment:
             PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL}
             PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD}
