@@ -22,18 +22,12 @@ async function getRecordByID(request, response) {
 }
 
 async function getAllRecords(request, response) {
-    try {
-        const records = await Record.findAll();
-        if (!records.length) {
-            return response.status(400).json({ error: "could not find any record" });
-        }
-
-        return response.json(records);
-    } catch (failure) {
-        console.error(`failed to get all records: ${failure}`);
-
-        return response.status(400).json({ error: "could not find records" });
+    const records = await Record.findAll();
+    if (!records.length) {
+        return response.status(400).json({ error: "could not find any record" });
     }
+
+    return response.json(records);
 }
 
 async function createRecord(request, response) {
@@ -92,12 +86,7 @@ async function forwardRecord(req, res) {
         return res.status(404).json({ error: "session or record not found" });
     }
 
-    try {
-        await record.addSection(section);
-    } catch (err) {
-        console.error(`failed to forward record: ${err}`);
-        return res.status(500).json({ error: "could not forward record" });
-    }
+    await record.addSection(section);
 
     return res.status(200).json({ message: `record forwared to: ${section.name} ` });
 }
