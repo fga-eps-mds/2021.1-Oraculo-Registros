@@ -7,7 +7,6 @@ jobs:
         env:
             DATABASE_URL: postgres://oraculo:oraculo123@localhost:5431/oraculo
             DB_HOST: localhost
-            DB_PORT: 5432
         steps:
             - uses: actions/checkout@v2
               with:
