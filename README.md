@@ -20,11 +20,14 @@ A documentação do projeto pode ser acessada pelo nosso site em https://fga-eps
 Todas as funções adicionadas nessa API devem ser testadas, o repositŕorio aceita até 10% do total de linhas não testadas. Para rodar os testes nesse repositŕio deve ser executado o comando:
 
 ```bash
+export DB_HOST=localhost
+export DATABASE_URL=postgres://$DB_USER:$DB_PASS@localhost:$DB_PORT/$DB_NAME
 docker-compose up -d --build
 npm install
 npx sequelize-cli db:migrate --config src/Database/config/config.json
 npx jest --coverage --forceExit
 ```
+**Importante**: o padrão da variável DATABASE_URL é: `postgres://oraculo:oraculo123@localhost:5431/oraculo`
 
 ## Como rodar?
 
@@ -48,19 +51,24 @@ DB_HOST=db_users
 
 Para rodar a API é preciso usar os seguintes comandos usando o docker:
 
-Crie uma network para os containers da API, caso não exista:
-
-```bash
-docker network create processos-network
-```
-
 Suba o container com o comando:
 
 ```bash
-docker-compose up
+docker-compose up -d --build
 ```
 
-A API estará rodando na [porta 8000](http://localhost:3000).
+Suba as tabelas do banco de dados
+
+**Importante**: lembre-se de configurar as variáveis de ambiente _DB_USER_ _DB_PASS_ _DB_PORT_ e _DB_NAME_
+
+```bash
+export DB_HOST=localhost
+export DATABASE_URL=postgres://$DB_USER:$DB_PASS@localhost:$DB_PORT/$DB_NAME
+npx sequelize-cli db:migrate --config src/Database/config/config.json
+```  
+
+
+A API estará rodando na [porta 8001](http://localhost:8001).
 
 ## Rotas
 
