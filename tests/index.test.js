@@ -90,6 +90,11 @@ describe("Main test", () => {
     expect(res.statusCode).toEqual(204);
   });
 
+  it("GET /records/total - should raise a error", async () => {
+    const res = await request(app).get("/records/total");
+    expect(res.statusCode).toEqual(500);
+  });
+
   it("GET /records/page/0 - should not return any records", async () => {
     const res = await request(app).get("/records/page/0");
     console.log(`data: ${JSON.stringify(res.body)}`);
@@ -176,6 +181,11 @@ describe("Main test", () => {
   it("GET /records/500 - should not return a inexistent record", async () => {
     const res = await request(app).get("/records/500");
     expect(res.statusCode).toEqual(400);
+  });
+
+  it("GET /records/total - should return some records", async () => {
+    const res = await request(app).get("/records/total");
+    expect(res.statusCode).toEqual(200);
   });
 });
 
