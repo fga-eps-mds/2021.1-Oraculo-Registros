@@ -139,16 +139,12 @@ async function getRecordSectionsByID(req, res) {
 }
 
 async function getTotalNumberOfRecords(req, res) {
-  try {
-    const allRecords = await Record.findAll();
-    if (allRecords.length > 0) {
-      return res.status(200).json({ count: `${allRecords.length}` });
-    }
-
-    return res.status(204).json({ message: "could not find records" });
-  } catch (err) {
-    return res.status(500).json({ error: "could not find records" });
+  const allRecords = await Record.findAll();
+  if (allRecords.length > 0) {
+    return res.status(200).json({ count: `${allRecords.length}` });
   }
+
+  return res.status(204).json({ message: "could not find records" });
 }
 
 module.exports = {

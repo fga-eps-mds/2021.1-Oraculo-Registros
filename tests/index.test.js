@@ -92,7 +92,7 @@ describe("Main test", () => {
 
   it("GET /count/records - should raise a error", async () => {
     const res = await request(app).get("/count/records");
-    expect(res.statusCode).toEqual(500);
+    expect(res.statusCode).toEqual(204);
   });
 
   it("GET /records/page/0 - should not return any records", async () => {
