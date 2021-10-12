@@ -1,56 +1,56 @@
 version: "3.8"
 
 services:
-    banco:
-        image: bitnami/postgresql:13
-        container_name: oraculo-banco-processos
-        restart: always
-        environment:
-            POSTGRES_DB: ${DB_NAME}
-            POSTGRES_USER: ${DB_USER}
-            POSTGRES_PASSWORD: ${DB_PASS}
-            DATABASE_HOST: ${DB_HOST}
-        ports:
-            - "5432:${DB_PORT}"
-        networks:
-            - processos-network
-        volumes:
-            - postgresdb:/var/lib/postgresql/data
+  banco:
+    image: bitnami/postgresql:13
+    container_name: oraculo-banco-processos
+    restart: always
+    environment:
+      POSTGRES_DB: ${DB_NAME}
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASS}
+      DATABASE_HOST: ${DB_HOST}
+    ports:
+      - "5431:${DB_PORT}"
+    networks:
+      - processos-network
+    volumes:
+      - postgresdb:/var/lib/postgresql/data
 
-    pgadmin:
-        image: dpage/pgadmin4
-        restart: always
-        container_name: oraculo-pgadmin
-        environment:
-            PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL}
-            PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD}
-        depends_on:
-            - banco
-        links:
-            - banco:${DB_HOST}
-        ports:
-            - "${PGADMIN_PORT}:80"
-        networks:
-            - processos-network
+  pgadmin:
+    image: dpage/pgadmin4
+    restart: always
+    container_name: oraculo-pgadmin-processos
+    environment:
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL}
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD}
+    depends_on:
+      - banco
+    links:
+      - banco:${DB_HOST}
+    ports:
+      - "${PGADMIN_PORT}:80"
+    networks:
+      - processos-network
 
-    processos:
-        container_name: oraculo-processos
-        build: .
-        restart: always
-        depends_on:
-            - banco
-        networks:
-            - processos-network
-        links:
-            - banco:${DB_HOST}
-        ports:
-            - "${APP_PORT}:${APP_PORT}"
+  processos:
+    container_name: oraculo-processos
+    build: .
+    restart: always
+    depends_on:
+      - banco
+    networks:
+      - processos-network
+    links:
+      - banco:${DB_HOST}
+    ports:
+      - "${APP_PORT}:${APP_PORT}"
 
 volumes:
-    node_modules:
-    postgresdb:
+  node_modules:
+  postgresdb:
 
 networks:
-    processos-network:
-        name: processos-network
-        driver: bridge
+  processos-network:
+    name: processos-network
+    driver: bridge
