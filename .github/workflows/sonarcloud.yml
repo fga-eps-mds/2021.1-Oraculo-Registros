@@ -20,7 +20,7 @@ jobs:
       - run: docker ps
       - run: npm install
       - run: npx sequelize-cli db:migrate --config src/Database/config/config.json
-        env: 
+        env:
           DB_PORT: 5431
       - run: npx jest --coverage --forceExit
         env:

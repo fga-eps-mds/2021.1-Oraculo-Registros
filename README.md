@@ -27,17 +27,18 @@ npm install
 npx sequelize-cli db:migrate --config src/Database/config/config.json
 npx jest --coverage --forceExit
 ```
+
 **Importante**: o padrão da variável DATABASE_URL é: `postgres://oraculo:oraculo123@localhost:5431/oraculo`
 
 ## Como rodar?
 
 O arquivo .env possui configurações iniciais que podem ser alteradas de acordo com a necessidade. São elas:
 
--   SECRET: chave para criptografia das senhas
--   DB_USER: usuário de acesso ao banco de dados
--   DB_PASS: senha de acesso ao banco de dados
--   DB_NAME: nome da base de dados
--   DB_HOST: host da base de dados
+- SECRET: chave para criptografia das senhas
+- DB_USER: usuário de acesso ao banco de dados
+- DB_PASS: senha de acesso ao banco de dados
+- DB_NAME: nome da base de dados
+- DB_HOST: host da base de dados
 
 Veja o exemplo abaixo:
 
@@ -65,8 +66,7 @@ Suba as tabelas do banco de dados
 export DB_HOST=localhost
 export DATABASE_URL=postgres://$DB_USER:$DB_PASS@localhost:$DB_PORT/$DB_NAME
 npx sequelize-cli db:migrate --config src/Database/config/config.json
-```  
-
+```
 
 A API estará rodando na [porta 8001](http://localhost:8001).
 
@@ -76,60 +76,12 @@ A API estará rodando na [porta 8001](http://localhost:8001).
 
 Endpoint para exibir todos os registros
 
--   Resposta
+- Resposta
 
 ```json
 [
-    {
-        "id": 2,
-        "register_number": "",
-        "inclusion_date": "",
-        "city": "",
-        "state": "",
-        "requester": "",
-        "document_type": "",
-        "document_number": "",
-        "document_date": "",
-        "description": "",
-        "sei_number": "",
-        "receipt_form": "",
-        "contact_info": "",
-        "situation": 2,
-        "created_by": 3,
-        "updatedAt": "",
-        "createdAt": ""
-    },
-    {
-        "id": 2,
-        "register_number": "",
-        "inclusion_date": "",
-        "city": "",
-        "state": "",
-        "requester": "",
-        "document_type": "",
-        "document_number": "",
-        "document_date": "",
-        "description": "",
-        "sei_number": "",
-        "receipt_form": "",
-        "contact_info": "",
-        "situation": 1,
-        "created_by": 1,
-        "updatedAt": "",
-        "createdAt": ""
-    }
-]
-```
-
-**GET: `/records/:id`**
-
-Retorna os dados de um registro específico, só precisando do id no link
-
--   Resposta
-
-```json
-{
-    "id": 1,
+  {
+    "id": 2,
     "register_number": "",
     "inclusion_date": "",
     "city": "",
@@ -146,6 +98,54 @@ Retorna os dados de um registro específico, só precisando do id no link
     "created_by": 3,
     "updatedAt": "",
     "createdAt": ""
+  },
+  {
+    "id": 2,
+    "register_number": "",
+    "inclusion_date": "",
+    "city": "",
+    "state": "",
+    "requester": "",
+    "document_type": "",
+    "document_number": "",
+    "document_date": "",
+    "description": "",
+    "sei_number": "",
+    "receipt_form": "",
+    "contact_info": "",
+    "situation": 1,
+    "created_by": 1,
+    "updatedAt": "",
+    "createdAt": ""
+  }
+]
+```
+
+**GET: `/records/:id`**
+
+Retorna os dados de um registro específico, só precisando do id no link
+
+- Resposta
+
+```json
+{
+  "id": 1,
+  "register_number": "",
+  "inclusion_date": "",
+  "city": "",
+  "state": "",
+  "requester": "",
+  "document_type": "",
+  "document_number": "",
+  "document_date": "",
+  "description": "",
+  "sei_number": "",
+  "receipt_form": "",
+  "contact_info": "",
+  "situation": 2,
+  "created_by": 3,
+  "updatedAt": "",
+  "createdAt": ""
 }
 ```
 
@@ -153,7 +153,7 @@ Retorna os dados de um registro específico, só precisando do id no link
 
 Para criar um registro, envie os dados nesse formato:
 
--   Requisição
+- Requisição
 
 ```json
     register_number: "",
@@ -172,27 +172,27 @@ Para criar um registro, envie os dados nesse formato:
     created_by: <numero>,
 ```
 
--   Resposta
+- Resposta
 
 ```json
 {
-    "id": 2,
-    "register_number": "",
-    "inclusion_date": "",
-    "city": "",
-    "state": "",
-    "requester": "",
-    "document_type": "",
-    "document_number": "",
-    "document_date": "",
-    "description": "",
-    "sei_number": "",
-    "receipt_form": "",
-    "contact_info": "",
-    "situation": 2,
-    "created_by": 3,
-    "updatedAt": "",
-    "createdAt": ""
+  "id": 2,
+  "register_number": "",
+  "inclusion_date": "",
+  "city": "",
+  "state": "",
+  "requester": "",
+  "document_type": "",
+  "document_number": "",
+  "document_date": "",
+  "description": "",
+  "sei_number": "",
+  "receipt_form": "",
+  "contact_info": "",
+  "situation": 2,
+  "created_by": 3,
+  "updatedAt": "",
+  "createdAt": ""
 }
 ```
 
@@ -202,14 +202,27 @@ Para encaminhar um registro, basta envie os dados nesse formato:
 
 ```json
 {
-    "section_id": 1
+  "section_id": 1
 }
 ```
 
--   **id** é o id do registro a ser encaminhado
--   **section_id** é o id da seção de destino
+- **id** é o id do registro a ser encaminhado
+- **section_id** é o id da seção de destino
 
 **GET: `/records/:id/sections`**
 
 Para obter o histórico de seções por onde um registro passou, envie uma request
 contendo o **id** do registro do qual você quer obter o histórico de seções
+
+**GET: `/records/page/:page`**
+
+Caso queira retornar os registros de forma paginada, envie
+uma request no formato acima, aonde:
+
+- :page: é o número da página que você deseja acessar. Esse número
+  deverá ser incrementado de acordo com o limite de registros por página.
+
+Exemplo:
+
+- **GET: `/records/page/0`** irá retornar os 4 primeiros registros
+- **GET: `/records/page/4`** irá retornar os 4 registros seguintes
