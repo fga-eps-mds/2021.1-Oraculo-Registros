@@ -91,7 +91,7 @@ describe("Main test", () => {
   });
 
   it("GET /count/records - should raise a error", async () => {
-    const res = await request(app).get("/records/total");
+    const res = await request(app).get("/count/records");
     expect(res.statusCode).toEqual(500);
   });
 
@@ -184,7 +184,7 @@ describe("Main test", () => {
   });
 
   it("GET /count/records - should return some records", async () => {
-    const res = await request(app).get("/records/total");
+    const res = await request(app).get("/count/records");
     expect(res.statusCode).toEqual(200);
   });
 });
