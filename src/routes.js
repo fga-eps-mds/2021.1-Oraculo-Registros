@@ -9,5 +9,6 @@ routes.post("/records", RecordController.createRecord);
 routes.get("/records/page/:page", RecordController.getRecordsByPage);
 routes.post("/records/:id/forward", RecordController.forwardRecord);
 routes.get("/records/:id/sections", RecordController.getRecordSectionsByID);
+routes.get("/records/total", RecordController.getTotalNumberOfRecords);
 
 module.exports = routes;
