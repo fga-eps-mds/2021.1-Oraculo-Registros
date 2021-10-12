@@ -20,30 +20,11 @@ jobs:
       - run: docker ps
       - run: npm install
       - run: npx sequelize-cli db:migrate --config src/Database/config/config.json
-        env: 
+        env:
           DB_PORT: 5431
       - run: npx jest --coverage --forceExit
         env:
-<<<<<<< HEAD
           DB_PORT: 5431
-=======
-            DB_PORT: 5431
-            DATABASE_URL: postgres://oraculo:oraculo123@localhost:5431/oraculo
-            DB_HOST: localhost
-        steps:
-            - uses: actions/checkout@v2
-              with:
-                  # Disabling shallow clone is recommended for improving relevancy of reporting
-                  fetch-depth: 0
-            - name: Run tests
-              uses: actions/setup-node@v1
-              with:
-                  node-version: ${{ matrix.node-version }}
-            - run: docker-compose up -d --build banco
-            - run: npm install
-            - run: npx sequelize-cli db:migrate --config src/Database/config/config.json
-            - run: npx jest --coverage --forceExit
->>>>>>> main
 
       - name: SonarCloud Scan
         uses: sonarsource/sonarcloud-github-action@master
