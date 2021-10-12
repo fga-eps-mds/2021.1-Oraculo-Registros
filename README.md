@@ -183,3 +183,16 @@ Para criar um registro, envie os dados nesse formato:
     "createdAt": "2021-10-03T00:35:30.438Z"
 }
 ```
+
+**GET: `/records/page/:page`**
+
+Caso queira retornar os registros de forma paginada, envie
+uma request no formato acima, aonde:
+
+- :page: é o número da página que você deseja acessar. Esse número
+deverá ser incrementado de acordo com o limite de registros por página.
+
+Exemplo: 
+
+- **GET: `/records/page/0`** irá retornar os 4 primeiros registros
+- **GET: `/records/page/4`** irá retornar os 4 registros seguintes
