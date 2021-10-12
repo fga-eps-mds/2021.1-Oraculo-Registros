@@ -1,4 +1,5 @@
 const Record = require("../Model/Record");
+const Section = require("../Model/Section");
 const { recordStatus } = require("../Model/Situation");
 
 function generateRegisterNumber() {
@@ -91,9 +92,51 @@ async function getRecordsByPage(req, res) {
   }
 }
 
+async function forwardRecord(req, res) {
+    const { id } = req.params;
+    const { section_id } = req.body;
+    const sectionID = Number.parseInt(section_id);
+
+    if (!Number.isFinite(sectionID)) {
+        return res.status(400).json({ error: "invalid section id provided" });
+    }
+
+    const record = await Record.findByPk(id);
+    const section = await Section.findByPk(sectionID);
+    if (!record || !section) {
+        return res.status(404).json({ error: "session or record not found" });
+    }
+
+    await record.addSection(section);
+
+    return res.status(200).json({ message: `record forwared to: ${section.name} ` });
+}
+
+async function getRecordSectionsByID(req, res) {
+    const { id } = req.params;
+
+    const record = await Record.findByPk(id, {
+        include: {
+            association: "sections",
+            attributes: ["id", "name"],
+        },
+        through: {
+            attributes: [],
+        },
+    });
+
+    if (!record) {
+        return res.status(404).json({ error: "record not found" });
+    }
+
+    return res.status(200).json(record.sections);
+}
+
 module.exports = {
-  getRecordByID,
-  getAllRecords,
-  createRecord,
-  getRecordsByPage,
+    getRecordByID,
+    getAllRecords,
+    createRecord,
+    forwardRecord,
+    getRecordSectionsByID,
+    getRecordsByPage,
 };

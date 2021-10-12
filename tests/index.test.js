@@ -54,9 +54,27 @@ const invalidRecord1 = {
   created_by: -50,
 };
 
+const invalidRecord2 = {
+    register_number: "123121776555673",
+    inclusion_date: "14/04/2021",
+    city: null,
+    state: "bahia",
+    requester: "policia civil",
+    document_type: "fisico",
+    document_number: "1020304050",
+    document_date: null,
+    description: "ABCDEFGHIJKL",
+    sei_number: null,
+    receipt_form: "form",
+    contact_info: null,
+    situation: 2,
+    created_by: 2,
+};
+
 const emptyRecord = {};
 
 describe("Main test", () => {
+
   let last_record_id = 0;
 
   beforeAll(async () => {
