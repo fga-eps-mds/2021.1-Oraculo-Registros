@@ -177,6 +177,22 @@ describe("Main test", () => {
     const res = await request(app).get("/records/500");
     expect(res.statusCode).toEqual(400);
   });
+
+  it("POST /records/1/status - should update record situation", async () => {
+    const res = await request(app).post("/records/1/status").send({
+      situation: 1,
+    });
+
+    expect(res.statusCode).toEqual(200);
+  });
+
+  it("POST /records/1/status - should not update (invalid situation)", async () => {
+    const res = await request(app).post("/records/1/status").send({
+      situation: 100,
+    });
+
+    expect(res.statusCode).toEqual(500);
+  });
 });
 
 afterAll((done) => {
