@@ -185,14 +185,6 @@ describe("Main test", () => {
 
     expect(res.statusCode).toEqual(200);
   });
-
-  it("POST /records/500/status - should not update (invalid record id)", async () => {
-    const res = await request(app).post("/records/500/status").send({
-      situation: 100,
-    });
-
-    expect(res.statusCode).toEqual(500);
-  });
 });
 
 afterAll((done) => {
