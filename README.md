@@ -226,3 +226,15 @@ Exemplo:
 
 - **GET: `/records/page/0`** irá retornar os 4 primeiros registros
 - **GET: `/records/page/4`** irá retornar os 4 registros seguintes
+
+**GET `/count/records`**
+
+Irá retornar a quantidade total de registros no banco
+
+Formato da resposta:
+
+```json
+{
+  "count": 0
+}
+```
