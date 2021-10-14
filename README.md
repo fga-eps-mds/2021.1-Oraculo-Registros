@@ -226,3 +226,13 @@ Exemplo:
 
 - **GET: `/records/page/0`** irá retornar os 4 primeiros registros
 - **GET: `/records/page/4`** irá retornar os 4 registros seguintes
+
+**POST: `/records/:id/situation`**
+
+Caso queira atualizar o status de um processo, envie os dados no formato a seguir:
+
+```json
+{
+  "situation": ""
+}
+```
