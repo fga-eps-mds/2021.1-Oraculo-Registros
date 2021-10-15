@@ -132,6 +132,18 @@ async function getRecordSectionsByID(req, res) {
   return res.status(200).json(record.sections);
 }
 
+async function setRecordSituation(req, res) {
+  const { id } = req.params;
+  const { situation } = req.body;
+
+  const saveResult = await Record.update({ situation: situation }, { where: { id: id } });
+  console.log(saveResult);
+  if (!saveResult) {
+    return res.status(500).json({ error: "failed to save" });
+  }
+  return res.status(200).json({ message: "successfully changed situation" });
+}
+
 module.exports = {
   getRecordByID,
   getAllRecords,
@@ -139,4 +151,5 @@ module.exports = {
   forwardRecord,
   getRecordSectionsByID,
   getRecordsByPage,
+  setRecordSituation,
 };
