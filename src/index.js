@@ -10,7 +10,7 @@ env.config();
 const { APP_PORT } = process.env;
 
 let corsOptions = {
-    origin: "http://localhost:3000",
+  origin: "*",
 };
 
 app.use(cors(corsOptions));
@@ -23,13 +23,13 @@ app.listen(APP_PORT);
 console.log(`HTTP server started on port ${APP_PORT}`);
 
 initializeDatabase().then(
-    () => {
-        console.info(`connected to database`);
-    },
-    () => {
-        console.error(`could not connect to database`);
-        process.exit(0);
-    }
+  () => {
+    console.info(`connected to database`);
+  },
+  () => {
+    console.error(`could not connect to database`);
+    process.exit(0);
+  }
 );
 
 module.exports = app;
