@@ -1,6 +1,7 @@
 const Record = require("../Model/Record");
 const Section = require("../Model/Section");
 const { recordStatus } = require("../Model/Situation");
+const { Op } = require("sequelize");
 
 function generateRegisterNumber() {
   const date = new Date();
@@ -147,6 +148,19 @@ async function getTotalNumberOfRecords(req, res) {
   return res.status(204).json({ message: "could not find records" });
 }
 
+async function getAllSections(req, res) {
+  const sections = await Section.findAll({
+    where: {
+      [Op.gt]: {
+        id: 3,
+      },
+    },
+    attributes: ["id", "name"],
+  });
+
+  return res.status(200).json(sections);
+}
+
 module.exports = {
   getRecordByID,
   getAllRecords,
@@ -155,4 +169,5 @@ module.exports = {
   getRecordSectionsByID,
   getRecordsByPage,
   getTotalNumberOfRecords,
+  getAllSections,
 };
