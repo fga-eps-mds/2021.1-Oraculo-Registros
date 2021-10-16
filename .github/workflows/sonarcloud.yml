@@ -18,11 +18,11 @@ jobs:
           node-version: ${{ matrix.node-version }}
       - run: docker-compose up -d --build banco
       - run: docker ps
-      - run: npm install
-      - run: npx sequelize-cli db:migrate --config src/Database/config/config.json
+      - run: yarn
+      - run: yarn run db:migrate
         env:
           DB_PORT: 5431
-      - run: npx jest --coverage --forceExit
+      - run: yarn run test
         env:
           DB_PORT: 5431
 
