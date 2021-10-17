@@ -6,7 +6,6 @@ jobs:
     runs-on: ubuntu-latest
     env:
       DATABASE_URL: ${{ secrets.HEROKU_DATABASE_URL }}
-      TEST: $${{ secrets.TEST }}
     steps:
       - uses: actions/checkout@v2
         with:
@@ -16,6 +15,5 @@ jobs:
         uses: actions/setup-node@v1
         with:
           node-version: ${{ matrix.node-version }}
-      - run: echo "test is $TEST"
       - run: yarn
       - run: yarn run db:migrate:prod
