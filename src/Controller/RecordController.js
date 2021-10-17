@@ -13,25 +13,21 @@ async function getRecordByID(request, response) {
 
   const record = await Record.findByPk(id);
   if (!record) {
-    return response.status(400).json({ error: `Could not find record with id ${id}` });
+    return response
+      .status(400)
+      .json({ error: `Could not find record with id ${id}` });
   }
 
   return response.json(record);
 }
 
 async function getAllRecords(request, response) {
-  try {
-    const records = await Record.findAll();
-    if (!records.length) {
-      return response.status(204).json({ error: "could not find any record" });
-    }
-
-    return response.json(records);
-  } catch (failure) {
-    console.error(`failed to get all records: ${failure}`);
-
-    return response.status(400).json({ error: "could not find records" });
+  const records = await Record.findAll();
+  if (!records.length) {
+    return response.status(204).json({ error: "could not find any record" });
   }
+
+  return response.json(records);
 }
 
 async function createRecord(request, response) {
@@ -82,7 +78,9 @@ async function getRecordsByPage(req, res) {
     });
 
     if (count === 0) {
-      return res.status(204).json({ info: "there are no records matching this query" });
+      return res
+        .status(204)
+        .json({ info: "there are no records matching this query" });
     }
 
     return res.status(200).json(rows);
@@ -109,7 +107,9 @@ async function forwardRecord(req, res) {
 
   await record.addSection(section);
 
-  return res.status(200).json({ message: `record forwared to: ${section.name} ` });
+  return res
+    .status(200)
+    .json({ message: `record forwared to: ${section.name} ` });
 }
 
 async function getRecordSectionsByID(req, res) {
@@ -136,11 +136,8 @@ async function setRecordSituation(req, res) {
   const { id } = req.params;
   const { situation } = req.body;
 
-  const saveResult = await Record.update({ situation: situation }, { where: { id: id } });
-  console.log(saveResult);
-  if (!saveResult) {
-    return res.status(500).json({ error: "failed to save" });
-  }
+  await Record.update({ situation: situation }, { where: { id: id } });
+
   return res.status(200).json({ message: "successfully changed situation" });
 }
 
