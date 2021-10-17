@@ -17,4 +17,4 @@ jobs:
       - run: yarn
       - run: yarn run db:migrate:prod
         env:
-          HEROKU_DATABASE_URL: ${{ secrets.HEROKU_DATABASE_URL }}
+          DATABASE_URL: ${{ secrets.HEROKU_DATABASE_URL }}
