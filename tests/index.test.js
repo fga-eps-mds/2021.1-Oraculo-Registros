@@ -73,6 +73,24 @@ const invalidRecord2 = {
 
 const emptyRecord = {};
 
+describe("Sub Test", () => {
+  const test1 = 1;
+  const test2 = 2;
+  const { loadEnvironment } = require("../src/Database");
+
+  it("Test empty database URL", (done) => {
+    const result = loadEnvironment(test1);
+    expect(result).toBe(null);
+    done();
+  });
+
+  it("Test PROD environment var", (done) => {
+    const result = loadEnvironment(test2);
+    expect(result.dialectOptions).toBeDefined();
+    done();
+  });
+});
+
 describe("Main test", () => {
   let last_record_id = 0;
 

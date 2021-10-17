@@ -6,16 +6,16 @@ require("dotenv").config();
 
 const { PROD, DATABASE_URL } = process.env;
 
-function loadEnvironment() {
+function loadEnvironment(testing) {
   let options;
 
-  if (DATABASE_URL === undefined || DATABASE_URL === "") {
+  if (DATABASE_URL === undefined || DATABASE_URL === "" || testing === 1) {
     console.error("DATABASE_URL: empty required environment variable");
-    process.exit(1);
+    return null;
   }
 
   // Checks if we are being deployed at production/homol environment
-  if (PROD === "true") {
+  if (PROD === "true" || testing === 2) {
     options = {
       dialect: "postgres",
       define: {
@@ -28,6 +28,7 @@ function loadEnvironment() {
           rejectUnauthorized: false,
         },
       },
+      logging: false,
     };
   } else {
     options = {
@@ -36,6 +37,7 @@ function loadEnvironment() {
         timestamps: true,
         underscored: true,
       },
+      logging: false,
     };
   }
 
@@ -77,4 +79,5 @@ async function initializeDatabase() {
 
 module.exports = {
   initializeDatabase,
+  loadEnvironment,
 };
