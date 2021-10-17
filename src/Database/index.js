@@ -4,7 +4,7 @@ const Record = require("../Model/Record");
 const Section = require("../Model/Section");
 require("dotenv").config();
 
-const { PROD, SONARCLOUD, DATABASE_URL } = process.env;
+const { PROD, DATABASE_URL } = process.env;
 
 function loadEnvironment() {
   let options;
