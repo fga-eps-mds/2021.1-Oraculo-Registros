@@ -6,6 +6,7 @@
   "scripts": {
     "test": "export DATABASE_URL=postgres://oraculo:oraculo123@localhost:5431/oraculo && jest --coverage --forceExit",
     "db:migrate": "export DATABASE_URL=postgres://oraculo:oraculo123@localhost:5431/oraculo && sleep 3 && npx sequelize db:migrate",
+    "db:migrate:prod": "npx sequelize db:migrate --env production",
     "docker:clean": "sudo docker container rm -f oraculo-banco-registros oraculo-registros oraculo-pgadmin-registros",
     "docker:up": "sudo docker-compose up -d --build",
     "db:up": "sudo docker-compose up -d --build banco",

@@ -1,0 +1,19 @@
+on: [push, pull_request]
+
+name: Run database migrations
+jobs:
+  heroku:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          # Disabling shallow clone is recommended for improving relevancy of reporting
+          fetch-depth: 0
+      - name: Migrate schemas
+        uses: actions/setup-node@v1
+        with:
+          node-version: ${{ matrix.node-version }}
+      - run: yarn run db:migrate:prod
+        env:
+          HEROKU_DATABASE_URL: ${{ secrets.HEROKU_DATABASE_URL }}
