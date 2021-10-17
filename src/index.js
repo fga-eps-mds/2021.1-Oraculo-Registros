@@ -22,14 +22,11 @@ app.listen(APP_PORT);
 
 console.log(`HTTP server started on port ${APP_PORT}`);
 
-initializeDatabase().then(
-  () => {
-    console.info(`connected to database`);
-  },
-  () => {
-    console.error(`could not connect to database`);
-    process.exit(0);
-  }
-);
+initializeDatabase().catch((reason) => {
+  console.error(`could not connect to database: ${reason}`);
+  process.exit(1);
+});
+
+console.log("connected to database");
 
 module.exports = app;
