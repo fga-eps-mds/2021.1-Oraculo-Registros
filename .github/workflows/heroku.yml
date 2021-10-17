@@ -14,6 +14,7 @@ jobs:
         uses: actions/setup-node@v1
         with:
           node-version: ${{ matrix.node-version }}
+      - run: yarn
       - run: yarn run db:migrate:prod
         env:
           HEROKU_DATABASE_URL: ${{ secrets.HEROKU_DATABASE_URL }}
