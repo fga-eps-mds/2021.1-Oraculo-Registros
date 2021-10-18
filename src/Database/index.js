@@ -2,6 +2,7 @@ const { Sequelize } = require("sequelize");
 const { Situation } = require("../Model/Situation");
 const Record = require("../Model/Record");
 const Section = require("../Model/Section");
+const Field = require("../Model/Field");
 require("dotenv").config();
 
 const { PROD, DATABASE_URL } = process.env;
@@ -11,7 +12,12 @@ function loadEnvironment(testing) {
 
   if (DATABASE_URL === undefined || DATABASE_URL === "" || testing === 1) {
     console.error("DATABASE_URL: empty required environment variable");
-    return null;
+    if (testing === 1) {
+      return null;
+    }
+
+    // we should exit on production or homol environment
+    process.exit(1);
   }
 
   // Checks if we are being deployed at production/homol environment
@@ -52,6 +58,7 @@ async function setupModels(db) {
   Record.init(db);
   Situation.init(db);
   Section.init(db);
+  Field.init(db);
 
   Record.associate(db.models);
   Situation.associate(db.models);
