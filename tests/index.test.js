@@ -203,6 +203,14 @@ describe("Main test", () => {
 
     expect(res.statusCode).toEqual(200);
   });
+
+  it("GET /records/fields - should return all fields", async () => {
+    const res = await request(app).get("/records/fields");
+    expect(res.statusCode).toEqual(200);
+    expect(res.body[0].name).toBeDefined();
+    expect(res.body[0].description).toBeDefined();
+    expect(res.body[0].created_by).toBeDefined();
+  });
 });
 
 afterAll((done) => {

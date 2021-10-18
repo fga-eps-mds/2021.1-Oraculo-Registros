@@ -16,15 +16,12 @@ jobs:
         uses: actions/setup-node@v1
         with:
           node-version: ${{ matrix.node-version }}
-      - run: docker-compose up -d --build banco
+      - run: yarn run db:up
       - run: docker ps
       - run: yarn
       - run: yarn run db:migrate
-        env:
-          DB_PORT: 5431
+      - run: yarn run db:seeders
       - run: yarn run test
-        env:
-          DB_PORT: 5431
 
       - name: SonarCloud Scan
         uses: sonarsource/sonarcloud-github-action@master

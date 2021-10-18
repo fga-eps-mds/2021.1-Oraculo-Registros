@@ -1,5 +1,6 @@
 const Record = require("../Model/Record");
 const Section = require("../Model/Section");
+const Field = require("../Model/Field");
 const { recordStatus } = require("../Model/Situation");
 
 function generateRegisterNumber() {
@@ -27,6 +28,7 @@ async function getAllRecords(request, response) {
     return response.status(204).json({ error: "could not find any record" });
   }
 
+  // FIXME: we need to limit this
   return response.json(records);
 }
 
@@ -141,6 +143,14 @@ async function setRecordSituation(req, res) {
   return res.status(200).json({ message: "successfully changed situation" });
 }
 
+async function getFields(req, res) {
+  Field.findAll({
+    attributes: ["name", "description", "created_by"],
+  }).then((fields) => {
+    return res.status(200).json(fields);
+  });
+}
+
 module.exports = {
   getRecordByID,
   getAllRecords,
@@ -149,4 +159,5 @@ module.exports = {
   getRecordSectionsByID,
   getRecordsByPage,
   setRecordSituation,
+  getFields,
 };
