@@ -231,3 +231,19 @@ Caso queira atualizar o status de um processo, envie os dados no formato a segui
   "situation": ""
 }
 ```
+
+**GET: `/records/fields`**
+
+Retorna dados sobre os campos dos registros
+
+Resposta:
+
+```json
+{
+  "name": "",
+  "description": "",
+  "created_by": 0
+}
+```
+
+Se o `created_by` for zero, então significa que ele é um campo "default"
