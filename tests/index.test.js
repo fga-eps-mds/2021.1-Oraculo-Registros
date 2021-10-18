@@ -205,7 +205,7 @@ describe("Main test", () => {
   });
 
   it("GET /records/fields - should return all fields", async () => {
-    const res = await request(app).post("/records/fields");
+    const res = await request(app).get("/records/fields");
     expect(res.statusCode).toEqual(200);
     expect(res.body[0].name).toBeDefined();
     expect(res.body[0].description).toBeDefined();
