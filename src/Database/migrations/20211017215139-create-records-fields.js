@@ -2,15 +2,23 @@
 
 module.exports = {
   up: async (queryInterface, Sequelize) => {
-    return queryInterface.createTable("sections", {
-      id: {
-        type: Sequelize.INTEGER,
-        primaryKey: true,
-        autoIncrement: true,
-        allowNull: false,
-      },
+    return queryInterface.createTable("records.fields", {
       name: {
         type: Sequelize.TEXT,
+        allowNull: false,
+        unique: true,
+      },
+      db_field_name: {
+        type: Sequelize.TEXT,
+        allowNull: false,
+        unique: true,
+      },
+      description: {
+        type: Sequelize.TEXT,
+        allowNull: false,
+      },
+      created_by: {
+        type: Sequelize.INTEGER,
         allowNull: false,
       },
       created_at: {
@@ -25,6 +33,6 @@ module.exports = {
   },
 
   down: async (queryInterface, Sequelize) => {
-    return queryInterface.dropTable("sections");
+    return queryInterface.dropTable("records.fields");
   },
 };

@@ -7,10 +7,10 @@ const { initializeDatabase } = require("./Database");
 
 const app = express();
 env.config();
-const { APP_PORT } = process.env;
+const { PORT, APP_PORT } = process.env;
 
 let corsOptions = {
-    origin: "http://localhost:3000",
+  origin: "https://oraculo-frontend.herokuapp.com",
 };
 
 app.use(cors(corsOptions));
@@ -18,18 +18,17 @@ app.use(morgan("short"));
 app.use(express.json());
 app.use(routes);
 app.disable("x-powered-by");
-app.listen(APP_PORT);
 
-console.log(`HTTP server started on port ${APP_PORT}`);
+if (PORT === undefined) {
+  app.listen(APP_PORT);
+  console.log(`HTTP server started on port ${APP_PORT}`);
+} else {
+  app.listen(PORT);
+  console.log(`HTTP server started on port ${PORT}`);
+}
 
-initializeDatabase().then(
-    () => {
-        console.info(`connected to database`);
-    },
-    () => {
-        console.error(`could not connect to database`);
-        process.exit(0);
-    }
-);
+initializeDatabase().then(() => {
+  console.info("connected to database");
+});
 
 module.exports = app;

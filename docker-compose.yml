@@ -3,7 +3,7 @@ version: "3.8"
 services:
   banco:
     image: bitnami/postgresql:13
-    container_name: oraculo-banco-processos
+    container_name: oraculo-banco-registros
     restart: always
     environment:
       POSTGRES_DB: ${DB_NAME}
@@ -13,14 +13,14 @@ services:
     ports:
       - "5431:${DB_PORT}"
     networks:
-      - processos-network
+      - registros-network
     volumes:
       - postgresdb:/var/lib/postgresql/data
 
   pgadmin:
     image: dpage/pgadmin4
     restart: always
-    container_name: oraculo-pgadmin-processos
+    container_name: oraculo-pgadmin-registros
     environment:
       PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL}
       PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD}
@@ -31,26 +31,28 @@ services:
     ports:
       - "${PGADMIN_PORT}:80"
     networks:
-      - processos-network
+      - registros-network
 
-  processos:
-    container_name: oraculo-processos
+  registros:
+    container_name: oraculo-registros
     build: .
     restart: always
     depends_on:
       - banco
     networks:
-      - processos-network
+      - registros-network
     links:
       - banco:${DB_HOST}
     ports:
       - "${APP_PORT}:${APP_PORT}"
+    environment:
+      DATABASE_URL: postgres://${DB_USER}:${DB_PASS}@${DB_HOST}:${DB_PORT}/${DB_NAME}
 
 volumes:
   node_modules:
   postgresdb:
 
 networks:
-  processos-network:
-    name: processos-network
+  registros-network:
+    name: registros-network
     driver: bridge

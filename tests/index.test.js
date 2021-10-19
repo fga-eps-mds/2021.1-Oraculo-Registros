@@ -73,6 +73,24 @@ const invalidRecord2 = {
 
 const emptyRecord = {};
 
+describe("Sub Test", () => {
+  const test1 = 1;
+  const test2 = 2;
+  const { loadEnvironment } = require("../src/Database");
+
+  it("Test empty database URL", (done) => {
+    const result = loadEnvironment(test1);
+    expect(result).toBe(null);
+    done();
+  });
+
+  it("Test PROD environment var", (done) => {
+    const result = loadEnvironment(test2);
+    expect(result.dialectOptions).toBeDefined();
+    done();
+  });
+});
+
 describe("Main test", () => {
   let last_record_id = 0;
 
@@ -181,6 +199,22 @@ describe("Main test", () => {
   it("GET /records/500 - should not return a inexistent record", async () => {
     const res = await request(app).get("/records/500");
     expect(res.statusCode).toEqual(400);
+  });
+
+  it("POST /records/1/status - should update record situation", async () => {
+    const res = await request(app).post("/records/1/status").send({
+      situation: 1,
+    });
+
+    expect(res.statusCode).toEqual(200);
+  });
+
+  it("GET /records/fields - should return all fields", async () => {
+    const res = await request(app).get("/records/fields");
+    expect(res.statusCode).toEqual(200);
+    expect(res.body[0].name).toBeDefined();
+    expect(res.body[0].description).toBeDefined();
+    expect(res.body[0].created_by).toBeDefined();
   });
 
   it("GET /count/records - should return some records", async () => {

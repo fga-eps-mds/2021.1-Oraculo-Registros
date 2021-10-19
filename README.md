@@ -1,10 +1,10 @@
-# 2021.1-Oraculo-Processos
+# 2021.1-Oraculo-Registros
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/gpl-3.0.html)
 
-[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=fga-eps-mds_2021.1-Oraculo-Processos&metric=alert_status)](https://sonarcloud.io/dashboard?id=fga-eps-mds_2021.1-Oraculo-Processos)
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=fga-eps-mds_2021.1-Oraculo-Processos&metric=alert_status)](https://sonarcloud.io/dashboard?id=fga-eps-mds_2021.1-Oraculo-Registros)
 
-Essa API faz parte da arquitetura de microsserviços do projeto [`Oráculo`](https://github.com/fga-eps-mds/2021.1-Oraculo), sua funcionalidade é em questão de criar e editar os usuários do sistema.
+Essa API faz parte da arquitetura de microsserviços do projeto [`Oráculo`](https://github.com/fga-eps-mds/2021.1-Oraculo), e foi criada com a finalidade de gerenciar os usuários
 
 ## Como contribuir?
 
@@ -20,19 +20,16 @@ A documentação do projeto pode ser acessada pelo nosso site em https://fga-eps
 Todas as funções adicionadas nessa API devem ser testadas, o repositŕorio aceita até 10% do total de linhas não testadas. Para rodar os testes nesse repositŕio deve ser executado o comando:
 
 ```bash
-export DB_HOST=localhost
-export DATABASE_URL=postgres://$DB_USER:$DB_PASS@localhost:$DB_PORT/$DB_NAME
-docker-compose up -d --build
-npm install
-npx sequelize-cli db:migrate --config src/Database/config/config.json
-npx jest --coverage --forceExit
+yarn run db:up
+yarn run db:migrate
+yarn run test
 ```
 
 **Importante**: o padrão da variável DATABASE_URL é: `postgres://oraculo:oraculo123@localhost:5431/oraculo`
 
 ## Como rodar?
 
-O arquivo .env possui configurações iniciais que podem ser alteradas de acordo com a necessidade. São elas:
+O arquivo `.env` possui configurações iniciais que podem ser alteradas de acordo com a necessidade. São elas:
 
 - SECRET: chave para criptografia das senhas
 - DB_USER: usuário de acesso ao banco de dados
@@ -55,18 +52,16 @@ Para rodar a API é preciso usar os seguintes comandos usando o docker:
 Suba o container com o comando:
 
 ```bash
-docker-compose up -d --build
+yarn run docker:up
 ```
 
 Suba as tabelas do banco de dados
 
-**Importante**: lembre-se de configurar as variáveis de ambiente _DB_USER_ _DB_PASS_ _DB_PORT_ e _DB_NAME_
-
 ```bash
-export DB_HOST=localhost
-export DATABASE_URL=postgres://$DB_USER:$DB_PASS@localhost:$DB_PORT/$DB_NAME
-npx sequelize-cli db:migrate --config src/Database/config/config.json
+yarn run db:migrate
 ```
+
+**Importante**: lembre-se de editar o arquivo `.env`
 
 A API estará rodando na [porta 8001](http://localhost:8001).
 
@@ -227,6 +222,33 @@ Exemplo:
 - **GET: `/records/page/0`** irá retornar os 4 primeiros registros
 - **GET: `/records/page/4`** irá retornar os 4 registros seguintes
 
+<<<<<<< HEAD
+**POST: `/records/:id/situation`**
+
+Caso queira atualizar o status de um processo, envie os dados no formato a seguir:
+
+```json
+{
+  "situation": ""
+}
+```
+
+**GET: `/records/fields`**
+
+Retorna dados sobre os campos dos registros
+
+Resposta:
+
+```json
+{
+  "name": "",
+  "description": "",
+  "created_by": 0
+}
+```
+
+Se o `created_by` for zero, então significa que ele é um campo "default"
+=======
 **GET `/count/records`**
 
 Irá retornar a quantidade total de registros no banco
@@ -238,3 +260,4 @@ Formato da resposta:
   "count": 0
 }
 ```
+>>>>>>> main
