@@ -14,9 +14,7 @@ async function getRecordByID(request, response) {
 
   const record = await Record.findByPk(id);
   if (!record) {
-    return response
-      .status(400)
-      .json({ error: `Could not find record with id ${id}` });
+    return response.status(400).json({ error: `Could not find record with id ${id}` });
   }
 
   return response.json(record);
@@ -80,9 +78,7 @@ async function getRecordsByPage(req, res) {
     });
 
     if (count === 0) {
-      return res
-        .status(204)
-        .json({ info: "there are no records matching this query" });
+      return res.status(204).json({ info: "there are no records matching this query" });
     }
 
     return res.status(200).json(rows);
@@ -109,9 +105,7 @@ async function forwardRecord(req, res) {
 
   await record.addSection(section);
 
-  return res
-    .status(200)
-    .json({ message: `record forwared to: ${section.name} ` });
+  return res.status(200).json({ message: `record forwared to: ${section.name} ` });
 }
 
 async function getRecordSectionsByID(req, res) {
@@ -151,6 +145,15 @@ async function getFields(req, res) {
   });
 }
 
+async function getTotalNumberOfRecords(req, res) {
+  const allRecords = await Record.findAll();
+  if (allRecords.length > 0) {
+    return res.status(200).json({ count: `${allRecords.length}` });
+  }
+
+  return res.status(204).json({ message: "could not find records" });
+}
+
 module.exports = {
   getRecordByID,
   getAllRecords,
@@ -160,4 +163,5 @@ module.exports = {
   getRecordsByPage,
   setRecordSituation,
   getFields,
+  getTotalNumberOfRecords,
 };

@@ -222,6 +222,7 @@ Exemplo:
 - **GET: `/records/page/0`** irá retornar os 4 primeiros registros
 - **GET: `/records/page/4`** irá retornar os 4 registros seguintes
 
+<<<<<<< HEAD
 **POST: `/records/:id/situation`**
 
 Caso queira atualizar o status de um processo, envie os dados no formato a seguir:
@@ -247,3 +248,16 @@ Resposta:
 ```
 
 Se o `created_by` for zero, então significa que ele é um campo "default"
+=======
+**GET `/count/records`**
+
+Irá retornar a quantidade total de registros no banco
+
+Formato da resposta:
+
+```json
+{
+  "count": 0
+}
+```
+>>>>>>> main

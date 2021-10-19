@@ -108,6 +108,11 @@ describe("Main test", () => {
     expect(res.statusCode).toEqual(204);
   });
 
+  it("GET /count/records - should raise a error", async () => {
+    const res = await request(app).get("/count/records");
+    expect(res.statusCode).toEqual(204);
+  });
+
   it("GET /records/page/0 - should not return any records", async () => {
     const res = await request(app).get("/records/page/0");
     console.log(`data: ${JSON.stringify(res.body)}`);
@@ -210,6 +215,11 @@ describe("Main test", () => {
     expect(res.body[0].name).toBeDefined();
     expect(res.body[0].description).toBeDefined();
     expect(res.body[0].created_by).toBeDefined();
+  });
+
+  it("GET /count/records - should return some records", async () => {
+    const res = await request(app).get("/count/records");
+    expect(res.statusCode).toEqual(200);
   });
 });
 

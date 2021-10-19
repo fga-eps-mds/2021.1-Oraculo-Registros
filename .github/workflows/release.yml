@@ -13,9 +13,19 @@ jobs:
         with:
           # Disabling shallow clone is recommended for improving relevancy of reporting
           fetch-depth: 0
-          
       - name: Run tests
-        run: docker-compose run processos npm run test
+        uses: actions/setup-node@v1
+        with:
+          node-version: ${{ matrix.node-version }}
+      - run: docker-compose up -d --build banco
+      - run: docker ps
+      - run: npm install
+      - run: npx sequelize-cli db:migrate --config src/Database/config/config.json
+        env:
+          DB_PORT: 5431
+      - run: npx jest --coverage --forceExit
+        env:
+          DB_PORT: 5431
         
       - name: Get Date
         id: date
@@ -38,8 +48,9 @@ jobs:
           API_TOKEN_GITHUB: ${{ secrets.API_TOKEN_GITHUB }}
         with:
           source_file: fga-eps-mds-2021_1-Oraculo-Processos-${{ steps.date.outputs.date }}.json
-          destination_repo: 'fga-eps-mds/2021.1-Oraculo'
-          destination_folder: 'analytics-raw-data'
+          destination_repo: "fga-eps-mds/2021.1-Oraculo"
+          destination_branch: "master"
+          destination_folder: "analytics-raw-data"
           user_email: ${{ secrets.USER_EMAIL }}
           user_name: ${{ secrets.USER_NAME }}
           commit_message: 'Adding SonarCloud file - fga-eps-mds-2021_1-Oraculo-Processos-${{ steps.date.outputs.date }}.json'
