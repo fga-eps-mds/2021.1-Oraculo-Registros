@@ -1,6 +1,7 @@
 const Record = require("../Model/Record");
 const Section = require("../Model/Section");
 const Field = require("../Model/Field");
+const History = require("../Model/Field");
 const { recordStatus } = require("../Model/Situation");
 
 function generateRegisterNumber() {
@@ -100,7 +101,6 @@ async function forwardRecord(req, res) {
   if (!Number.isFinite(sectionID)) {
     return res.status(400).json({ error: "invalid section id provided" });
   }
-
   const record = await Record.findByPk(id);
   const section = await Section.findByPk(sectionID);
   if (!record || !section) {
@@ -151,6 +151,31 @@ async function getFields(req, res) {
   });
 }
 
+async function getRecordsHistory(req, res) {
+  try {
+    const { id } = req.params;
+    const record = await Record.findByPk(id, {
+      include: {
+        association: "history",
+        attributes: ["id", "forward_by", "forward_date"],
+      },
+      through: {
+        attributes: [],
+      },
+    });
+    console.log(record);
+    console.log(JSON.stringify(record));
+    var history = JSON.parse(record)["history"];
+    console.log(JSON.stringify(history));
+    return res.status(200).json(record);
+  } catch (e) {
+    console.log(e.mensage);
+    res
+      .status(500)
+      .json({ message: "Ocorreu um erro ao buscar processo com histórico" });
+  }
+}
+
 module.exports = {
   getRecordByID,
   getAllRecords,
@@ -160,4 +185,5 @@ module.exports = {
   getRecordsByPage,
   setRecordSituation,
   getFields,
+  getRecordsHistory,
 };

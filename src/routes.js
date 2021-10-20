@@ -11,5 +11,6 @@ routes.get("/records/page/:page", RecordController.getRecordsByPage);
 routes.post("/records/:id/forward", RecordController.forwardRecord);
 routes.get("/records/:id/sections", RecordController.getRecordSectionsByID);
 routes.post("/records/:id/status", RecordController.setRecordSituation);
+routes.get("/records/:id/history", RecordController.getRecordsHistory);
 
 module.exports = routes;
