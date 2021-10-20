@@ -3,6 +3,7 @@ const { Situation } = require("../Model/Situation");
 const Record = require("../Model/Record");
 const Section = require("../Model/Section");
 const Field = require("../Model/Field");
+const History = require("../Model/History");
 require("dotenv").config();
 
 const { PROD, DATABASE_URL } = process.env;
@@ -59,10 +60,12 @@ async function setupModels(db) {
   Situation.init(db);
   Section.init(db);
   Field.init(db);
+  History.init(db);
 
   Record.associate(db.models);
   Situation.associate(db.models);
   Section.associate(db.models);
+  History.associate(db.models);
 }
 
 async function setupSequelize() {
