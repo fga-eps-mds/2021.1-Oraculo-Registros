@@ -2,25 +2,20 @@
 
 module.exports = {
   up: async (queryInterface, Sequelize) => {
-    queryInterface.createTable("history_records", {
+    return queryInterface.createTable("users", {
       id: {
         type: Sequelize.INTEGER,
         allowNull: false,
         autoIncrement: true,
+        primaryKey: true,
       },
-      record_id: {
-        type: Sequelize.INTEGER,
+      name: {
+        type: Sequelize.TEXT,
         allowNull: false,
-        references: { model: "records", key: "id" },
-        onUpdate: "CASCADE",
-        onDelete: "CASCADE",
       },
-      history_id: {
-        type: Sequelize.INTEGER,
+      email: {
+        type: Sequelize.TEXT,
         allowNull: false,
-        references: { model: "history", key: "id" },
-        onUpdate: "CASCADE",
-        onDelete: "CASCADE",
       },
       created_at: {
         type: Sequelize.DATE,
@@ -34,6 +29,6 @@ module.exports = {
   },
 
   down: async (queryInterface, Sequelize) => {
-    return queryInterface.dropTable("history_records");
+    return queryInterface.dropTable("users");
   },
 };

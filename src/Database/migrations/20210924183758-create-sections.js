@@ -4,10 +4,10 @@ module.exports = {
   up: async (queryInterface, Sequelize) => {
     return queryInterface.createTable("sections", {
       id: {
-        type: Sequelize.INTEGER,
         primaryKey: true,
-        autoIncrement: true,
+        type: Sequelize.INTEGER,
         allowNull: false,
+        autoIncrement: true,
       },
       name: {
         type: Sequelize.TEXT,

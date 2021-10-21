@@ -9,13 +9,27 @@ module.exports = {
         autoIncrement: true,
         allowNull: false,
       },
-      forward_by: {
+      origin_id: {
+        type: Sequelize.INTEGER,
+        allowNull: true,
+      },
+      destination_id: {
         type: Sequelize.INTEGER,
         allowNull: false,
       },
-      forward_date: {
-        type: Sequelize.DATE,
+      forwarded_by: {
+        type: Sequelize.INTEGER,
         allowNull: false,
+        references: { model: "users", key: "id" },
+        onUpdate: "CASCADE",
+        onDelete: "CASCADE",
+      },
+      record_id: {
+        type: Sequelize.INTEGER,
+        allowNull: false,
+        references: { model: "records", key: "id" },
+        onUpdate: "CASCADE",
+        onDelete: "CASCADE",
       },
       created_at: {
         type: Sequelize.DATE,
