@@ -4,8 +4,9 @@ class History extends Model {
   static init(sequelize) {
     super.init(
       {
-        forward_by: { type: DataTypes.INTEGER },
-        forward_date: { type: DataTypes.DATE },
+        forwarded_by: { type: DataTypes.INTEGER },
+        origin_id: { type: DataTypes.INTEGER },
+        destination_id: { type: DataTypes.INTEGER },
       },
       {
         sequelize,
@@ -15,10 +16,14 @@ class History extends Model {
   }
 
   static associate(models) {
-    this.belongsToMany(models.Record, {
-      foreignKey: "history_id",
-      through: "history_records",
-      as: "history",
+    this.belongsTo(models.Record, {
+      foreignKey: "record_id",
+      as: "record",
+    });
+
+    this.belongsTo(models.User, {
+      foreignKey: "forwarded_by",
+      as: "user",
     });
   }
 }
