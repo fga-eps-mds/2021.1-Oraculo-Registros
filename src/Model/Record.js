@@ -18,6 +18,7 @@ class Record extends Model {
         contact_info: { type: DataTypes.TEXT },
         situation: { type: DataTypes.INTEGER },
         created_by: { type: DataTypes.INTEGER },
+        assigned_to: { type: DataTypes.INTEGER },
       },
       {
         sequelize,
@@ -28,16 +29,11 @@ class Record extends Model {
 
   static associate(models) {
     this.hasOne(models.Situation, { foreignKey: "record_id" });
+    this.hasMany(models.History, { foreignKey: "record_id", as: "histories" });
     this.belongsToMany(models.Section, {
       foreignKey: "record_id",
       through: "record_sections",
       as: "sections",
-    });
-
-    this.belongsToMany(models.History, {
-      foreignKey: "record_id",
-      through: "history_records",
-      as: "history",
     });
   }
 }
