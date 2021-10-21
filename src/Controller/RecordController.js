@@ -2,6 +2,7 @@ const Record = require("../Model/Record");
 const Section = require("../Model/Section");
 const Field = require("../Model/Field");
 const History = require("../Model/Field");
+const { User } = require("../Model/User");
 const { recordStatus } = require("../Model/Situation");
 
 function generateRegisterNumber() {
@@ -15,9 +16,7 @@ async function getRecordByID(request, response) {
 
   const record = await Record.findByPk(id);
   if (!record) {
-    return response
-      .status(400)
-      .json({ error: `Could not find record with id ${id}` });
+    return response.status(400).json({ error: `Could not find record with id ${id}` });
   }
 
   return response.json(record);
@@ -33,7 +32,7 @@ async function getAllRecords(request, response) {
   return response.json(records);
 }
 
-async function createRecord(request, response) {
+async function createRecord(req, res) {
   const record = ({
     register_number,
     inclusion_date,
@@ -48,7 +47,7 @@ async function createRecord(request, response) {
     receipt_form,
     contact_info,
     created_by,
-  } = request.body);
+  } = req.body);
 
   try {
     if (Number.parseInt(record.created_by, 10) < 1) {
@@ -57,14 +56,15 @@ async function createRecord(request, response) {
 
     record.register_number = generateRegisterNumber();
     record.inclusion_date = new Date();
+    record.assigned_to = record.created_by;
 
     const createdRecord = await Record.create(record);
 
     createdRecord.createSituation({ status: recordStatus.StatusPending });
 
-    return response.status(200).json(createdRecord);
+    return res.status(200).json(createdRecord);
   } catch (error) {
-    return response
+    return res
       .status(500)
       .json({ error: `could not insert record into database: ${error}` });
   }
@@ -81,9 +81,7 @@ async function getRecordsByPage(req, res) {
     });
 
     if (count === 0) {
-      return res
-        .status(204)
-        .json({ info: "there are no records matching this query" });
+      return res.status(204).json({ info: "there are no records matching this query" });
     }
 
     return res.status(200).json(rows);
@@ -95,23 +93,45 @@ async function getRecordsByPage(req, res) {
 
 async function forwardRecord(req, res) {
   const { id } = req.params;
-  const { section_id } = req.body;
-  const sectionID = Number.parseInt(section_id);
+  const { destination_id, origin_id, forwarded_by } = req.body;
+  const originID = Number.parseInt(origin_id);
+  const destinationID = Number.parseInt(destination_id);
+  const forwardedBy = Number.parseInt(forwarded_by);
 
-  if (!Number.isFinite(sectionID)) {
+  if (
+    !Number.isFinite(originID) ||
+    !Number.isFinite(destinationID) ||
+    !Number.isFinite(forwardedBy)
+  ) {
     return res.status(400).json({ error: "invalid section id provided" });
   }
+
   const record = await Record.findByPk(id);
-  const section = await Section.findByPk(sectionID);
+  const section = await Section.findByPk(originID);
   if (!record || !section) {
+    console.error(`record: ${record},${id}, section: ${section},${originID}`);
     return res.status(404).json({ error: "session or record not found" });
   }
 
-  await record.addSection(section);
+  // find user in database
+  const user = await User.findByPk(forwardedBy);
+  if (!user) {
+    return res.status(404).json({ error: "could not find user in database" });
+  }
 
-  return res
-    .status(200)
-    .json({ message: `record forwared to: ${section.name} ` });
+  const history = {
+    forwarded_by: forwardedBy,
+    origin_id: originID,
+    destination_id: destinationID,
+    record_id: id,
+  };
+
+  // updates history
+  // forward record to section
+  await record.addSection(section);
+  await History.create(history);
+
+  return res.status(200).json({ message: `record forwarded to: ${section.name} ` });
 }
 
 async function getRecordSectionsByID(req, res) {
@@ -151,30 +171,7 @@ async function getFields(req, res) {
   });
 }
 
-async function getRecordsHistory(req, res) {
-  try {
-    const { id } = req.params;
-    const record = await Record.findByPk(id, {
-      include: {
-        association: "history",
-        attributes: ["id", "forward_by", "forward_date"],
-      },
-      through: {
-        attributes: [],
-      },
-    });
-    console.log(record);
-    console.log(JSON.stringify(record));
-    var history = JSON.parse(record)["history"];
-    console.log(JSON.stringify(history));
-    return res.status(200).json(record);
-  } catch (e) {
-    console.log(e.mensage);
-    res
-      .status(500)
-      .json({ message: "Ocorreu um erro ao buscar processo com histórico" });
-  }
-}
+async function getRecordsHistory(req, res) {}
 
 module.exports = {
   getRecordByID,
