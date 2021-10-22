@@ -16,15 +16,7 @@ class History extends Model {
   }
 
   static associate(models) {
-    this.belongsTo(models.Record, {
-      foreignKey: "record_id",
-      as: "record",
-    });
-
-    this.belongsTo(models.User, {
-      foreignKey: "forwarded_by",
-      as: "user",
-    });
+    this.belongsTo(models.Record, { foreignKey: "record_id", as: "record" });
   }
 }
 
