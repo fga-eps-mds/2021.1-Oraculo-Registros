@@ -1,5 +1,6 @@
 const express = require("express");
 const RecordController = require("./Controller/RecordController");
+const UserController = require("./Controller/UserController");
 
 const routes = express.Router();
 
@@ -12,5 +13,7 @@ routes.post("/records/:id/forward", RecordController.forwardRecord);
 routes.get("/records/:id/sections", RecordController.getRecordSectionsByID);
 routes.post("/records/:id/status", RecordController.setRecordSituation);
 routes.get("/records/:id/history", RecordController.getRecordsHistory);
+routes.get("/records/:id/current-section", RecordController.findCurrentSection);
+routes.post("/users", UserController.createUser);
 
 module.exports = routes;
