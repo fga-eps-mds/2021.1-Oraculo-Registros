@@ -244,7 +244,7 @@ describe("Main test", () => {
 
   it("GET /records/500/history - should not return history for specified record (inexistent record)", async () => {
     const res = await request(app).get("/records/500/history");
-    expect(res.statusCode).toEqual(200);
+    expect(res.statusCode).toEqual(404);
     expect(res.body).toBeDefined();
   });
 
