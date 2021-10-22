@@ -13,10 +13,6 @@ class User extends Model {
       }
     );
   }
-
-  static associate(models) {
-    this.hasMany(models.History, { foreignKey: "forwarded_by", as: "users" });
-  }
 }
 
 module.exports = { User };
