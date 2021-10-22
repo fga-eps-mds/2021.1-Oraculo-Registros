@@ -1,7 +1,7 @@
 const Record = require("../Model/Record");
-const Section = require("../Model/Section");
+const { Section } = require("../Model/Section");
 const Field = require("../Model/Field");
-const History = require("../Model/Field");
+const History = require("../Model/History");
 const { User } = require("../Model/User");
 const { recordStatus } = require("../Model/Situation");
 
@@ -9,6 +9,25 @@ function generateRegisterNumber() {
   const date = new Date();
   const seq = date.getTime();
   return `${Math.round(seq)}/${date.getFullYear()}`;
+}
+
+async function findCurrentSection(req, res) {
+  const { id } = req.params;
+  const recordID = Number.parseInt(id);
+
+  if (!Number.isFinite(recordID)) {
+    return res.status(400).json({ error: "invalid record id" });
+  }
+
+  const history = await History.findAll({
+    where: {
+      record_id: recordID,
+    },
+  });
+
+  const lastEntry = history[history.length - 1];
+
+  return res.status(200).json({ current_section: lastEntry.destination_id });
 }
 
 async function getRecordByID(request, response) {
@@ -94,6 +113,7 @@ async function getRecordsByPage(req, res) {
 async function forwardRecord(req, res) {
   const { id } = req.params;
   const { destination_id, origin_id, forwarded_by } = req.body;
+  const recordID = Number.parseInt(id);
   const originID = Number.parseInt(origin_id);
   const destinationID = Number.parseInt(destination_id);
   const forwardedBy = Number.parseInt(forwarded_by);
@@ -106,10 +126,10 @@ async function forwardRecord(req, res) {
     return res.status(400).json({ error: "invalid section id provided" });
   }
 
-  const record = await Record.findByPk(id);
-  const section = await Section.findByPk(originID);
-  if (!record || !section) {
-    console.error(`record: ${record},${id}, section: ${section},${originID}`);
+  const record = await Record.findByPk(recordID);
+  const originSection = await Section.findByPk(originID);
+  const destinationSection = await Section.findByPk(destinationID);
+  if (!record || !destinationSection || !originSection) {
     return res.status(404).json({ error: "session or record not found" });
   }
 
@@ -123,15 +143,19 @@ async function forwardRecord(req, res) {
     forwarded_by: forwardedBy,
     origin_id: originID,
     destination_id: destinationID,
-    record_id: id,
+    record_id: recordID,
   };
 
   // updates history
   // forward record to section
-  await record.addSection(section);
+  await record.addSection(destinationSection);
   await History.create(history);
 
-  return res.status(200).json({ message: `record forwarded to: ${section.name} ` });
+  return res.status(200).json({
+    forwared_by: `${user.name}`,
+    forwared_from: `${originSection.name}`,
+    forwared_to: `${destinationSection.name}`,
+  });
 }
 
 async function getRecordSectionsByID(req, res) {
@@ -171,7 +195,23 @@ async function getFields(req, res) {
   });
 }
 
-async function getRecordsHistory(req, res) {}
+async function getRecordsHistory(req, res) {
+  const { id } = req.params;
+  const recordID = Number.parseInt(id);
+
+  const record = await Record.findByPk(recordID);
+  if (!record) {
+    return res.status(404).json({ error: "record not found" });
+  }
+
+  History.findAll({
+    where: {
+      record_id: recordID,
+    },
+  }).then((recordHistory) => {
+    return res.status(200).json(recordHistory);
+  });
+}
 
 module.exports = {
   getRecordByID,
@@ -183,4 +223,5 @@ module.exports = {
   setRecordSituation,
   getFields,
   getRecordsHistory,
+  findCurrentSection,
 };
