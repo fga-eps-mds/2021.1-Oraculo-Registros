@@ -197,7 +197,19 @@ Para encaminhar um registro, basta envie os dados nesse formato:
 
 ```json
 {
-  "section_id": 1
+  "destination_id": 0,
+  "origin_id": 0,
+  "forwarded_by": 0
+}
+```
+
+Resposta esperada:
+
+```json
+{
+  "forwarded_by": "",
+  "forwarded_from": "",
+  "forwarded_to": ""
 }
 ```
 
@@ -282,5 +294,17 @@ Registra um novo usuário
 {
   "name": "",
   "email": ""
+}
+```
+
+**GET `/count/records`**
+
+Irá retornar a quantidade total de registros no banco
+
+Formato da resposta:
+
+```json
+{
+  "count": 0
 }
 ```

@@ -15,5 +15,6 @@ routes.post("/records/:id/status", RecordController.setRecordSituation);
 routes.get("/records/:id/history", RecordController.getRecordsHistory);
 routes.get("/records/:id/current-section", RecordController.findCurrentSection);
 routes.post("/users", UserController.createUser);
+routes.get("/count/records", RecordController.getTotalNumberOfRecords);
 
 module.exports = routes;

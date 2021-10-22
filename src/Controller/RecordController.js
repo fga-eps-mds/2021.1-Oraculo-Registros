@@ -152,9 +152,9 @@ async function forwardRecord(req, res) {
   await History.create(history);
 
   return res.status(200).json({
-    forwared_by: `${user.name}`,
-    forwared_from: `${originSection.name}`,
-    forwared_to: `${destinationSection.name}`,
+    forwarded_by: `${user.name}`,
+    forwarded_from: `${originSection.name}`,
+    forwarded_to: `${destinationSection.name}`,
   });
 }
 
@@ -213,6 +213,15 @@ async function getRecordsHistory(req, res) {
   return res.status(200).json(recordHistory);
 }
 
+async function getTotalNumberOfRecords(req, res) {
+  const allRecords = await Record.findAll();
+  if (allRecords.length > 0) {
+    return res.status(200).json({ count: `${allRecords.length}` });
+  }
+
+  return res.status(204).json({ message: "could not find records" });
+}
+
 module.exports = {
   getRecordByID,
   getAllRecords,
@@ -224,4 +233,5 @@ module.exports = {
   getFields,
   getRecordsHistory,
   findCurrentSection,
+  getTotalNumberOfRecords,
 };
