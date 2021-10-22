@@ -40,6 +40,7 @@ jobs:
           prerelease: false
           files: |
             fga-eps-mds-2021_1-Oraculo-Registros-${{ steps.date.outputs.date }}.json
+
       - name: Pushes sonar file
         uses: dmnemec/copy_file_to_another_repo_action@main
         env:
