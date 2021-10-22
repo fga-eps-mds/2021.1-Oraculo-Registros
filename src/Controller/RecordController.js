@@ -204,13 +204,13 @@ async function getRecordsHistory(req, res) {
     return res.status(404).json({ error: "record not found" });
   }
 
-  History.findAll({
+  const recordHistory = await History.findAll({
     where: {
       record_id: recordID,
     },
-  }).then((recordHistory) => {
-    return res.status(200).json(recordHistory);
   });
+
+  return res.status(200).json(recordHistory);
 }
 
 module.exports = {
