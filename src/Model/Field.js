@@ -23,7 +23,7 @@ class Field extends Model {
       },
       {
         sequelize,
-        tableName: "records.fields",
+        tableName: "records_fields",
       }
     );
   }

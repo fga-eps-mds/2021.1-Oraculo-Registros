@@ -91,6 +91,7 @@ Endpoint para exibir todos os registros
     "contact_info": "",
     "situation": 2,
     "created_by": 3,
+    "assigned_to": 3,
     "updatedAt": "",
     "createdAt": ""
   },
@@ -110,11 +111,14 @@ Endpoint para exibir todos os registros
     "contact_info": "",
     "situation": 1,
     "created_by": 1,
+    "assigned_to": 3,
     "updatedAt": "",
     "createdAt": ""
   }
 ]
 ```
+
+- **assigned_to** é o id do usuário atualmente responsável por aquele registro
 
 **GET: `/records/:id`**
 
@@ -139,6 +143,7 @@ Retorna os dados de um registro específico, só precisando do id no link
   "contact_info": "",
   "situation": 2,
   "created_by": 3,
+  "assigned_to": 3,
   "updatedAt": "",
   "createdAt": ""
 }
@@ -151,21 +156,23 @@ Para criar um registro, envie os dados nesse formato:
 - Requisição
 
 ```json
-    register_number: "",
-    inclusion_date: "",
-    city: "",
-    state: "",
-    requester: "",
-    document_type: "",
-    document_number: "",
-    document_date: "",
-    description: "",
-    sei_number: "",
-    receipt_form: "",
-    contact_info: "",
-    situation: <numero>,
-    created_by: <numero>,
+{
+  city: "",
+  state: "",
+  requester: "",
+  document_type: "",
+  document_number: "",
+  document_date: "",
+  description: "",
+  sei_number: "",
+  receipt_form: "",
+  contact_info: "",
+  situation: "",
+  created_by: 0,
+}
 ```
+
+- **situation** poderá ser: `finished`, `running` ou `pending`
 
 - Resposta
 
@@ -186,6 +193,7 @@ Para criar um registro, envie os dados nesse formato:
   "contact_info": "",
   "situation": 2,
   "created_by": 3,
+  "assigned_to": 4,
   "updatedAt": "",
   "createdAt": ""
 }
@@ -197,12 +205,26 @@ Para encaminhar um registro, basta envie os dados nesse formato:
 
 ```json
 {
-  "section_id": 1
+  "destination_id": 0,
+  "origin_id": 0,
+  "forwarded_by": 0
+}
+```
+
+Resposta esperada:
+
+```json
+{
+  "forwarded_by": "",
+  "forwarded_from": "",
+  "forwarded_to": ""
 }
 ```
 
 - **id** é o id do registro a ser encaminhado
-- **section_id** é o id da seção de destino
+- **destination_id** é o id da seção de destino
+- **forwarded_by** é o id do usuário que encaminhou o registro. Na resposta esse campo será uma string que contém o nome do usuário que encaminhou o registro
+- **origin_id** é o id da seção de origem (é o id da seção ao qual o usuário que encaminhou pertence)
 
 **GET: `/records/:id/sections`**
 
@@ -222,7 +244,6 @@ Exemplo:
 - **GET: `/records/page/0`** irá retornar os 4 primeiros registros
 - **GET: `/records/page/4`** irá retornar os 4 registros seguintes
 
-<<<<<<< HEAD
 **POST: `/records/:id/situation`**
 
 Caso queira atualizar o status de um processo, envie os dados no formato a seguir:
@@ -248,7 +269,46 @@ Resposta:
 ```
 
 Se o `created_by` for zero, então significa que ele é um campo "default"
-=======
+
+**GET: `/records/:id/history`**
+
+Retorna todo o histórico de movimentação de um registro
+
+```json
+{
+  "id": 0,
+  "forwarded_by": 0,
+  "origin_id": 0,
+  "destination_id": 0,
+  "createdAt": "",
+  "updatedAt": "",
+  "record_id": 0
+}
+```
+
+**GET: `/records/:id/current-section`**
+
+Retorna a localização da seção atual
+
+```json
+{
+  "current_section": 0
+}
+```
+
+- **current_section** é o id da seção em que o registro está localizado no momento
+
+**POST: `/users`**
+
+Registra um novo usuário
+
+```json
+{
+  "name": "",
+  "email": ""
+}
+```
+
 **GET `/count/records`**
 
 Irá retornar a quantidade total de registros no banco
@@ -260,4 +320,3 @@ Formato da resposta:
   "count": 0
 }
 ```
->>>>>>> main

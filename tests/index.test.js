@@ -73,6 +73,11 @@ const invalidRecord2 = {
 
 const emptyRecord = {};
 
+const user = {
+  name: "tester",
+  email: "tester@email.com",
+};
+
 describe("Sub Test", () => {
   const test1 = 1;
   const test2 = 2;
@@ -163,7 +168,9 @@ describe("Main test", () => {
 
   it("POST /records/1/forward - should forward a record", async () => {
     const payload = {
-      section_id: 2,
+      destination_id: 2,
+      origin_id: 2,
+      forwarded_by: 1,
     };
 
     const res = await request(app).post("/records/1/forward").send(payload);
@@ -172,7 +179,9 @@ describe("Main test", () => {
 
   it("POST /records/500/forward - should not forward (inexistent)", async () => {
     const section = {
-      section_id: 2,
+      destination_id: 3,
+      origin_id: 2,
+      forwarded_by: 1,
     };
     const res = await request(app).post("/records/500/forward").send(section);
     expect(res.statusCode).toEqual(404);
@@ -217,6 +226,33 @@ describe("Main test", () => {
     expect(res.body[0].created_by).toBeDefined();
   });
 
+  it("POST /users - should create a user", async () => {
+    const res = await request(app).post("/users").send(user);
+    expect(res.statusCode).toEqual(200);
+  });
+
+  it("POST /users - should not create a user (already exists)", async () => {
+    const res = await request(app).post("/users").send(user);
+    expect(res.statusCode).toEqual(500);
+  });
+
+  it("GET /records/1/history - should return history for specified record", async () => {
+    const res = await request(app).get("/records/1/history");
+    expect(res.statusCode).toEqual(200);
+    expect(res.body).toBeDefined();
+  });
+
+  it("GET /records/500/history - should not return history for specified record (inexistent record)", async () => {
+    const res = await request(app).get("/records/500/history");
+    expect(res.statusCode).toEqual(404);
+    expect(res.body).toBeDefined();
+  });
+
+  it("GET /records/1/current-section - should return the current section of a record", async () => {
+    const res = await request(app).get("/records/1/current-section");
+    expect(res.statusCode).toEqual(200);
+    expect(res.body.current_section).toBeDefined();
+  });
   it("GET /count/records - should return some records", async () => {
     const res = await request(app).get("/count/records");
     expect(res.statusCode).toEqual(200);

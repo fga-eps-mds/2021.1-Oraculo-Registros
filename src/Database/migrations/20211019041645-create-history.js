@@ -2,30 +2,31 @@
 
 module.exports = {
   up: async (queryInterface, Sequelize) => {
-    return queryInterface.createTable("records_fields", {
+    return queryInterface.createTable("history", {
       id: {
         type: Sequelize.INTEGER,
         primaryKey: true,
         autoIncrement: true,
         allowNull: false,
       },
-      name: {
-        type: Sequelize.TEXT,
-        allowNull: false,
-        unique: true,
+      origin_id: {
+        type: Sequelize.INTEGER,
+        allowNull: true,
       },
-      db_field_name: {
-        type: Sequelize.TEXT,
-        allowNull: false,
-        unique: true,
-      },
-      description: {
-        type: Sequelize.TEXT,
-        allowNull: false,
-      },
-      created_by: {
+      destination_id: {
         type: Sequelize.INTEGER,
         allowNull: false,
+      },
+      forwarded_by: {
+        type: Sequelize.INTEGER,
+        allowNull: false,
+      },
+      record_id: {
+        type: Sequelize.INTEGER,
+        allowNull: false,
+        references: { model: "records", key: "id" },
+        onUpdate: "CASCADE",
+        onDelete: "CASCADE",
       },
       created_at: {
         type: Sequelize.DATE,
@@ -39,6 +40,6 @@ module.exports = {
   },
 
   down: async (queryInterface, Sequelize) => {
-    return queryInterface.dropTable("records_fields");
+    return queryInterface.dropTable("history");
   },
 };
