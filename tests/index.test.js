@@ -174,7 +174,9 @@ describe("Main test", () => {
 
   it("POST /records/500/forward - should not forward (inexistent)", async () => {
     const section = {
-      section_id: 2,
+      destination_id: 3,
+      origin_id: 2,
+      forwarded_by: 1,
     };
     const res = await request(app).post("/records/500/forward").send(section);
     expect(res.statusCode).toEqual(404);
@@ -227,6 +229,12 @@ describe("Main test", () => {
   it("POST /users - should not create a user (already exists)", async () => {
     const res = await request(app).post("/users").send(user);
     expect(res.statusCode).toEqual(500);
+  });
+
+  it("GET /records/1/history - should return history for specified record", async () => {
+    const res = await request(app).get("/records/1/history");
+    expect(res.statusCode).toEqual(200);
+    expect(res.body).toBeDefined();
   });
 });
 
