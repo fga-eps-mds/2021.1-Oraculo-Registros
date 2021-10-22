@@ -14,7 +14,8 @@
     "db:up": "sudo docker-compose up -d --build banco",
     "db:seeders:undo": "export DATABASE_URL=postgres://oraculo:oraculo123@localhost:5431/oraculo && npx sequelize db:seed:undo:all",
     "start": "node src/index.js",
-    "start:prod": "node src/index.js"
+    "start:prod": "node src/index.js",
+    "all": "yarn run docker:clean && yarn run docker:up && yarn run db:migrate && yarn run db:seeders"
   },
   "repository": {
     "type": "git",
