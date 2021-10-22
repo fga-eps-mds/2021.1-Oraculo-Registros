@@ -125,10 +125,10 @@ module.exports = {
       },
     ];
 
-    return queryInterface.bulkInsert("records.fields", fields);
+    return queryInterface.bulkInsert("records_fields", fields);
   },
 
   down: async (queryInterface, Sequelize) => {
-    queryInterface.bulkDelete("records.fields", null, {});
+    queryInterface.bulkDelete("records_fields", null, {});
   },
 };
