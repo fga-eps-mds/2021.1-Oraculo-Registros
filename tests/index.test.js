@@ -163,7 +163,9 @@ describe("Main test", () => {
 
   it("POST /records/1/forward - should forward a record", async () => {
     const payload = {
-      section_id: 2,
+      destination_id: 2,
+      origin_id: 2,
+      forwarded_by: 1,
     };
 
     const res = await request(app).post("/records/1/forward").send(payload);
