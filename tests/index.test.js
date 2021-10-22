@@ -73,6 +73,11 @@ const invalidRecord2 = {
 
 const emptyRecord = {};
 
+const user = {
+  name: "tester",
+  email: "tester@email.com",
+};
+
 describe("Sub Test", () => {
   const test1 = 1;
   const test2 = 2;
@@ -210,6 +215,16 @@ describe("Main test", () => {
     expect(res.body[0].name).toBeDefined();
     expect(res.body[0].description).toBeDefined();
     expect(res.body[0].created_by).toBeDefined();
+  });
+
+  it("POST /users - should create a user", async () => {
+    const res = await request(app).post("/users").send(user);
+    expect(res.statusCode).toEqual(200);
+  });
+
+  it("POST /users - should not create a user (already exists)", async () => {
+    const res = await request(app).post("/users").send(user);
+    expect(res.statusCode).toEqual(500);
   });
 });
 
