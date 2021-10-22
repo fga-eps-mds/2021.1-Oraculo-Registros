@@ -237,6 +237,12 @@ describe("Main test", () => {
     expect(res.body).toBeDefined();
   });
 
+  it("GET /records/500/history - should not return history for specified record (inexistent record)", async () => {
+    const res = await request(app).get("/records/500/history");
+    expect(res.statusCode).toEqual(200);
+    expect(res.body).toBeDefined();
+  });
+
   it("GET /records/1/current-section - should return the current section of a record", async () => {
     const res = await request(app).get("/records/1/current-section");
     expect(res.statusCode).toEqual(200);
