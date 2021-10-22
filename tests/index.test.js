@@ -236,6 +236,12 @@ describe("Main test", () => {
     expect(res.statusCode).toEqual(200);
     expect(res.body).toBeDefined();
   });
+
+  it("GET /records/1/current-section - should return the current section of a record", async () => {
+    const res = await request(app).get("/records/1/current-section");
+    expect(res.statusCode).toEqual(200);
+    expect(res.body.current_section).toBeDefined();
+  });
 });
 
 afterAll((done) => {
