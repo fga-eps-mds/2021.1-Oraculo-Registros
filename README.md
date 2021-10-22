@@ -247,3 +247,40 @@ Resposta:
 ```
 
 Se o `created_by` for zero, então significa que ele é um campo "default"
+
+**GET: `/records/:id/history`**
+
+Retorna todo o histórico de movimentação de um registro
+
+```json
+{
+  "id": 0,
+  "forwarded_by": 0,
+  "origin_id": 0,
+  "destination_id": 0,
+  "createdAt": "",
+  "updatedAt": "",
+  "record_id": 0
+}
+```
+
+**GET: `/records/:id/current-section`**
+
+Retorna a localização da seção atual
+
+```json
+{
+  "current_section": 0
+}
+```
+
+**POST: `/users`**
+
+Registra um novo usuário
+
+```json
+{
+  "name": "",
+  "email": ""
+}
+```
