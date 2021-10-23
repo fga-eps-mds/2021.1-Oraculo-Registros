@@ -35,7 +35,9 @@ async function getRecordByID(request, response) {
 
   const record = await Record.findByPk(id);
   if (!record) {
-    return response.status(400).json({ error: `Could not find record with id ${id}` });
+    return response
+      .status(400)
+      .json({ error: `Could not find record with id ${id}` });
   }
 
   return response.json(record);
@@ -100,7 +102,9 @@ async function getRecordsByPage(req, res) {
     });
 
     if (count === 0) {
-      return res.status(204).json({ info: "there are no records matching this query" });
+      return res
+        .status(204)
+        .json({ info: "there are no records matching this query" });
     }
 
     return res.status(200).json(rows);
@@ -222,6 +226,20 @@ async function getTotalNumberOfRecords(req, res) {
   return res.status(204).json({ message: "could not find records" });
 }
 
+async function getDepartmentRecords(req, res) {
+  const { id } = req.params;
+  const departmentID = Number.parseInt(id);
+
+  const section = await Section.findByPk(departmentID);
+  if (!section) {
+    return res.status(404).json({ error: "department not found" });
+  }
+
+  const records = await section.getRecords();
+
+  return res.status(200).json(records);
+}
+
 module.exports = {
   getRecordByID,
   getAllRecords,
@@ -234,4 +252,5 @@ module.exports = {
   getRecordsHistory,
   findCurrentSection,
   getTotalNumberOfRecords,
+  getDepartmentRecords,
 };
