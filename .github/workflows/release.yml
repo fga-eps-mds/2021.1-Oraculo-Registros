@@ -31,7 +31,7 @@ jobs:
         run: echo "::set-output name=date::$(date +'%m-%d-%Y-%H-%M')"
 
       - name: Create JSON
-        run: curl -X POST 'https://sonarcloud.io/api/measures/component_tree?component=fga-eps-mds_2021.1-Oraculo-Registros&metricKeys=files,functions,complexity,comment_lines_density,duplicated_lines_density,coverage,ncloc,security_rating,tests,test_success_density,test_execution_time,reliability_rating&ps=500' > fga-eps-mds-2021_1-Oraculo-Registros-${{ steps.date.outputs.date }}.json
+        run: curl -X POST 'https://sonarcloud.io/api/measures/component_tree?component=fga-eps-mds_2021.1-Oraculo-Processos&metricKeys=files,functions,complexity,comment_lines_density,duplicated_lines_density,coverage,ncloc,security_rating,tests,test_success_density,test_execution_time,reliability_rating&ps=500' > fga-eps-mds-2021_1-Oraculo-Registros-${{ steps.date.outputs.date }}.json
         
       - name: Make release
         uses: "marvinpinto/action-automatic-releases@latest"
