@@ -17,7 +17,7 @@ class Section extends Model {
     this.belongsToMany(models.Record, {
       foreignKey: "section_id",
       through: "record_sections",
-      as: "sections",
+      as: "records",
     });
   }
 }
