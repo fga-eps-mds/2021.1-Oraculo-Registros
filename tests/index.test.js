@@ -265,12 +265,12 @@ describe("Main test", () => {
 
   it("GET /records/department/2 - should return a empty list of records", async () => {
     const res = await request(app).get("/records/department/2");
-    expect(res.statusCode).toEqual(204);
+    expect(res.statusCode).toEqual(200);
   });
 
   it("GET /records/department/3 - should return the records on department 3", async () => {
     const res = await request(app).get("/records/department/3");
-    expect(res.statusCode).toEqual(200);
+    expect(res.statusCode).toEqual(204);
   });
 });
 
