@@ -32,6 +32,11 @@ async function findCurrentSection(req, res) {
 
 async function getRecordByID(request, response) {
   const { id } = request.params;
+  const recordID = Number.parseInt(id);
+
+  if (!Number.isFinite(recordID)) {
+    return response.status(400).json({ error: "invalid record id" });
+  }
 
   const record = await Record.findByPk(id);
   if (!record) {
@@ -230,12 +235,19 @@ async function getDepartmentRecords(req, res) {
   const { id } = req.params;
   const departmentID = Number.parseInt(id);
 
-  const section = await Section.findByPk(departmentID);
+  const section = await Section.findByPk(departmentID, {
+    include: ["records"],
+  });
   if (!section) {
     return res.status(404).json({ error: "department not found" });
   }
 
   const records = await section.getRecords();
+  if (records.length === 0) {
+    return res.status(204).json({
+      message: "no records could be found on the specified department",
+    });
+  }
 
   return res.status(200).json(records);
 }
