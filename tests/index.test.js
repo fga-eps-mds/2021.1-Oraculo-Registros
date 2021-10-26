@@ -257,6 +257,11 @@ describe("Main test", () => {
     const res = await request(app).get("/count/records");
     expect(res.statusCode).toEqual(200);
   });
+
+  it("GET /records/department/500 - should not find department", async () => {
+    const res = await request(app).get("/records/department/500");
+    expect(res.statusCode).toEqual(404);
+  });
 });
 
 afterAll((done) => {
