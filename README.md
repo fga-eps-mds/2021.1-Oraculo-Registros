@@ -369,3 +369,5 @@ Retorna todos os registros de um departamento específico
   }
 ]
 ```
+
+**id** é o id do departamento de onde você deseja extrair todos os registros
