@@ -38,11 +38,11 @@ async function getRecordByID(request, response) {
     return response.status(400).json({ error: "invalid record id" });
   }
 
-  const record = await Record.findByPk(id);
+  const record = await Record.findByPk(recordID);
   if (!record) {
     return response
-      .status(400)
-      .json({ error: `Could not find record with id ${id}` });
+      .status(404)
+      .json({ error: `Could not find record with id ${recordID}` });
   }
 
   return response.json(record);
