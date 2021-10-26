@@ -157,18 +157,18 @@ Para criar um registro, envie os dados nesse formato:
 
 ```json
 {
-  city: "",
-  state: "",
-  requester: "",
-  document_type: "",
-  document_number: "",
-  document_date: "",
-  description: "",
-  sei_number: "",
-  receipt_form: "",
-  contact_info: "",
-  situation: "",
-  created_by: 0,
+  "city": "",
+  "state": "",
+  "requester": "",
+  "document_type": "",
+  "document_number": "",
+  "document_date": "",
+  "description": "",
+  "sei_number": "",
+  "receipt_form": "",
+  "contact_info": "",
+  "situation": "",
+  "created_by": 0
 }
 ```
 
@@ -320,3 +320,54 @@ Formato da resposta:
   "count": 0
 }
 ```
+
+**GET `/records/department/:id`**
+
+Retorna todos os registros de um departamento específico
+
+```json
+[
+  {
+    "id": 2,
+    "register_number": "",
+    "inclusion_date": "",
+    "city": "",
+    "state": "",
+    "requester": "",
+    "document_type": "",
+    "document_number": "",
+    "document_date": "",
+    "description": "",
+    "sei_number": "",
+    "receipt_form": "",
+    "contact_info": "",
+    "situation": "",
+    "created_by": 3,
+    "assigned_to": 4,
+    "updatedAt": "",
+    "createdAt": ""
+  },
+  {
+    "id": 15,
+    "register_number": "",
+    "inclusion_date": "",
+    "city": "",
+    "state": "",
+    "requester": "",
+    "document_type": "",
+    "document_number": "",
+    "document_date": "",
+    "description": "",
+    "sei_number": "",
+    "receipt_form": "",
+    "contact_info": "",
+    "situation": "",
+    "created_by": 10,
+    "assigned_to": 4,
+    "updatedAt": "",
+    "createdAt": ""
+  }
+]
+```
+
+**id** é o id do departamento de onde você deseja extrair todos os registros
