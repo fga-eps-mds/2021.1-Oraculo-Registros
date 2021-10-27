@@ -15,6 +15,10 @@ jobs:
         with:
           # Disabling shallow clone is recommended for improving relevancy of reporting
           fetch-depth: 0
+      - name: Get Date
+        id: date
+        run: echo "::set-output name=date::$(date +'%m-%d-%Y-%H-%M')"
+        
       - name: Run tests
         uses: actions/setup-node@v1
         with:
@@ -24,11 +28,7 @@ jobs:
       - run: yarn
       - run: yarn run db:migrate
       - run: yarn run db:seeders
-      - run: yarn run test
-        
-      - name: Get Date
-        id: date
-        run: echo "::set-output name=date::$(date +'%m-%d-%Y-%H-%M')"
+      - run: yarn test --coverage --outputFile=fga-eps-mds-2021_1-Oraculo-Registros-${{ steps.date.outputs.date }}-test.json --json
 
       - name: Create JSON
         run: curl -X POST 'https://sonarcloud.io/api/measures/component_tree?component=fga-eps-mds_2021.1-Oraculo-Processos&metricKeys=files,functions,complexity,comment_lines_density,duplicated_lines_density,coverage,ncloc,security_rating,tests,test_success_density,test_execution_time,reliability_rating&ps=500' > fga-eps-mds-2021_1-Oraculo-Registros-${{ steps.date.outputs.date }}.json
@@ -42,7 +42,7 @@ jobs:
             fga-eps-mds-2021_1-Oraculo-Registros-${{ steps.date.outputs.date }}.json
 
       - name: Pushes sonar file
-        uses: dmnemec/copy_file_to_another_repo_action@main
+        uses: dmnemec/copy_file_to_another_repo_action@80732d64341473fa7165a3b2b6c7b0ee164193f8
         env:
           API_TOKEN_GITHUB: ${{ secrets.API_TOKEN_GITHUB }}
         with:
@@ -53,3 +53,17 @@ jobs:
           user_email: ${{ secrets.USER_EMAIL }}
           user_name: ${{ secrets.USER_NAME }}
           commit_message: 'Adding SonarCloud file - fga-eps-mds-2021_1-Oraculo-Registros-${{ steps.date.outputs.date }}.json'
+
+      - name: Pushes test file
+        uses: dmnemec/copy_file_to_another_repo_action@80732d64341473fa7165a3b2b6c7b0ee164193f8
+        env:
+          API_TOKEN_GITHUB: ${{ secrets.API_TOKEN_GITHUB }}
+        with:
+          source_file: fga-eps-mds-2021_1-Oraculo-Registros-${{ steps.date.outputs.date }}-test.json
+          destination_repo: "fga-eps-mds/2021.1-Oraculo"
+          destination_branch: "master"
+          destination_folder: "analytics-raw-data"
+          user_email: ${{ secrets.USER_EMAIL }}
+          user_name: ${{ secrets.USER_NAME }}
+          commit_message: 'Adding test file - fga-eps-mds-2021_1-Oraculo-Registros-${{ steps.date.outputs.date }}-test.json'
+          
