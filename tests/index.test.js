@@ -207,7 +207,7 @@ describe("Main test", () => {
 
   it("GET /records/500 - should not return a inexistent record", async () => {
     const res = await request(app).get("/records/500");
-    expect(res.statusCode).toEqual(400);
+    expect(res.statusCode).toEqual(404);
   });
 
   it("POST /records/1/status - should update record situation", async () => {
