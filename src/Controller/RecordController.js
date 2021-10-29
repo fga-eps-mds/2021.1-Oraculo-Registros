@@ -25,14 +25,14 @@ async function getNextRecordNumber() {
   };
 
   if (numbers.length === 0) {
-    return generateNewSequence(0);
+    return generateNewSequence();
   }
 
   let storedSequence = numbers[numbers.length - 1];
   const year = new Date().getFullYear();
 
   if (storedSequence.record_year < year) {
-    return generateNewSequence(0);
+    return generateNewSequence();
   }
 
   let num = Number.parseInt(storedSequence.record_seq);
