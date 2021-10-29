@@ -3,12 +3,59 @@ const { Section } = require("../Model/Section");
 const Field = require("../Model/Field");
 const History = require("../Model/History");
 const { User } = require("../Model/User");
+const { RecordNumber } = require("../Model/RecordNumber");
 const { recordStatus } = require("../Model/Situation");
 
-function generateRegisterNumber() {
-  const date = new Date();
-  const seq = date.getTime();
-  return `${Math.round(seq)}/${date.getFullYear()}`;
+async function createNewSequence(n) {
+  return RecordNumber.create({
+    record_seq: n > 0 ? n : 1,
+    record_year: new Date().getFullYear(),
+  });
+}
+
+async function getNextRecordNumber() {
+  const numbers = await RecordNumber.findAll();
+
+  const generateNewSequence = async function () {
+    const newSeq = await createNewSequence(0);
+
+    return { record_seq: newSeq.record_seq, record_year: newSeq.record_year };
+  };
+
+  if (numbers.length === 0) {
+    return generateNewSequence();
+  }
+
+  const storedSequence = numbers[numbers.length - 1];
+  const year = new Date().getFullYear();
+
+  if (storedSequence.record_year < year) {
+    return generateNewSequence();
+  }
+
+  let num = Number.parseInt(storedSequence.record_seq);
+  num++;
+
+  const newNumber = await createNewSequence(num);
+
+  return { record_seq: newNumber.record_seq, record_year: newNumber.record_year };
+}
+
+function formatRecordSequence(seq, year) {
+  const prefix = `00000`;
+  let seqString = `${seq}`;
+  let len = 5;
+
+  for (let digits = 1; digits <= 5; digits++) {
+    if (digits === seqString.length) {
+      len -= digits;
+      break;
+    }
+  }
+
+  seqString = `${prefix.substr(0, len)}${seq}/${year}`;
+
+  return seqString;
 }
 
 async function findCurrentSection(req, res) {
@@ -80,7 +127,12 @@ async function createRecord(req, res) {
       throw new Error("created_by -> invalid user id");
     }
 
-    record.register_number = generateRegisterNumber();
+    const sequence = await getNextRecordNumber();
+
+    record.register_number = formatRecordSequence(
+      sequence.record_seq,
+      sequence.record_year
+    );
     record.inclusion_date = new Date();
     record.assigned_to = record.created_by;
 
@@ -90,9 +142,8 @@ async function createRecord(req, res) {
 
     return res.status(200).json(createdRecord);
   } catch (error) {
-    return res
-      .status(500)
-      .json({ error: `could not insert record into database: ${error}` });
+    console.error(`could not insert record: ${error}`);
+    return res.status(500).json({ error: `could not insert record into database` });
   }
 }
 
@@ -107,9 +158,7 @@ async function getRecordsByPage(req, res) {
     });
 
     if (count === 0) {
-      return res
-        .status(204)
-        .json({ info: "there are no records matching this query" });
+      return res.status(204).json({ info: "there are no records matching this query" });
     }
 
     return res.status(200).json(rows);
