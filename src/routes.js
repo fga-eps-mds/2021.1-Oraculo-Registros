@@ -1,6 +1,7 @@
 const express = require("express");
 const RecordController = require("./Controller/RecordController");
 const UserController = require("./Controller/UserController");
+const TagController = require("./Controller/TagController");
 
 const routes = express.Router();
 
@@ -17,5 +18,6 @@ routes.get("/records/:id/history", RecordController.getRecordsHistory);
 routes.get("/records/:id/current-section", RecordController.findCurrentSection);
 routes.post("/users", UserController.createUser);
 routes.get("/count/records", RecordController.getTotalNumberOfRecords);
+routes.get("/tags/all", TagController.listTags);
 
 module.exports = routes;
