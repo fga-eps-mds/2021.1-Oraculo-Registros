@@ -5,6 +5,7 @@ const { Section } = require("../Model/Section");
 const Field = require("../Model/Field");
 const History = require("../Model/History");
 const { User } = require("../Model/User");
+const { RecordNumber } = require("../Model/RecordNumber");
 require("dotenv").config();
 
 const { PROD, DATABASE_URL } = process.env;
@@ -63,6 +64,7 @@ async function setupModels(db) {
   History.init(db);
   User.init(db);
   Section.init(db);
+  RecordNumber.init(db);
 
   Record.associate(db.models);
   Situation.associate(db.models);
