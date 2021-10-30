@@ -280,7 +280,7 @@ describe("Main test", () => {
   });
 
   it("POST /tag/new - should create a new tag", async () => {
-    const res = await request(app).get("/tag/new").send(tag);
+    const res = await request(app).post("/tag/new").send(tag);
     expect(res.statusCode).toEqual(200);
   });
 });
