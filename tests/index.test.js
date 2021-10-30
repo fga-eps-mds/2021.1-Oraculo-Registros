@@ -2,6 +2,7 @@ const app = require("../src");
 const request = require("supertest");
 const { initializeDatabase } = require("../src/Database");
 const express = require("express");
+const { describe } = require("../src/Model/Record");
 
 const validRecord1 = {
   register_number: "123121776555673",
@@ -76,6 +77,11 @@ const emptyRecord = {};
 const user = {
   name: "tester",
   email: "tester@email.com",
+};
+
+const tag = {
+  name: "Tag One",
+  color: "#ff0000",
 };
 
 describe("Sub Test", () => {
@@ -271,6 +277,11 @@ describe("Main test", () => {
   it("GET /records/department/3 - should return the records on department 3", async () => {
     const res = await request(app).get("/records/department/3");
     expect(res.statusCode).toEqual(204);
+  });
+
+  it("POST /tag/new - should create a new tag", async () => {
+    const res = await request(app).get("/tag/new").send(tag);
+    expect(res.statusCode).toEqual(200);
   });
 });
 
