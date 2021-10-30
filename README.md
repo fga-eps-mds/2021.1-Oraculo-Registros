@@ -380,6 +380,8 @@ Obtém a lista de tags associadas ao registro em questão
 
 Resposta esperada:
 
+- HTTP 200
+
 ```json
 [
   {
@@ -412,6 +414,10 @@ Resposta esperada:
   },
 ]
 ```
+
+- HTTP 204 - nenhuma tag está associada ao registro em questão
+- HTTP 404 - o registro não foi encontrado
+- HTTP 500 - erro interno no servidor (ver logs com `docker logs -f oraculo-registros`)
 
 **POST `/records/:id/add-tag`**
 
