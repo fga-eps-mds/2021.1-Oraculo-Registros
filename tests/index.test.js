@@ -278,11 +278,6 @@ describe("Main test", () => {
     const res = await request(app).get("/records/department/3");
     expect(res.statusCode).toEqual(204);
   });
-
-  it("POST /tag/new - should create a new tag", async () => {
-    const res = await request(app).post("/tag/new").send(tag);
-    expect(res.statusCode).toEqual(200);
-  });
 });
 
 afterAll((done) => {
