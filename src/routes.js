@@ -18,6 +18,10 @@ routes.get("/records/:id/history", RecordController.getRecordsHistory);
 routes.get("/records/:id/current-section", RecordController.findCurrentSection);
 routes.post("/users", UserController.createUser);
 routes.get("/count/records", RecordController.getTotalNumberOfRecords);
+routes.post("/tag/new", TagController.createTag);
 routes.get("/tags/all", TagController.listTags);
+routes.post("/tag/:id/edit", TagController.editTag);
+routes.get("/records/:id/tags", RecordController.getRecordTags);
+routes.post("/records/:id/add-tag", RecordController.addTagToRecord);
 
 module.exports = routes;
