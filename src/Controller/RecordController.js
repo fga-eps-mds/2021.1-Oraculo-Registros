@@ -5,6 +5,7 @@ const History = require("../Model/History");
 const { User } = require("../Model/User");
 const { RecordNumber } = require("../Model/RecordNumber");
 const { recordStatus } = require("../Model/Situation");
+const { Tag } = require("../Model/Tag");
 
 async function createNewSequence(n) {
   return RecordNumber.create({
@@ -301,6 +302,52 @@ async function getDepartmentRecords(req, res) {
   return res.status(200).json(records);
 }
 
+async function getRecordTags(req, res) {
+  const { id } = req.params;
+  const recordID = Number.parseInt(id);
+
+  const record = await Record.findByPk(recordID);
+
+  if (!record) {
+    return res.status(404).json({ error: "record not found" });
+  }
+
+  const tags = await record.getTags();
+  if (tags.length === 0) {
+    return res.status(204).json({ message: "this record has no associated tags" });
+  }
+
+  return res.status(200).json(tags);
+}
+
+async function addTagToRecord(req, res) {
+  const { tag_id } = req.body;
+  const { id } = req.params;
+  const tagID = Number.parseInt(tag_id);
+  const recordID = Number.parseInt(id);
+
+  try {
+    const record = await Record.findByPk(recordID);
+    if (!record) {
+      return res.status(404).json({ error: "record not found" });
+    }
+
+    const tag = await Tag.findByPk(tagID);
+    if (!tag) {
+      return res.status(404).json({ error: "tag not found" });
+    }
+
+    await record.addTag(tag);
+
+    return res
+      .status(200)
+      .json({ message: `tag added to record ${record.register_number}` });
+  } catch (err) {
+    console.error(`internal error during tag search: ${err}`);
+    return res.status(500).json({ error: "internal error while searching for tag" });
+  }
+}
+
 module.exports = {
   getRecordByID,
   getAllRecords,
@@ -314,4 +361,6 @@ module.exports = {
   findCurrentSection,
   getTotalNumberOfRecords,
   getDepartmentRecords,
+  getRecordTags,
+  addTagToRecord,
 };
