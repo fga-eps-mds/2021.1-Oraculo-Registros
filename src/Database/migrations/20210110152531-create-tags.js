@@ -2,20 +2,21 @@
 
 module.exports = {
   up: async (queryInterface, Sequelize) => {
-    return queryInterface.createTable("sections", {
+    return queryInterface.createTable("tags", {
       id: {
-        primaryKey: true,
         type: Sequelize.INTEGER,
-        allowNull: false,
+        primaryKey: true,
         autoIncrement: true,
+        allowNull: false,
       },
       name: {
         type: Sequelize.TEXT,
         allowNull: false,
       },
-      is_admin: {
-        type: Sequelize.BOOLEAN,
+      color: {
+        type: Sequelize.TEXT,
         allowNull: false,
+        unique: true,
       },
       created_at: {
         type: Sequelize.DATE,
@@ -29,6 +30,6 @@ module.exports = {
   },
 
   down: async (queryInterface, Sequelize) => {
-    return queryInterface.dropTable("sections");
+    return queryInterface.dropTable("tags");
   },
 };
