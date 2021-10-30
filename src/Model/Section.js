@@ -5,6 +5,7 @@ class Section extends Model {
     super.init(
       {
         name: { type: Sequelize.TEXT },
+        is_admin: { type: Sequelize.BOOLEAN },
       },
       {
         sequelize,
