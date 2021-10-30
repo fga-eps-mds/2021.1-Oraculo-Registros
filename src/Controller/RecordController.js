@@ -6,6 +6,7 @@ const { User } = require("../Model/User");
 const { RecordNumber } = require("../Model/RecordNumber");
 const { recordStatus } = require("../Model/Situation");
 const { Tag } = require("../Model/Tag");
+const { ERR_RECORD_NOT_FOUND } = require("../Constants/errors");
 
 async function createNewSequence(n) {
   return RecordNumber.create({
@@ -231,7 +232,7 @@ async function getRecordSectionsByID(req, res) {
   });
 
   if (!record) {
-    return res.status(404).json({ error: "record not found" });
+    return res.status(404).json(ERR_RECORD_NOT_FOUND);
   }
 
   return res.status(200).json(record.sections);
@@ -260,7 +261,7 @@ async function getRecordsHistory(req, res) {
 
   const record = await Record.findByPk(recordID);
   if (!record) {
-    return res.status(404).json({ error: "record not found" });
+    return res.status(404).json(ERR_RECORD_NOT_FOUND);
   }
 
   const recordHistory = await History.findAll({
@@ -309,7 +310,7 @@ async function getRecordTags(req, res) {
   const record = await Record.findByPk(recordID);
 
   if (!record) {
-    return res.status(404).json({ error: "record not found" });
+    return res.status(404).json(ERR_RECORD_NOT_FOUND);
   }
 
   const tags = await record.getTags();
@@ -329,7 +330,7 @@ async function addTagToRecord(req, res) {
   try {
     const record = await Record.findByPk(recordID);
     if (!record) {
-      return res.status(404).json({ error: "record not found" });
+      return res.status(404).json(ERR_RECORD_NOT_FOUND);
     }
 
     const tag = await Tag.findByPk(tagID);
