@@ -72,7 +72,7 @@ async function setupModels(db) {
   Situation.associate(db.models);
   History.associate(db.models);
   Section.associate(db.models);
-  Tag.associate(db);
+  Tag.associate(db.models);
 }
 
 async function setupSequelize() {
