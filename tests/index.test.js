@@ -1,7 +1,6 @@
 const app = require("../src");
 const request = require("supertest");
 const { initializeDatabase } = require("../src/Database");
-const express = require("express");
 
 const validRecord1 = {
   register_number: "123121776555673",
@@ -76,6 +75,21 @@ const emptyRecord = {};
 const user = {
   name: "tester",
   email: "tester@email.com",
+};
+
+const tag1 = {
+  name: "Tag One",
+  color: "#ab1111",
+};
+
+const tag2 = {
+  name: "Tag Two",
+  color: "#ac1212",
+};
+
+const tagCopy = {
+  name: "Tag One",
+  color: "#ab1111",
 };
 
 describe("Sub Test", () => {
@@ -271,6 +285,49 @@ describe("Main test", () => {
   it("GET /records/department/3 - should return the records on department 3", async () => {
     const res = await request(app).get("/records/department/3");
     expect(res.statusCode).toEqual(204);
+  });
+
+  it("POST /tag/new - should create a new tag", async () => {
+    const res = await request(app).post("/tag/new").send(tag1);
+    expect(res.statusCode).toEqual(200);
+    expect(res.body).toBeDefined();
+  });
+
+  it("POST /tag/new - should not create a tag (color already exists)", async () => {
+    const res = await request(app).post("/tag/new").send(tagCopy);
+    expect(res.statusCode).toEqual(500);
+    expect(res.body.error).toBeDefined();
+  });
+
+  it("GET /tags/all - should list all existing tags", async () => {
+    const res = await request(app).get("/tags/all");
+    expect(res.statusCode).toEqual(200);
+    expect(res.body).toBeDefined();
+  });
+
+  it("POST /tag/:id/edit - should edit a specified tag", async () => {
+    const res = await request(app).post("/tag/1/edit").send(tag2);
+    expect(res.statusCode).toEqual(200);
+    expect(res.body.message).toBeDefined();
+  });
+
+  it("GET /records/1/tags - should list tags of a record (empty tags)", async () => {
+    const res = await request(app).get("/records/1/tags");
+    expect(res.statusCode).toEqual(204);
+  });
+
+  it("POST /records/:id/add-tag - should add tag 1 to record 1", async () => {
+    const res = await request(app)
+      .post("/records/1/add-tag")
+      .send({ tag_id: 1 });
+    expect(res.statusCode).toEqual(200);
+  });
+
+  it("POST /records/:id/add-tag - should not add tag to record", async () => {
+    const res = await request(app)
+      .post("/records/1/add-tag")
+      .send({ tag_id: 500 });
+    expect(res.statusCode).toEqual(404);
   });
 });
 

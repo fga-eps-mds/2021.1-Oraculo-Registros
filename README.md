@@ -371,3 +371,127 @@ Retorna todos os registros de um departamento específico
 ```
 
 **id** é o id do departamento de onde você deseja extrair todos os registros
+
+**GET `/records/:id/tags`**
+
+Obtém a lista de tags associadas ao registro em questão
+
+- **id** é o id do registro que você deseja obter as tags associadas
+
+Resposta esperada:
+
+- HTTP 200
+
+```json
+[
+  {
+    "id": 1,
+    "name": "Urgente",
+    "color": "#ff0000",
+    "createdAt": "2021-10-30T01:01:46.995Z",
+    "updatedAt": "2021-10-30T01:01:46.995Z",
+    "records_tags": {
+      "createdAt": "2021-10-30T01:08:04.016Z",
+      "updatedAt": "2021-10-30T01:08:04.016Z",
+      "record_id": 1,
+      "tag_id": 1
+    }
+  },
+    {
+  {
+    "id": 2,
+    "name": "Tramitar",
+    "color": "#0000aa",
+    "createdAt": "2021-10-30T01:01:46.995Z",
+    "updatedAt": "2021-10-30T01:01:46.995Z",
+    "records_tags": {
+      "createdAt": "2021-10-30T01:09:16.931Z",
+      "updatedAt": "2021-10-30T01:09:16.931Z",
+      "record_id": 1,
+      "tag_id": 2
+    }
+  }
+  },
+]
+```
+
+- HTTP 204 - nenhuma tag está associada ao registro em questão
+- HTTP 404 - o registro não foi encontrado
+- HTTP 500 - erro interno no servidor (ver logs com `docker logs -f oraculo-registros`)
+
+**POST `/records/:id/add-tag`**
+
+Adiciona uma tag a um registro
+
+- Body
+
+```json
+{
+  "tag_id": 0
+}
+```
+
+- **tag_id** é o id da tag a ser associada
+
+**GET `/tags/all`**
+
+Obtém uma lista de todas as tags cadastradas
+
+- Resposta
+
+```json
+[
+  {
+    "id": 1,
+    "name": "Urgente",
+    "color": "#ff0000"
+  },
+  {
+    "id": 2,
+    "name": "Tramitar",
+    "color": "#0000aa"
+  },
+  {
+    "id": 3,
+    "name": "Mudar",
+    "color": "#faff00"
+  },
+  {
+    "id": 500,
+    "name": "Tag Qualquer",
+    "color": "#ffffff"
+  }
+]
+```
+
+**POST `/tag/:id/edit`**
+
+Edita a tag especificada
+
+- Body
+
+```json
+{
+  "name": "",
+  "color": ""
+}
+```
+
+- **name** é o nome novo da tag
+- **color** é a cor nova da tag (em hexadecimal)
+
+**POST `/tag/new`**
+
+Cria uma nova tag
+
+- Body
+
+```json
+{
+  "name": "",
+  "color": ""
+}
+```
+
+- **name** é o nome da nova tag
+- **color** é a cor da nova tag (em hexadecimal)

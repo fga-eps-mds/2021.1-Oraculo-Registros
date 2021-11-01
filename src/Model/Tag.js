@@ -1,26 +1,26 @@
 const { Model, Sequelize } = require("sequelize");
 
-class Section extends Model {
-  static init(sequelize) {
+class Tag extends Model {
+  static init(db) {
     super.init(
       {
         name: { type: Sequelize.TEXT },
-        is_admin: { type: Sequelize.BOOLEAN },
+        color: { type: Sequelize.TEXT },
       },
       {
-        sequelize,
-        tableName: "sections",
+        sequelize: db,
+        tableName: "tags",
       }
     );
   }
 
   static associate(models) {
     this.belongsToMany(models.Record, {
-      foreignKey: "section_id",
-      through: "record_sections",
+      foreignKey: "tag_id",
+      through: "records_tags",
       as: "records",
     });
   }
 }
 
-module.exports = { Section };
+module.exports = { Tag };
