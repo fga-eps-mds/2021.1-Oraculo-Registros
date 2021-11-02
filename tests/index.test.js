@@ -77,19 +77,19 @@ const user = {
   email: "tester@email.com",
 };
 
-const tag = {
+const tag1 = {
   name: "Tag One",
-  color: "#ff0000",
+  color: "#ab1111",
 };
 
 const tag2 = {
   name: "Tag Two",
-  color: "#ffaa00",
+  color: "#ac1212",
 };
 
 const tagCopy = {
   name: "Tag One",
-  color: "#ff0000",
+  color: "#ab1111",
 };
 
 describe("Sub Test", () => {
@@ -308,8 +308,26 @@ describe("Main test", () => {
   it("POST /tag/:id/edit - should edit a specified tag", async () => {
     const res = await request(app).post("/tag/1/edit").send(tag2);
     expect(res.statusCode).toEqual(200);
-    expect(res.body.name).toEqual(tag2.name);
-    expect(res.body.color).toEqual(tag2.color);
+    expect(res.body.message).toBeDefined();
+  });
+
+  it("GET /records/1/tags - should list tags of a record (empty tags)", async () => {
+    const res = await request(app).get("/records/1/tags");
+    expect(res.statusCode).toEqual(204);
+  });
+
+  it("POST /records/:id/add-tag - should add tag 1 to record 1", async () => {
+    const res = await request(app)
+      .post("/records/1/add-tag")
+      .send({ tag_id: 1 });
+    expect(res.statusCode).toEqual(200);
+  });
+
+  it("POST /records/:id/add-tag - should not add tag to record", async () => {
+    const res = await request(app)
+      .post("/records/1/add-tag")
+      .send({ tag_id: 500 });
+    expect(res.statusCode).toEqual(404);
   });
 });
 
