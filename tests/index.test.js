@@ -288,7 +288,7 @@ describe("Main test", () => {
   });
 
   it("POST /tag/new - should create a new tag", async () => {
-    const res = await request(app).post("/tag/new").send(tag);
+    const res = await request(app).post("/tag/new").send(tag1);
     expect(res.statusCode).toEqual(200);
     expect(res.body).toBeDefined();
   });
@@ -300,7 +300,7 @@ describe("Main test", () => {
   });
 
   it("GET /tags/all - should list all existing tags", async () => {
-    const res = await request(app).get("/tags/all").send(tag);
+    const res = await request(app).get("/tags/all");
     expect(res.statusCode).toEqual(200);
     expect(res.body).toBeDefined();
   });
