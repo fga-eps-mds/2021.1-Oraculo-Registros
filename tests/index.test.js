@@ -82,6 +82,16 @@ const tag = {
   color: "#ff0000",
 };
 
+const tag2 = {
+  name: "Tag Two",
+  color: "#ffaa00",
+};
+
+const tagCopy = {
+  name: "Tag One",
+  color: "#ff0000",
+};
+
 describe("Sub Test", () => {
   const test1 = 1;
   const test2 = 2;
@@ -275,6 +285,31 @@ describe("Main test", () => {
   it("GET /records/department/3 - should return the records on department 3", async () => {
     const res = await request(app).get("/records/department/3");
     expect(res.statusCode).toEqual(204);
+  });
+
+  it("POST /tag/new - should create a new tag", async () => {
+    const res = await request(app).post("/tag/new").send(tag);
+    expect(res.statusCode).toEqual(200);
+    expect(res.body).toBeDefined();
+  });
+
+  it("POST /tag/new - should not create a tag (color already exists)", async () => {
+    const res = await request(app).post("/tag/new").send(tagCopy);
+    expect(res.statusCode).toEqual(500);
+    expect(res.body.error).toBeDefined();
+  });
+
+  it("GET /tags/all - should list all existing tags", async () => {
+    const res = await request(app).get("/tags/all").send(tag);
+    expect(res.statusCode).toEqual(200);
+    expect(res.body).toBeDefined();
+  });
+
+  it("POST /tag/:id/edit - should edit a specified tag", async () => {
+    const res = await request(app).post("/tag/1/edit").send(tag2);
+    expect(res.statusCode).toEqual(200);
+    expect(res.body.name).toEqual(tag2.name);
+    expect(res.body.color).toEqual(tag2.color);
   });
 });
 
