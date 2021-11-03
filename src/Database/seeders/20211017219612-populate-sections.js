@@ -4,42 +4,6 @@ module.exports = {
   up: async (queryInterface, Sequelize) => {
     const sections = [
       {
-        name: "Divisão Administrativa",
-        created_at: new Date(),
-        updated_at: new Date(),
-        is_admin: true,
-      },
-      {
-        name: "Divisão Biométrica Civil",
-        created_at: new Date(),
-        updated_at: new Date(),
-        is_admin: true,
-      },
-      {
-        name: "Divisão Biométrica Criminal",
-        created_at: new Date(),
-        updated_at: new Date(),
-        is_admin: true,
-      },
-      {
-        name: "Divisão de Tecnologia, Pesquisa e Desenvolvimento",
-        created_at: new Date(),
-        updated_at: new Date(),
-        is_admin: true,
-      },
-      {
-        name: "Gerência Adjunta",
-        created_at: new Date(),
-        updated_at: new Date(),
-        is_admin: true,
-      },
-      {
-        name: "Gerência de Identificação",
-        created_at: new Date(),
-        updated_at: new Date(),
-        is_admin: true,
-      },
-      {
         name: "Seção AFIS",
         created_at: new Date(),
         updated_at: new Date(),
@@ -233,12 +197,6 @@ module.exports = {
       },
       {
         name: "Seção Papiloscópica Especializada no Combate à Organização Criminosa e Lavagem de Dinheiro",
-        created_at: new Date(),
-        updated_at: new Date(),
-        is_admin: false,
-      },
-      {
-        name: "Unidade de Inteligência",
         created_at: new Date(),
         updated_at: new Date(),
         is_admin: false,
