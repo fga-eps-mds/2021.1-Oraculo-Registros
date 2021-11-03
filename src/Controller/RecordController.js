@@ -126,7 +126,16 @@ async function createRecord(req, res) {
 
   try {
     if (Number.parseInt(record.created_by, 10) < 1) {
-      throw new Error("created_by -> invalid user id");
+      throw new Error("created_by: invalid user id");
+    }
+
+    // find id of user who created record
+    const createdBy = Number.parseInt(record.created_by);
+    const user = await User.findByPk(createdBy);
+    if (!user) {
+      return res
+        .status(404)
+        .json({ error: "could not find user who created the record" });
     }
 
     const sequence = await getNextRecordNumber();
@@ -139,8 +148,21 @@ async function createRecord(req, res) {
     record.assigned_to = record.created_by;
 
     const createdRecord = await Record.create(record);
+    const sectionID = Number.parseInt(user.section_id);
+    await createdRecord.createSituation({ status: recordStatus.StatusPending });
+    await createdRecord.addSection(sectionID);
 
-    createdRecord.createSituation({ status: recordStatus.StatusPending });
+    const emptySection = await Section.findOne({ where: { name: "none" } });
+
+    // Adds entry to history
+    const history = {
+      forwarded_by: createdBy,
+      origin_id: emptySection.id,
+      destination_id: sectionID,
+      record_id: createdRecord.id,
+    };
+
+    await History.create(history);
 
     return res.status(200).json(createdRecord);
   } catch (error) {
