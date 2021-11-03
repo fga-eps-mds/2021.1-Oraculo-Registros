@@ -2,6 +2,7 @@ const express = require("express");
 const RecordController = require("./Controller/RecordController");
 const UserController = require("./Controller/UserController");
 const TagController = require("./Controller/TagController");
+const SectionController = require("./Controller/SectionController");
 
 const routes = express.Router();
 
@@ -23,5 +24,6 @@ routes.get("/tags/all", TagController.listTags);
 routes.post("/tag/:id/edit", TagController.editTag);
 routes.get("/records/:id/tags", RecordController.getRecordTags);
 routes.post("/records/:id/add-tag", RecordController.addTagToRecord);
+routes.get("/sections", SectionController.listSections);
 
 module.exports = routes;
