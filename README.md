@@ -495,3 +495,7 @@ Cria uma nova tag
 
 - **name** é o nome da nova tag
 - **color** é a cor da nova tag (em hexadecimal)
+
+**GET `/sections`**
+
+Retorna a lista de seções disponíveis
