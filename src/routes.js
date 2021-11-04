@@ -25,5 +25,6 @@ routes.post("/tag/:id/edit", TagController.editTag);
 routes.get("/records/:id/tags", RecordController.getRecordTags);
 routes.post("/records/:id/add-tag", RecordController.addTagToRecord);
 routes.get("/sections", SectionController.listSections);
+routes.post("/records/:id/edit", RecordController.editRecord);
 
 module.exports = routes;
