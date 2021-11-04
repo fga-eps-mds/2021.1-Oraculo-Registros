@@ -499,3 +499,45 @@ Cria uma nova tag
 **GET `/sections`**
 
 Retorna a lista de seções disponíveis
+
+**POST `/records/:id/edit`**
+
+Edita um registro cadastrado no sistema
+
+- Campos editáveis:
+
+```json
+{
+  "inclusion_date": "",
+  "city": "",
+  "state": "",
+  "requester": "",
+  "document_type": "",
+  "document_number": "",
+  "document_date": "",
+  "description": "",
+  "sei_number": "",
+  "receipt_form": "",
+  "contact_info": ""
+}
+```
+
+- Resposta
+
+* HTTP `200` contendo todas as informações do registro (atualizadas)
+
+```json
+{
+  "inclusion_date": "",
+  "city": "",
+  "state": "",
+  "requester": "",
+  "document_type": "",
+  "document_number": "",
+  "document_date": "",
+  "description": "",
+  "sei_number": "",
+  "receipt_form": "",
+  "contact_info": ""
+}
+```
