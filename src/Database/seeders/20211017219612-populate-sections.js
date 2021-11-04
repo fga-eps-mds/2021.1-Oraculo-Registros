@@ -201,6 +201,12 @@ module.exports = {
         updated_at: new Date(),
         is_admin: false,
       },
+      {
+        name: "none",
+        created_at: new Date(),
+        updated_at: new Date(),
+        is_admin: false,
+      },
     ];
 
     return queryInterface.bulkInsert("sections", sections);

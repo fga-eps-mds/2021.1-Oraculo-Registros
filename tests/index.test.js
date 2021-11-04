@@ -75,6 +75,7 @@ const emptyRecord = {};
 const user = {
   name: "tester",
   email: "tester@email.com",
+  section_id: 1,
 };
 
 const tag1 = {
@@ -317,16 +318,12 @@ describe("Main test", () => {
   });
 
   it("POST /records/:id/add-tag - should add tag 1 to record 1", async () => {
-    const res = await request(app)
-      .post("/records/1/add-tag")
-      .send({ tag_id: 1 });
+    const res = await request(app).post("/records/1/add-tag").send({ tag_id: 1 });
     expect(res.statusCode).toEqual(200);
   });
 
   it("POST /records/:id/add-tag - should not add tag to record", async () => {
-    const res = await request(app)
-      .post("/records/1/add-tag")
-      .send({ tag_id: 500 });
+    const res = await request(app).post("/records/1/add-tag").send({ tag_id: 500 });
     expect(res.statusCode).toEqual(404);
   });
 });
