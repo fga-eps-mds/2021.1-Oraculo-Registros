@@ -407,7 +407,9 @@ async function editRecord(req, res) {
     record.receipt_form = newInfo.receipt_form;
     record.contact_info = newInfo.contact_info;
 
-    const editedRecord = await record.save();
+    await record.save();
+
+    const editedRecord = await Record.findByPk(recordID);
 
     return res.status(200).json(editedRecord);
   } catch (err) {
