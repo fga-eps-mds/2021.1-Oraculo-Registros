@@ -326,6 +326,17 @@ describe("Main test", () => {
     const res = await request(app).post("/records/1/add-tag").send({ tag_id: 500 });
     expect(res.statusCode).toEqual(404);
   });
+
+  it("POST /records/:id/edit - should edit a record", async () => {
+    const res = await request(app).post("/records/1/edit").send({ city: "Goiania" });
+    expect(res.statusCode).toEqual(200);
+    expect(res.body).toBeDefined();
+  });
+
+  it("POST /records/:id/edit - should edit a record", async () => {
+    const res = await request(app).post("/records/a/edit").send({ city: "Goiania" });
+    expect(res.statusCode).toEqual(500);
+  });
 });
 
 afterAll((done) => {
