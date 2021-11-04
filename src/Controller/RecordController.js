@@ -371,6 +371,51 @@ async function addTagToRecord(req, res) {
   }
 }
 
+async function editRecord(req, res) {
+  const { id } = req.params;
+  const recordID = Number.parseInt(id);
+
+  const newInfo = ({
+    inclusion_date,
+    city,
+    state,
+    requester,
+    document_type,
+    document_number,
+    document_date,
+    description,
+    sei_number,
+    receipt_form,
+    contact_info,
+  } = req.body);
+
+  try {
+    const record = await Record.findByPk(recordID);
+    if (!record) {
+      return res.status(404).json({ error: "record not found" });
+    }
+
+    record.inclusion_date = newInfo.inclusion_date;
+    record.city = newInfo.city;
+    record.state = newInfo.state;
+    record.requester = newInfo.requester;
+    record.document_type = newInfo.document_type;
+    record.document_number = newInfo.document_number;
+    record.document_date = newInfo.document_date;
+    record.description = newInfo.description;
+    record.sei_number = newInfo.sei_number;
+    record.receipt_form = newInfo.receipt_form;
+    record.contact_info = newInfo.contact_info;
+
+    const editedRecord = await record.save();
+
+    return res.status(200).json(editedRecord);
+  } catch (err) {
+    console.error(`could not edit record: ${err}`);
+    return res.status(500).json({ error: "could not edit record" });
+  }
+}
+
 module.exports = {
   getRecordByID,
   getAllRecords,
@@ -386,4 +431,5 @@ module.exports = {
   getDepartmentRecords,
   getRecordTags,
   addTagToRecord,
+  editRecord,
 };
