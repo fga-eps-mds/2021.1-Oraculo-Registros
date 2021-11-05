@@ -36,6 +36,7 @@ O arquivo `.env` possui configurações iniciais que podem ser alteradas de acor
 - DB_PASS: senha de acesso ao banco de dados
 - DB_NAME: nome da base de dados
 - DB_HOST: host da base de dados
+- DB_PORT: porta de conexão com o banco
 
 Veja o exemplo abaixo:
 
@@ -49,21 +50,49 @@ DB_HOST=db_users
 
 Para rodar a API é preciso usar os seguintes comandos usando o docker:
 
-Suba o container com o comando:
-
+1 - Instale as dependências
 ```bash
-yarn run docker:up
+yarn
+```
+1.1 - Certifique-se de limpar containers já existentes
+```bash
+yarn docker:clean
 ```
 
-Suba as tabelas do banco de dados
-
-```bash
-yarn run db:migrate
+2 - Configure as variáveis de ambiente editando o arquivo `.env`
+```
+SECRET=chavedesegredo
+DB_USER=api_user
+DB_PASS=api_password
+DB_NAME=api_database
+DB_HOST=db_users
+DB_PORT=8001
 ```
 
-**Importante**: lembre-se de editar o arquivo `.env`
+3 - Configure a variável de ambiente `DATABASE_URL`
 
-A API estará rodando na [porta 8001](http://localhost:8001).
+```bash
+export DATABASE_URL=postgres://${DB_USER}:${DB_PASS}@${DB_HOST}:${DB_PORT}/${DB_NAME}
+```
+
+**Importante**: os valores das variáveis DB_USER, DB_PASS, DB_HOST, DB_PORT e DB_NAME são os mesmos
+do arquivo `.env` editado anteriormente.
+
+Se o arquivo `.env` estiver com os mesmos valores do passo anterior, então a `DATABASE_URL` deverá ser exportada
+da seguinte forma:
+
+```bash
+export DATABASE_URL=postgres://api_user:api_password@db_users:8001/api_database
+```
+
+
+3 - Suba o container
+
+```bash
+yarn all:prod
+```
+
+A API estará rodando na porta especificada pela variável `DB_PORT` (padrão é a porta 8001)
 
 ## Rotas
 
