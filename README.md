@@ -51,15 +51,19 @@ DB_HOST=db_users
 Para rodar a API é preciso usar os seguintes comandos usando o docker:
 
 1 - Instale as dependências
+
 ```bash
 yarn
 ```
+
 1.1 - Certifique-se de limpar containers já existentes
+
 ```bash
 yarn docker:clean
 ```
 
 2 - Configure as variáveis de ambiente editando o arquivo `.env`
+
 ```
 SECRET=chavedesegredo
 DB_USER=api_user
@@ -84,7 +88,6 @@ da seguinte forma:
 ```bash
 export DATABASE_URL=postgres://api_user:api_password@db_users:8001/api_database
 ```
-
 
 3 - Suba o container
 
@@ -118,9 +121,9 @@ Endpoint para exibir todos os registros
     "sei_number": "",
     "receipt_form": "",
     "contact_info": "",
-    "situation": 2,
-    "created_by": 3,
-    "assigned_to": 3,
+    "situation": "",
+    "created_by": "",
+    "assigned_to": "",
     "updatedAt": "",
     "createdAt": ""
   },
@@ -138,9 +141,9 @@ Endpoint para exibir todos os registros
     "sei_number": "",
     "receipt_form": "",
     "contact_info": "",
-    "situation": 1,
-    "created_by": 1,
-    "assigned_to": 3,
+    "situation": "",
+    "created_by": "",
+    "assigned_to": "",
     "updatedAt": "",
     "createdAt": ""
   }
@@ -170,9 +173,9 @@ Retorna os dados de um registro específico, só precisando do id no link
   "sei_number": "",
   "receipt_form": "",
   "contact_info": "",
-  "situation": 2,
-  "created_by": 3,
-  "assigned_to": 3,
+  "situation": "",
+  "created_by": "",
+  "assigned_to": "",
   "updatedAt": "",
   "createdAt": ""
 }
@@ -196,12 +199,11 @@ Para criar um registro, envie os dados nesse formato:
   "sei_number": "",
   "receipt_form": "",
   "contact_info": "",
-  "situation": "",
-  "created_by": 0
+  "created_by": ""
 }
 ```
 
-- **situation** poderá ser: `finished`, `running` ou `pending`
+- **situation** poderá ser: `finished` (0), `running` (1) ou `pending` (2)
 
 - Resposta
 
@@ -220,11 +222,27 @@ Para criar um registro, envie os dados nesse formato:
   "sei_number": "",
   "receipt_form": "",
   "contact_info": "",
-  "situation": 2,
-  "created_by": 3,
-  "assigned_to": 4,
+  "created_by": "",
+  "assigned_to": "",
   "updatedAt": "",
-  "createdAt": ""
+  "createdAt": "",
+  "situation": "",
+  "tags": [],
+  "sections": [
+    {
+      "id": 2,
+      "name": "",
+      "is_admin": false,
+      "createdAt": "2021-11-06T00:56:10.590Z",
+      "updatedAt": "2021-11-06T00:56:10.590Z",
+      "record_sections": {
+        "createdAt": "2021-11-06T01:11:55.798Z",
+        "updatedAt": "2021-11-06T01:11:55.798Z",
+        "record_id": 2,
+        "section_id": 0
+      }
+    }
+  ]
 }
 ```
 
@@ -236,7 +254,7 @@ Para encaminhar um registro, basta envie os dados nesse formato:
 {
   "destination_id": 0,
   "origin_id": 0,
-  "forwarded_by": 0
+  "forwarded_by": ""
 }
 ```
 
@@ -245,6 +263,7 @@ Resposta esperada:
 ```json
 {
   "forwarded_by": "",
+  "forwarded_by_name": "",
   "forwarded_from": "",
   "forwarded_to": ""
 }
@@ -252,7 +271,8 @@ Resposta esperada:
 
 - **id** é o id do registro a ser encaminhado
 - **destination_id** é o id da seção de destino
-- **forwarded_by** é o id do usuário que encaminhou o registro. Na resposta esse campo será uma string que contém o nome do usuário que encaminhou o registro
+- **forwarded_by_name** é o nome do usuário que encaminhou o registro
+- **forwarded_by** é o email do usuário que encaminhou o registro. Na resposta esse campo será uma string que contém o nome do usuário que encaminhou o registro
 - **origin_id** é o id da seção de origem (é o id da seção ao qual o usuário que encaminhou pertence)
 
 **GET: `/records/:id/sections`**
@@ -293,11 +313,11 @@ Resposta:
 {
   "name": "",
   "description": "",
-  "created_by": 0
+  "created_by": ""
 }
 ```
 
-Se o `created_by` for zero, então significa que ele é um campo "default"
+Se o `created_by` for vazio, então significa que ele é um campo "default"
 
 **GET: `/records/:id/history`**
 
@@ -306,9 +326,11 @@ Retorna todo o histórico de movimentação de um registro
 ```json
 {
   "id": 0,
-  "forwarded_by": 0,
+  "forwarded_by": "",
   "origin_id": 0,
+  "origin_name": "",
   "destination_id": 0,
+  "destination_name": "",
   "createdAt": "",
   "updatedAt": "",
   "record_id": 0
@@ -371,8 +393,8 @@ Retorna todos os registros de um departamento específico
     "receipt_form": "",
     "contact_info": "",
     "situation": "",
-    "created_by": 3,
-    "assigned_to": 4,
+    "created_by": "",
+    "assigned_to": "",
     "updatedAt": "",
     "createdAt": ""
   },
@@ -391,8 +413,8 @@ Retorna todos os registros de um departamento específico
     "receipt_form": "",
     "contact_info": "",
     "situation": "",
-    "created_by": 10,
-    "assigned_to": 4,
+    "created_by": "",
+    "assigned_to": "",
     "updatedAt": "",
     "createdAt": ""
   }
@@ -568,5 +590,30 @@ Edita um registro cadastrado no sistema
   "sei_number": "",
   "receipt_form": "",
   "contact_info": ""
+}
+```
+
+**GET `/user/by-mail`**
+
+Busca as informaçẽos de um usuário pelo e-mail
+
+- Requisição
+
+```json
+{
+  "email": "william@pcgo.com"
+}
+```
+
+- Resposta
+
+```json
+{
+  "id": 1,
+  "name": "william the police",
+  "email": "william@pcgo.com",
+  "section_id": 2,
+  "createdAt": "2021-11-06T03:05:20.572Z",
+  "updatedAt": "2021-11-06T03:05:20.572Z"
 }
 ```
