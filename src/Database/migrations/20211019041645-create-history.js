@@ -13,12 +13,20 @@ module.exports = {
         type: Sequelize.INTEGER,
         allowNull: true,
       },
+      origin_name: {
+        type: Sequelize.TEXT,
+        allowNull: false,
+      },
       destination_id: {
         type: Sequelize.INTEGER,
         allowNull: false,
       },
+      destination_name: {
+        type: Sequelize.TEXT,
+        allowNull: false,
+      },
       forwarded_by: {
-        type: Sequelize.INTEGER,
+        type: Sequelize.TEXT,
         allowNull: false,
       },
       record_id: {

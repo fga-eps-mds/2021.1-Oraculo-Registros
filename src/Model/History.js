@@ -4,9 +4,14 @@ class History extends Model {
   static init(sequelize) {
     super.init(
       {
-        forwarded_by: { type: DataTypes.INTEGER },
+        /**
+         * Contém o email do usuário que encaminhou o registro
+         */
+        forwarded_by: { type: DataTypes.TEXT },
         origin_id: { type: DataTypes.INTEGER },
+        origin_name: { type: DataTypes.TEXT },
         destination_id: { type: DataTypes.INTEGER },
+        destination_name: { type: DataTypes.TEXT },
       },
       {
         sequelize,
