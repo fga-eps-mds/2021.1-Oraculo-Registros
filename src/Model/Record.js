@@ -16,9 +16,9 @@ class Record extends Model {
         sei_number: { type: DataTypes.TEXT },
         receipt_form: { type: DataTypes.TEXT },
         contact_info: { type: DataTypes.TEXT },
-        situation: { type: DataTypes.INTEGER },
-        created_by: { type: DataTypes.INTEGER },
-        assigned_to: { type: DataTypes.INTEGER },
+        situation: { type: DataTypes.TEXT },
+        created_by: { type: DataTypes.TEXT },
+        assigned_to: { type: DataTypes.TEXT },
       },
       {
         sequelize,
@@ -28,7 +28,6 @@ class Record extends Model {
   }
 
   static associate(models) {
-    this.hasOne(models.Situation, { foreignKey: "record_id" });
     this.hasMany(models.History, { foreignKey: "record_id", as: "histories" });
     this.belongsToMany(models.Tag, {
       foreignKey: "record_id",
