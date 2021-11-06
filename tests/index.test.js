@@ -128,7 +128,8 @@ describe("Main test", () => {
 
   it("POST /records - should not create a record", async () => {
     const res = await request(app).post("/records").send(emptyRecord);
-    expect(res.statusCode).toEqual(500);
+    expect(res.statusCode).toEqual(404);
+    expect(res.body.error).toBeDefined();
   });
 
   it("POST /records - should get all registered records", async () => {
