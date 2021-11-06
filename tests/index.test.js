@@ -3,8 +3,6 @@ const request = require("supertest");
 const { initializeDatabase } = require("../src/Database");
 
 const validRecord1 = {
-  register_number: "123121776555673",
-  inclusion_date: "14/04/2021",
   city: "df",
   state: "bahia",
   requester: "policia federal",
@@ -15,13 +13,10 @@ const validRecord1 = {
   sei_number: "1234",
   receipt_form: "form",
   contact_info: "info@gmail.com",
-  situation: 2,
-  created_by: 3,
+  created_by: "william@pcgo.com",
 };
 
 const validRecord2 = {
-  register_number: "123121776555673",
-  inclusion_date: "14/04/2021",
   city: "df",
   state: "bahia",
   requester: "policia civil",
@@ -33,12 +28,10 @@ const validRecord2 = {
   receipt_form: "form",
   contact_info: "info@gmail.com",
   situation: 2,
-  created_by: 1,
+  created_by: "william@pcgo.com",
 };
 
 const invalidRecord1 = {
-  register_number: "123121776555673",
-  inclusion_date: "14/04/2021",
   city: "df",
   state: "bahia",
   requester: "policia civil",
@@ -49,25 +42,7 @@ const invalidRecord1 = {
   sei_number: "1234",
   receipt_form: "form",
   contact_info: "info@gmail.com",
-  situation: 2,
   created_by: -50,
-};
-
-const invalidRecord2 = {
-  register_number: "123121776555673",
-  inclusion_date: "14/04/2021",
-  city: null,
-  state: "bahia",
-  requester: "policia civil",
-  document_type: "fisico",
-  document_number: "1020304050",
-  document_date: null,
-  description: "ABCDEFGHIJKL",
-  sei_number: null,
-  receipt_form: "form",
-  contact_info: null,
-  situation: 2,
-  created_by: 2,
 };
 
 const emptyRecord = {};
@@ -166,9 +141,10 @@ describe("Main test", () => {
     expect(res.statusCode).toEqual(200);
   });
 
-  it("POST /records - test with invalid created_by", async () => {
+  it("POST /records - should not create a record (inexistent created_by)", async () => {
     const res = await request(app).post("/records").send(invalidRecord1);
-    expect(res.statusCode).toEqual(500);
+    expect(res.statusCode).toEqual(404);
+    expect(res.body.error).toBeDefined();
   });
 
   it("GET /records/page/0 - should return at least one record", async () => {
@@ -185,11 +161,23 @@ describe("Main test", () => {
     const payload = {
       destination_id: 2,
       origin_id: 2,
-      forwarded_by: 1,
+      forwarded_by: "william@pcgo.com",
     };
 
     const res = await request(app).post("/records/1/forward").send(payload);
     expect(res.statusCode).toEqual(200);
+  });
+
+  it("POST /records/1/forward - should not forward a record (section mismatch)", async () => {
+    const payload = {
+      destination_id: 2,
+      origin_id: 3,
+      forwarded_by: "william@pcgo.com",
+    };
+
+    const res = await request(app).post("/records/1/forward").send(payload);
+    expect(res.statusCode).toEqual(400);
+    expect(res.body.error).toBeDefined();
   });
 
   it("POST /records/500/forward - should not forward (inexistent)", async () => {
@@ -227,10 +215,28 @@ describe("Main test", () => {
 
   it("POST /records/1/status - should update record situation", async () => {
     const res = await request(app).post("/records/1/status").send({
-      situation: 1,
+      situation: "finished",
     });
 
     expect(res.statusCode).toEqual(200);
+  });
+
+  it("POST /records/1/status - should not update record situation", async () => {
+    const res = await request(app).post("/records/1/status").send({
+      situation: "situation123",
+    });
+
+    expect(res.statusCode).toEqual(400);
+    expect(res.body.error).toBeDefined();
+  });
+
+  it("POST /records/500/status - should not update record situation (inexistent record)", async () => {
+    const res = await request(app).post("/records/500/status").send({
+      situation: "pending",
+    });
+
+    expect(res.statusCode).toEqual(404);
+    expect(res.body.error).toBeDefined();
   });
 
   it("GET /records/fields - should return all fields", async () => {
@@ -336,6 +342,33 @@ describe("Main test", () => {
   it("POST /records/:id/edit - should edit a record", async () => {
     const res = await request(app).post("/records/a/edit").send({ city: "Goiania" });
     expect(res.statusCode).toEqual(500);
+  });
+
+  it("GET /user/by-mail - should return user information", async () => {
+    const res = await request(app)
+      .get("/user/by-mail")
+      .send({ email: "william@pcgo.com" });
+
+    expect(res.statusCode).toEqual(200);
+    expect(res.body.email).toBeDefined();
+    expect(res.body.section_id).toBeDefined();
+    expect(res.body.name).toBeDefined();
+  });
+
+  it("GET /user/by-mail - should not return user information (inexistent user)", async () => {
+    const res = await request(app).get("/user/by-mail").send({ email: "zzz@bol.com" });
+
+    expect(res.statusCode).toEqual(404);
+  });
+
+  it("POST /users - should not create a user (invalid email)", async () => {
+    const res = await request(app).post("/users").send({
+      name: "user",
+      email: "user",
+      section_id: 2,
+    });
+
+    expect(res.statusCode).toEqual(400);
   });
 });
 
