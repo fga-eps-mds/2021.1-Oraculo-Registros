@@ -3,62 +3,14 @@ const { Section } = require("../Model/Section");
 const Field = require("../Model/Field");
 const History = require("../Model/History");
 const { User } = require("../Model/User");
-const { RecordNumber } = require("../Model/RecordNumber");
-const { recordStatus } = require("../Model/Situation");
+const { Situation } = require("../Model/Situation");
 const { Tag } = require("../Model/Tag");
 const { ERR_RECORD_NOT_FOUND } = require("../Constants/errors");
-
-async function createNewSequence(n) {
-  return RecordNumber.create({
-    record_seq: n > 0 ? n : 1,
-    record_year: new Date().getFullYear(),
-  });
-}
-
-async function getNextRecordNumber() {
-  const numbers = await RecordNumber.findAll();
-
-  const generateNewSequence = async function () {
-    const newSeq = await createNewSequence(0);
-
-    return { record_seq: newSeq.record_seq, record_year: newSeq.record_year };
-  };
-
-  if (numbers.length === 0) {
-    return generateNewSequence();
-  }
-
-  const storedSequence = numbers[numbers.length - 1];
-  const year = new Date().getFullYear();
-
-  if (storedSequence.record_year < year) {
-    return generateNewSequence();
-  }
-
-  let num = Number.parseInt(storedSequence.record_seq);
-  num++;
-
-  const newNumber = await createNewSequence(num);
-
-  return { record_seq: newNumber.record_seq, record_year: newNumber.record_year };
-}
-
-function formatRecordSequence(seq, year) {
-  const prefix = `00000`;
-  let seqString = `${seq}`;
-  let len = 5;
-
-  for (let digits = 1; digits <= 5; digits++) {
-    if (digits === seqString.length) {
-      len -= digits;
-      break;
-    }
-  }
-
-  seqString = `${prefix.substr(0, len)}${seq}/${year}`;
-
-  return seqString;
-}
+const {
+  createNewSequence,
+  formatRecordSequence,
+  getNextRecordNumber,
+} = require("./RecordNumberController");
 
 async function findCurrentSection(req, res) {
   const { id } = req.params;
@@ -76,7 +28,10 @@ async function findCurrentSection(req, res) {
 
   const lastEntry = history[history.length - 1];
 
-  return res.status(200).json({ current_section: lastEntry.destination_id });
+  return res.status(200).json({
+    current_section: lastEntry.destination_id,
+    current_section_name: lastEntry.destination_name,
+  });
 }
 
 async function getRecordByID(request, response) {
@@ -125,13 +80,9 @@ async function createRecord(req, res) {
   } = req.body);
 
   try {
-    if (Number.parseInt(record.created_by, 10) < 1) {
-      throw new Error("created_by: invalid user id");
-    }
-
-    // find id of user who created record
-    const createdBy = Number.parseInt(record.created_by);
-    const user = await User.findByPk(createdBy);
+    // find email of user who created record
+    const createdBy = String(record.created_by);
+    const user = await User.findOne({ where: { email: createdBy } });
     if (!user) {
       return res
         .status(404)
@@ -144,27 +95,39 @@ async function createRecord(req, res) {
       sequence.record_seq,
       sequence.record_year
     );
+
     record.inclusion_date = new Date();
-    record.assigned_to = record.created_by;
+    record.assigned_to = createdBy;
+    record.situation = Situation.StatusPending;
 
     const createdRecord = await Record.create(record);
     const sectionID = Number.parseInt(user.section_id);
-    await createdRecord.createSituation({ status: recordStatus.StatusPending });
     await createdRecord.addSection(sectionID);
 
     const emptySection = await Section.findOne({ where: { name: "none" } });
+    const destinationSection = await Section.findByPk(sectionID);
+
+    if (!destinationSection) {
+      return res.status(404).json({ error: "section not found" });
+    }
 
     // Adds entry to history
     const history = {
       forwarded_by: createdBy,
       origin_id: emptySection.id,
+      origin_name: emptySection.name,
       destination_id: sectionID,
+      destination_name: destinationSection.name,
       record_id: createdRecord.id,
     };
 
     await History.create(history);
 
-    return res.status(200).json(createdRecord);
+    const fullRecord = await Record.findByPk(createdRecord.id, {
+      include: [{ association: "tags" }, { association: "sections" }],
+    });
+
+    return res.status(200).json(fullRecord);
   } catch (error) {
     console.error(`could not insert record: ${error}`);
     return res.status(500).json({ error: `could not insert record into database` });
@@ -198,13 +161,9 @@ async function forwardRecord(req, res) {
   const recordID = Number.parseInt(id);
   const originID = Number.parseInt(origin_id);
   const destinationID = Number.parseInt(destination_id);
-  const forwardedBy = Number.parseInt(forwarded_by);
+  const forwardedBy = String(forwarded_by);
 
-  if (
-    !Number.isFinite(originID) ||
-    !Number.isFinite(destinationID) ||
-    !Number.isFinite(forwardedBy)
-  ) {
+  if (!Number.isFinite(originID) || !Number.isFinite(destinationID)) {
     return res.status(400).json({ error: "invalid section id provided" });
   }
 
@@ -216,15 +175,25 @@ async function forwardRecord(req, res) {
   }
 
   // find user in database
-  const user = await User.findByPk(forwardedBy);
+  const user = await User.findOne({ where: { email: forwardedBy } });
   if (!user) {
-    return res.status(404).json({ error: "could not find user in database" });
+    return res
+      .status(404)
+      .json({ error: "record cannot be forwarded by a inexistent user" });
+  }
+
+  if (user.section_id !== originID) {
+    return res.status(400).json({
+      error: `section mismatch for '${user.name}': ${user.section_id} is not ${originID}`,
+    });
   }
 
   const history = {
     forwarded_by: forwardedBy,
     origin_id: originID,
+    origin_name: originSection.name,
     destination_id: destinationID,
+    destination_name: destinationSection.name,
     record_id: recordID,
   };
 
@@ -234,7 +203,8 @@ async function forwardRecord(req, res) {
   await History.create(history);
 
   return res.status(200).json({
-    forwarded_by: `${user.name}`,
+    forwarded_by: `${user.email}`,
+    forwarded_by_name: `${user.name}`,
     forwarded_from: `${originSection.name}`,
     forwarded_to: `${destinationSection.name}`,
   });
@@ -263,10 +233,30 @@ async function getRecordSectionsByID(req, res) {
 async function setRecordSituation(req, res) {
   const { id } = req.params;
   const { situation } = req.body;
+  const recordID = Number.parseInt(id);
 
-  await Record.update({ situation: situation }, { where: { id: id } });
+  if (
+    situation !== Situation.StatusPending &&
+    situation !== Situation.StatusRunning &&
+    situation !== Situation.StatusFinished
+  ) {
+    return res.status(400).json({ error: "invalid situation provided" });
+  }
 
-  return res.status(200).json({ message: "successfully changed situation" });
+  const record = await Record.findByPk(recordID);
+  if (!record) {
+    return res.status(404).json(ERR_RECORD_NOT_FOUND);
+  }
+
+  record.situation = situation;
+  await record.save();
+
+  const updatedRecord = await Record.findByPk(recordID);
+
+  return res.status(200).json({
+    message: "successfully changed situation",
+    record: updatedRecord,
+  });
 }
 
 async function getFields(req, res) {

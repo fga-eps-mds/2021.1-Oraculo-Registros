@@ -59,15 +59,15 @@ module.exports = {
         allowNull: true,
       },
       situation: {
-        type: Sequelize.INTEGER,
+        type: Sequelize.TEXT,
         allowNull: false,
       },
       created_by: {
-        type: Sequelize.INTEGER,
+        type: Sequelize.TEXT,
         allowNull: false,
       },
       assigned_to: {
-        type: Sequelize.INTEGER,
+        type: Sequelize.TEXT,
         allowNull: true,
       },
       created_at: {

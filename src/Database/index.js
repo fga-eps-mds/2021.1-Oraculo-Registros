@@ -1,5 +1,4 @@
 const { Sequelize } = require("sequelize");
-const { Situation } = require("../Model/Situation");
 const Record = require("../Model/Record");
 const { Section } = require("../Model/Section");
 const Field = require("../Model/Field");
@@ -60,7 +59,6 @@ function loadEnvironment(testing) {
 
 async function setupModels(db) {
   Record.init(db);
-  Situation.init(db);
   Field.init(db);
   History.init(db);
   User.init(db);
@@ -69,7 +67,6 @@ async function setupModels(db) {
   Tag.init(db);
 
   Record.associate(db.models);
-  Situation.associate(db.models);
   History.associate(db.models);
   Section.associate(db.models);
   Tag.associate(db.models);
