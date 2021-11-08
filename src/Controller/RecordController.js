@@ -438,7 +438,7 @@ async function closeRecord(req, res) {
 
   try {
     const result = await updateRecordStatus(Situation.StatusFinished, recordID);
-    if (result == ERR_RECORD_NOT_FOUND) {
+    if (result === ERR_RECORD_NOT_FOUND) {
       return res.status(404).json(result);
     } else if (result === ERR_STATUS_ALREADY_SET) {
       return res.status(400).json(result);
@@ -459,7 +459,7 @@ async function closeRecord(req, res) {
       closed_by,
       closed_at: new Date(),
       record_id: recordID,
-      reason: reason ? reason : null,
+      reason,
     });
 
     return res.status(200).json({ message: "record closed successfully" });
@@ -481,7 +481,7 @@ async function reopenRecord(req, res) {
 
   try {
     const result = await updateRecordStatus(Situation.StatusRunning, recordID);
-    if (result == ERR_RECORD_NOT_FOUND) {
+    if (result === ERR_RECORD_NOT_FOUND) {
       return res.status(404).json(result);
     } else if (result === ERR_STATUS_ALREADY_SET) {
       return res.status(400).json(result);
@@ -502,7 +502,7 @@ async function reopenRecord(req, res) {
       reopened_by,
       reopened_at: new Date(),
       record_id: recordID,
-      reason: reason ? reason : null,
+      reason,
     });
 
     return res.status(200).json({ message: "record reopened successfully" });
