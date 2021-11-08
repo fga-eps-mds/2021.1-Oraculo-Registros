@@ -373,14 +373,6 @@ describe("Main test", () => {
   });
 
   it("POST /records/:id/close - should not close a record (no reason)", async () => {
-    const res = await request(app)
-      .post("/records/1/close")
-      .send({ closed_by: "william@pcgo.com" });
-
-    expect(res.statusCode).toEqual(400);
-  });
-
-  it("POST /records/:id/close - should close a record", async () => {
     // Atualiza o status do registro para "pending" antes de fazer os demais testes
     const res1 = await request(app).post("/records/1/status").send({
       situation: "pending",
@@ -388,6 +380,22 @@ describe("Main test", () => {
 
     expect(res1.statusCode).toEqual(200);
 
+    const res = await request(app)
+      .post("/records/1/close")
+      .send({ closed_by: "william@pcgo.com" });
+
+    expect(res.statusCode).toEqual(400);
+  });
+
+  it("POST /records/:id/reopen - should not reopen a record (no reason)", async () => {
+    const res = await request(app)
+      .post("/records/1/reopen")
+      .send({ reopened_by: "william@pcgo.com" });
+
+    expect(res.statusCode).toEqual(400);
+  });
+
+  it("POST /records/:id/close - should close a record", async () => {
     const res = await request(app)
       .post("/records/1/close")
       .send({ closed_by: "william@pcgo.com", reason: "any reason" });
@@ -425,6 +433,22 @@ describe("Main test", () => {
       .send({ reopened_by: 1, reason: "any reason" });
 
     expect(res.statusCode).toEqual(404);
+    expect(res.body.error).toBeDefined();
+  });
+
+  it("POST /records/:id/reopen - should not reopen (no user information)", async () => {
+    // Atualiza o status do registro para "pending" antes de fazer os demais testes
+    const res1 = await request(app).post("/records/1/status").send({
+      situation: "pending",
+    });
+
+    expect(res1.statusCode).toEqual(200);
+
+    const res = await request(app)
+      .post("/records/1/reopen")
+      .send({ reason: "any reason" });
+
+    expect(res.statusCode).toEqual(400);
     expect(res.body.error).toBeDefined();
   });
 });
