@@ -5,12 +5,13 @@ const History = require("../Model/History");
 const { User } = require("../Model/User");
 const { Situation } = require("../Model/Situation");
 const { Tag } = require("../Model/Tag");
-const { ERR_RECORD_NOT_FOUND } = require("../Constants/errors");
 const {
-  createNewSequence,
-  formatRecordSequence,
-  getNextRecordNumber,
-} = require("./RecordNumberController");
+  ERR_RECORD_NOT_FOUND,
+  ERR_NO_ERROR,
+  ERR_STATUS_ALREADY_SET,
+} = require("../Constants/errors");
+const { formatRecordSequence, getNextRecordNumber } = require("./RecordNumberController");
+const { Op } = require("sequelize");
 
 async function findCurrentSection(req, res) {
   const { id } = req.params;
@@ -230,26 +231,42 @@ async function getRecordSectionsByID(req, res) {
   return res.status(200).json(record.sections);
 }
 
+async function updateRecordStatus(situation, id) {
+  const record = await Record.findByPk(id);
+  if (!record) {
+    return ERR_RECORD_NOT_FOUND;
+  }
+
+  if (record.situation === situation) {
+    return ERR_STATUS_ALREADY_SET;
+  }
+
+  record.situation = situation;
+  await record.save();
+
+  return ERR_NO_ERROR;
+}
+
+function isValidSituation(situation) {
+  return (
+    situation === Situation.StatusPending ||
+    situation === Situation.StatusRunning ||
+    situation === Situation.StatusFinished
+  );
+}
 async function setRecordSituation(req, res) {
   const { id } = req.params;
   const { situation } = req.body;
   const recordID = Number.parseInt(id);
 
-  if (
-    situation !== Situation.StatusPending &&
-    situation !== Situation.StatusRunning &&
-    situation !== Situation.StatusFinished
-  ) {
+  if (!isValidSituation(situation)) {
     return res.status(400).json({ error: "invalid situation provided" });
   }
 
-  const record = await Record.findByPk(recordID);
-  if (!record) {
-    return res.status(404).json(ERR_RECORD_NOT_FOUND);
+  const result = await updateRecordStatus(situation, recordID);
+  if (result === ERR_RECORD_NOT_FOUND) {
+    return res.status(404).json(result);
   }
-
-  record.situation = situation;
-  await record.save();
 
   const updatedRecord = await Record.findByPk(recordID);
 
@@ -408,6 +425,92 @@ async function editRecord(req, res) {
   }
 }
 
+async function closeRecord(req, res) {
+  const { id } = req.params;
+  const { closed_by, reason } = req.body;
+  const recordID = Number.parseInt(id);
+
+  if (!reason) {
+    return res
+      .status(400)
+      .json({ error: "you should specify a reason to close a record" });
+  }
+
+  try {
+    const result = await updateRecordStatus(Situation.StatusFinished, recordID);
+    if (result === ERR_RECORD_NOT_FOUND) {
+      return res.status(404).json(result);
+    } else if (result === ERR_STATUS_ALREADY_SET) {
+      return res.status(400).json(result);
+    }
+
+    if (!closed_by) {
+      return res.status(400).json({ error: "invalid user information provided" });
+    }
+
+    const user = await User.findOne({ where: { email: closed_by } });
+    if (!user) {
+      return res
+        .status(404)
+        .json({ error: `user '${closed_by}' is not registered here` });
+    }
+
+    await History.create({
+      closed_by,
+      closed_at: new Date(),
+      record_id: recordID,
+      reason,
+    });
+
+    return res.status(200).json({ message: "record closed successfully" });
+  } catch (err) {
+    return res.status(500).json({ error: "internal server error while closing record" });
+  }
+}
+
+async function reopenRecord(req, res) {
+  const { id } = req.params;
+  const { reopened_by, reason } = req.body;
+  const recordID = Number.parseInt(id);
+
+  if (!reason) {
+    return res
+      .status(400)
+      .json({ error: "you should specify a reason to close a record" });
+  }
+
+  try {
+    const result = await updateRecordStatus(Situation.StatusRunning, recordID);
+    if (result === ERR_RECORD_NOT_FOUND) {
+      return res.status(404).json(result);
+    } else if (result === ERR_STATUS_ALREADY_SET) {
+      return res.status(400).json(result);
+    }
+
+    if (!reopened_by) {
+      return res.status(400).json({ error: "invalid user information provided" });
+    }
+
+    const user = await User.findOne({ where: { email: String(reopened_by) } });
+    if (!user) {
+      return res
+        .status(404)
+        .json({ error: `user '${reopened_by}' is not registered here` });
+    }
+
+    await History.create({
+      reopened_by,
+      reopened_at: new Date(),
+      record_id: recordID,
+      reason,
+    });
+
+    return res.status(200).json({ message: "record reopened successfully" });
+  } catch (err) {
+    return res.status(500).json({ error: "internal server error during record reopen" });
+  }
+}
+
 module.exports = {
   getRecordByID,
   getAllRecords,
@@ -424,4 +527,6 @@ module.exports = {
   getRecordTags,
   addTagToRecord,
   editRecord,
+  closeRecord,
+  reopenRecord,
 };
