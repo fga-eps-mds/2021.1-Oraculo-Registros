@@ -453,7 +453,9 @@ describe("Main test", () => {
   });
 
   it("POST /records/:id/close - should not reopen (record not found)", async () => {
-    const res = await request(app).post("/records/500/close");
+    const res = await request(app)
+      .post("/records/500/close")
+      .send({ reason: "any reason" });
     expect(res.statusCode).toEqual(404);
   });
 
@@ -470,7 +472,6 @@ describe("Main test", () => {
       .send({ closed_by: "william@pcgo.com", reason: "any reason" });
 
     expect(res.statusCode).toEqual(400);
-    expect(res.body.message).toBeDefined();
   });
 
   it("GET /sections - should list get all existing sections", async () => {
