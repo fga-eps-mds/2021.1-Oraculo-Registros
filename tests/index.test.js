@@ -451,6 +451,17 @@ describe("Main test", () => {
     expect(res.statusCode).toEqual(400);
     expect(res.body.error).toBeDefined();
   });
+
+  it("GET /sections - should list get all existing sections", async () => {
+    const res = await request(app).get("/sections");
+    expect(res.statusCode).toEqual(200);
+    expect(res.body).toBeDefined();
+  });
+
+  it("POST /tag/:id/edit - should not edit a tag (inexistent tag)", async () => {
+    const res = await request(app).post("/tag/500/edit");
+    expect(res.statusCode).toEqual(404);
+  });
 });
 
 afterAll((done) => {
