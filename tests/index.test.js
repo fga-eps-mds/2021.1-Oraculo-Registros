@@ -452,6 +452,27 @@ describe("Main test", () => {
     expect(res.body.error).toBeDefined();
   });
 
+  it("POST /records/:id/close - should not reopen (record not found)", async () => {
+    const res = await request(app).post("/records/500/close");
+    expect(res.statusCode).toEqual(404);
+  });
+
+  it("POST /records/:id/close - should not close (already closed)", async () => {
+    // Atualiza o status do registro para "finished" antes de fazer os demais testes
+    const res1 = await request(app).post("/records/1/status").send({
+      situation: "finished",
+    });
+
+    expect(res1.statusCode).toEqual(200);
+
+    const res = await request(app)
+      .post("/records/1/reopen")
+      .send({ closed_by: "william@pcgo.com", reason: "any reason" });
+
+    expect(res.statusCode).toEqual(400);
+    expect(res.body.message).toBeDefined();
+  });
+
   it("GET /sections - should list get all existing sections", async () => {
     const res = await request(app).get("/sections");
     expect(res.statusCode).toEqual(200);
