@@ -15,19 +15,35 @@ module.exports = {
       },
       origin_name: {
         type: Sequelize.TEXT,
-        allowNull: false,
+        allowNull: true,
       },
       destination_id: {
         type: Sequelize.INTEGER,
-        allowNull: false,
+        allowNull: true,
       },
       destination_name: {
         type: Sequelize.TEXT,
-        allowNull: false,
+        allowNull: true,
       },
       forwarded_by: {
         type: Sequelize.TEXT,
-        allowNull: false,
+        allowNull: true,
+      },
+      closed_at: {
+        type: Sequelize.DATE,
+        allowNull: true,
+      },
+      closed_by: {
+        type: Sequelize.TEXT,
+        allowNull: true,
+      },
+      reopened_at: {
+        type: Sequelize.DATE,
+        allowNull: true,
+      },
+      reopened_by: {
+        type: Sequelize.TEXT,
+        allowNull: true,
       },
       record_id: {
         type: Sequelize.INTEGER,
