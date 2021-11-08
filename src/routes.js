@@ -15,6 +15,8 @@ routes.get("/records/page/:page", RecordController.getRecordsByPage);
 routes.post("/records/:id/forward", RecordController.forwardRecord);
 routes.get("/records/:id/sections", RecordController.getRecordSectionsByID);
 routes.post("/records/:id/status", RecordController.setRecordSituation);
+routes.post("/records/:id/close", RecordController.closeRecord);
+routes.post("/records/:id/reopen", RecordController.reopenRecord);
 routes.get("/records/:id/history", RecordController.getRecordsHistory);
 routes.get("/records/:id/current-section", RecordController.findCurrentSection);
 routes.get("/count/records", RecordController.getTotalNumberOfRecords);
