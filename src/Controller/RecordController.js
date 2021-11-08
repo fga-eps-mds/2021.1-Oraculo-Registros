@@ -137,7 +137,7 @@ async function createRecord(req, res) {
 
 async function getRecordsByPage(req, res) {
   const { page } = req.params;
-  const itemsPerPage = 4;
+  const itemsPerPage = 30;
 
   try {
     const { rows, count } = await Record.findAndCountAll({
