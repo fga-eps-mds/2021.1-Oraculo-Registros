@@ -381,6 +381,13 @@ describe("Main test", () => {
   });
 
   it("POST /records/:id/close - should close a record", async () => {
+    // Atualiza o status do registro para "pending" antes de fazer os demais testes
+    const res1 = await request(app).post("/records/1/status").send({
+      situation: "pending",
+    });
+
+    expect(res1.statusCode).toEqual(200);
+
     const res = await request(app)
       .post("/records/1/close")
       .send({ closed_by: "william@pcgo.com", reason: "any reason" });
@@ -417,7 +424,8 @@ describe("Main test", () => {
       .post("/records/1/reopen")
       .send({ reopened_by: 1, reason: "any reason" });
 
-    expect(res.statusCode).toEqual(500);
+    expect(res.statusCode).toEqual(404);
+    expect(res.body.error).toBeDefined();
   });
 });
 
