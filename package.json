@@ -15,8 +15,8 @@
     "db:seeders:undo": "export DATABASE_URL=postgres://oraculo:oraculo123@localhost:5431/oraculo && npx sequelize db:seed:undo:all",
     "start": "node src/index.js",
     "start:prod": "node src/index.js",
-    "all": "yarn run docker:clean && yarn run docker:up && yarn run db:migrate && yarn run db:seeders",
-    "all:prod": "yarn docker:up && npx sequelize db:migrate && npx sequelize db:seed:all",
+    "all": "yarn run docker:clean && yarn run docker:up && yarn run db:migrate && sleep 5 && yarn run db:seeders",
+    "all:prod": "yarn docker:up && npx sequelize db:migrate && sleep 5 && npx sequelize db:seed:all",
     "update:all": "sudo docker-compose up -d --build"
   },
   "repository": {
