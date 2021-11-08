@@ -12,6 +12,8 @@ class History extends Model {
           get() {
             const val = this.getDataValue("origin_id");
             if (!val) {
+              // isso é feito dessa forma pois só assim o sequelize entende que o campo deverá ser omitido
+              // da query. O sonarcloud aponta como code smell, mas isso é algo interno do sequelize
               return;
             }
 
@@ -99,6 +101,17 @@ class History extends Model {
           type: DataTypes.TEXT,
           get() {
             const val = this.getDataValue("reopened_by");
+            if (!val) {
+              return;
+            }
+
+            return val;
+          },
+        },
+        reason: {
+          type: DataTypes.TEXT,
+          get() {
+            const val = this.getDataValue("reason");
             if (!val) {
               return;
             }
