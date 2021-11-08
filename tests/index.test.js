@@ -371,6 +371,54 @@ describe("Main test", () => {
 
     expect(res.statusCode).toEqual(400);
   });
+
+  it("POST /records/:id/close - should not close a record (no reason)", async () => {
+    const res = await request(app)
+      .post("/records/1/close")
+      .send({ closed_by: "william@pcgo.com" });
+
+    expect(res.statusCode).toEqual(400);
+  });
+
+  it("POST /records/:id/close - should close a record", async () => {
+    const res = await request(app)
+      .post("/records/1/close")
+      .send({ closed_by: "william@pcgo.com", reason: "any reason" });
+
+    expect(res.statusCode).toEqual(200);
+  });
+
+  it("POST /records/:id/reopen - should reopen a record", async () => {
+    const res = await request(app)
+      .post("/records/1/reopen")
+      .send({ reopened_by: "william@pcgo.com", reason: "any reason" });
+
+    expect(res.statusCode).toEqual(200);
+  });
+
+  it("POST /records/:id/reopen - should not reopen a record (status already set)", async () => {
+    const res = await request(app)
+      .post("/records/1/reopen")
+      .send({ reopened_by: "william@pcgo.com", reason: "any reason" });
+
+    expect(res.statusCode).toEqual(400);
+  });
+
+  it("POST /records/:id/close - should not close (invalid field type)", async () => {
+    const res = await request(app)
+      .post("/records/1/close")
+      .send({ closed_by: 1, reason: "any reason" });
+
+    expect(res.statusCode).toEqual(500);
+  });
+
+  it("POST /records/:id/reopen - should not reopen (invalid field type)", async () => {
+    const res = await request(app)
+      .post("/records/1/reopen")
+      .send({ reopened_by: 1, reason: "any reason" });
+
+    expect(res.statusCode).toEqual(500);
+  });
 });
 
 afterAll((done) => {
