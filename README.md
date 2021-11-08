@@ -617,3 +617,32 @@ Busca as informações de um usuário pelo e-mail
   "updatedAt": "2021-11-06T03:05:20.572Z"
 }
 ```
+
+**POST `/records/:id/close`**
+
+Finaliza as tramitações de um registro
+
+- Body
+
+```json
+{
+  "closed_by": "",
+  "reason": ""
+}
+```
+
+- Resposta
+
+* HTTP 200 se o registro for fechado com sucesso
+* HTTP 400 se o registro já estiver fechado ou se reason é vazio
+
+**PSOT `/records/:id/reopen`**
+
+Reabre as tramitações de um registro
+
+```json
+{
+  "reopened_by": "",
+  "reason": ""
+}
+```
