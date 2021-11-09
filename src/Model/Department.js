@@ -1,6 +1,6 @@
 const { Model, Sequelize } = require("sequelize");
 
-class Section extends Model {
+class Department extends Model {
   static init(sequelize) {
     super.init(
       {
@@ -9,18 +9,18 @@ class Section extends Model {
       },
       {
         sequelize,
-        tableName: "sections",
+        tableName: "departments",
       }
     );
   }
 
   static associate(models) {
     this.belongsToMany(models.Record, {
-      foreignKey: "section_id",
-      through: "record_sections",
+      foreignKey: "department_id",
+      through: "record_departments",
       as: "records",
     });
   }
 }
 
-module.exports = { Section };
+module.exports = { Department };
