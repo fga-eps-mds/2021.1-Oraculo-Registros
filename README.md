@@ -356,7 +356,8 @@ Registra um novo usuário
 ```json
 {
   "name": "",
-  "email": ""
+  "email": "",
+  "section_id": ""
 }
 ```
 
