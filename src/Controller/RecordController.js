@@ -511,6 +511,22 @@ async function reopenRecord(req, res) {
   }
 }
 
+async function findRecordWithSeiNumber(req, res) {
+  const { sei_number } = req.body;
+  const seiNumber = String(sei_number);
+
+  if (!seiNumber.length === 0) {
+    return res.status(400).json({ error: "empty sei number provided" });
+  }
+
+  const record = await Record.findOne({ where: { sei_number: seiNumber } });
+  if (!record) {
+    return res.status(404).json({ found: false });
+  }
+
+  return res.status(200).json({ found: true });
+}
+
 module.exports = {
   getRecordByID,
   getAllRecords,
@@ -529,4 +545,5 @@ module.exports = {
   editRecord,
   closeRecord,
   reopenRecord,
+  findRecordWithSeiNumber,
 };
