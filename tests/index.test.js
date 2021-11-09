@@ -503,7 +503,7 @@ describe("Main test", () => {
     expect(res.body.error).toBeDefined();
   });
 
-  it("GET /records/with-sei - should not return a record", async () => {
+  it("GET /records/with-sei - should return a record", async () => {
     const res = await request(app).get("/records/with-sei").send({
       sei_number: "1234",
     });

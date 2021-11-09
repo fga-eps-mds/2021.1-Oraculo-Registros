@@ -515,7 +515,7 @@ async function findRecordWithSeiNumber(req, res) {
   const { sei_number } = req.body;
   const seiNumber = String(sei_number);
 
-  if (!seiNumber.length === 0) {
+  if (seiNumber.length === 0) {
     return res.status(400).json({ error: "empty sei number provided" });
   }
 
