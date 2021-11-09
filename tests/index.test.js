@@ -486,7 +486,7 @@ describe("Main test", () => {
   });
 
   it("GET /records/with-sei - should not return a record", async () => {
-    const res = await request(app).post("/records/with-sei").send({
+    const res = await request(app).get("/records/with-sei").send({
       sei_number: "abcdef",
     });
 
@@ -495,7 +495,7 @@ describe("Main test", () => {
   });
 
   it("GET /records/with-sei - should not return a record", async () => {
-    const res = await request(app).post("/records/with-sei").send({
+    const res = await request(app).get("/records/with-sei").send({
       sei_number: "",
     });
 
@@ -504,7 +504,7 @@ describe("Main test", () => {
   });
 
   it("GET /records/with-sei - should not return a record", async () => {
-    const res = await request(app).post("/records/with-sei").send({
+    const res = await request(app).get("/records/with-sei").send({
       sei_number: "1234",
     });
 
