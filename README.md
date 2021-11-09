@@ -646,3 +646,17 @@ Reabre as tramitações de um registro
   "reason": ""
 }
 ```
+
+**GET `/records/with-sei`**
+
+Busca um registro de acordo com o número do SEI
+
+- Body
+
+```json
+{
+  "sei_number": ""
+}
+```
+
+**sei_number** deverá conter o número do sei a ser pesquisado
