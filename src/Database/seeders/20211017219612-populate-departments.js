@@ -2,7 +2,7 @@
 
 module.exports = {
   up: async (queryInterface, Sequelize) => {
-    const sections = [
+    const departments = [
       {
         name: "Seção AFIS",
         created_at: new Date(),
@@ -209,10 +209,10 @@ module.exports = {
       },
     ];
 
-    return queryInterface.bulkInsert("sections", sections);
+    return queryInterface.bulkInsert("departments", departments);
   },
 
   down: async (queryInterface, Sequelize) => {
-    queryInterface.bulkDelete("sections", null, {});
+    queryInterface.bulkDelete("departments", null, {});
   },
 };
