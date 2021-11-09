@@ -521,7 +521,7 @@ async function findRecordWithSeiNumber(req, res) {
 
   const record = await Record.findOne({ where: { sei_number: seiNumber } });
   if (!record) {
-    return res.status(404).json({ found: false });
+    return res.status(200).json({ found: false });
   }
 
   return res.status(200).json({ found: true });

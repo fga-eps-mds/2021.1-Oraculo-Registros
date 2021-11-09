@@ -490,7 +490,7 @@ describe("Main test", () => {
       sei_number: "abcdef",
     });
 
-    expect(res.statusCode).toEqual(404);
+    expect(res.statusCode).toEqual(200);
     expect(res.body.found).toEqual(false);
   });
 
