@@ -18,7 +18,7 @@ module.exports = {
         allowNull: false,
         unique: true,
       },
-      section_id: {
+      department_id: {
         type: Sequelize.INTEGER,
         allowNull: false,
       },
