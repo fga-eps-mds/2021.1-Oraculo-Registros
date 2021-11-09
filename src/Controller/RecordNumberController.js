@@ -29,11 +29,11 @@ async function getNextRecordNumber() {
 }
 
 function formatRecordSequence(seq, year) {
-  const prefix = `00000`;
+  const prefix = `000000`;
   let seqString = `${seq}`;
-  let len = 5;
+  let len = 6;
 
-  for (let digits = 1; digits <= 5; digits++) {
+  for (let digits = 1; digits <= len; digits++) {
     if (digits === seqString.length) {
       len -= digits;
       break;
