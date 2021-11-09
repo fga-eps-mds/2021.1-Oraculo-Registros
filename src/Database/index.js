@@ -1,6 +1,5 @@
 const { Sequelize } = require("sequelize");
 const Record = require("../Model/Record");
-const { Section } = require("../Model/Section");
 const Field = require("../Model/Field");
 const History = require("../Model/History");
 const { User } = require("../Model/User");
@@ -62,13 +61,11 @@ async function setupModels(db) {
   Field.init(db);
   History.init(db);
   User.init(db);
-  Section.init(db);
   RecordNumber.init(db);
   Tag.init(db);
 
   Record.associate(db.models);
   History.associate(db.models);
-  Section.associate(db.models);
   Tag.associate(db.models);
 }
 
