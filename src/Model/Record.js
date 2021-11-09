@@ -34,10 +34,10 @@ class Record extends Model {
       through: "records_tags",
       as: "tags",
     });
-    this.belongsToMany(models.Section, {
+    this.belongsToMany(models.Department, {
       foreignKey: "record_id",
-      through: "record_sections",
-      as: "sections",
+      through: "record_departments",
+      as: "department",
     });
   }
 }
