@@ -1,5 +1,5 @@
 const Record = require("../Model/Record");
-const { Section } = require("../Model/Section");
+const { Section } = require("../Model/Department");
 const Field = require("../Model/Field");
 const History = require("../Model/History");
 const { User } = require("../Model/User");
@@ -125,7 +125,7 @@ async function createRecord(req, res) {
     await History.create(history);
 
     const fullRecord = await Record.findByPk(createdRecord.id, {
-      include: [{ association: "tags" }, { association: "sections" }],
+      include: [{ association: "tags" }, { association: "departments" }],
     });
 
     return res.status(200).json(fullRecord);
@@ -211,12 +211,12 @@ async function forwardRecord(req, res) {
   });
 }
 
-async function getRecordSectionsByID(req, res) {
+async function getRecordDepartmentsByID(req, res) {
   const { id } = req.params;
 
   const record = await Record.findByPk(id, {
     include: {
-      association: "sections",
+      association: "departments",
       attributes: ["id", "name"],
     },
     through: {
@@ -228,7 +228,7 @@ async function getRecordSectionsByID(req, res) {
     return res.status(404).json(ERR_RECORD_NOT_FOUND);
   }
 
-  return res.status(200).json(record.sections);
+  return res.status(200).json(record.departments);
 }
 
 async function updateRecordStatus(situation, id) {
@@ -532,7 +532,7 @@ module.exports = {
   getAllRecords,
   createRecord,
   forwardRecord,
-  getRecordSectionsByID,
+  getRecordDepartmentsByID,
   getRecordsByPage,
   setRecordSituation,
   getFields,
