@@ -24,7 +24,7 @@ const validRecord2 = {
   document_number: "1020304050",
   document_date: "15/04/2021",
   description: "ABCDEFGHIJKL",
-  sei_number: "1234",
+  sei_number: "12345",
   receipt_form: "form",
   contact_info: "info@gmail.com",
   situation: 2,
@@ -483,6 +483,34 @@ describe("Main test", () => {
   it("POST /tag/:id/edit - should not edit a tag (inexistent tag)", async () => {
     const res = await request(app).post("/tag/500/edit");
     expect(res.statusCode).toEqual(404);
+  });
+
+  it("GET /records/with-sei - should not return a record", async () => {
+    const res = await request(app).post("/records/with-sei").send({
+      sei_number: "abcdef",
+    });
+
+    expect(res.statusCode).toEqual(404);
+    expect(res.body.found).toEqual(false);
+  });
+
+  it("GET /records/with-sei - should not return a record", async () => {
+    const res = await request(app).post("/records/with-sei").send({
+      sei_number: "",
+    });
+
+    expect(res.statusCode).toEqual(400);
+    expect(res.body.error).toBeDefined();
+  });
+
+  it("GET /records/with-sei - should not return a record", async () => {
+    const res = await request(app).post("/records/with-sei").send({
+      sei_number: "1234",
+    });
+
+    expect(res.statusCode).toEqual(200);
+    expect(res.body.found).toBeDefined();
+    expect(res.body.found).toEqual(true);
   });
 });
 
