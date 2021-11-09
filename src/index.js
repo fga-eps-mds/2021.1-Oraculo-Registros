@@ -13,7 +13,7 @@ let corsOptions = {
   origin: "https://oraculo-frontend.herokuapp.com",
 };
 
-app.use(cors(corsOptions));
+app.use(cors());
 app.use(morgan("short"));
 app.use(express.json());
 app.use(routes);
