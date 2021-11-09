@@ -16,10 +16,10 @@ module.exports = {
         onUpdate: "CASCADE",
         onDelete: "CASCADE",
       },
-      section_id: {
+      department_id: {
         type: Sequelize.INTEGER,
         allowNull: false,
-        references: { model: "sections", key: "id" },
+        references: { model: "departments", key: "id" },
         onUpdate: "CASCADE",
         onDelete: "CASCADE",
       },
