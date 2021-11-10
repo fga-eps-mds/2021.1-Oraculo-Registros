@@ -28,6 +28,6 @@ routes.post("/records/:id/add-tag", RecordController.addTagToRecord);
 routes.get("/sections", SectionController.listSections);
 routes.post("/records/:id/edit", RecordController.editRecord);
 routes.post("/users", UserController.createUser);
-routes.get("/user/by-mail", UserController.getUserByMail);
+routes.get("/user/by-mail/:email", UserController.getUserByMail);
 
 module.exports = routes;
