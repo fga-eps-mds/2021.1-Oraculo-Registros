@@ -2,7 +2,43 @@
 
 module.exports = {
   up: async (queryInterface, Sequelize) => {
-    const sections = [
+    const departments = [
+      {
+        name: "Divisão Administrativa",
+        created_at: new Date(),
+        updated_at: new Date(),
+        is_admin: true,
+      },
+      {
+        name: "Divisão Biométrica Civil",
+        created_at: new Date(),
+        updated_at: new Date(),
+        is_admin: true,
+      },
+      {
+        name: "Divisão Biométrica Criminal",
+        created_at: new Date(),
+        updated_at: new Date(),
+        is_admin: true,
+      },
+      {
+        name: "Divisão de Tecnologia, Pesquisa e Desenvolvimento",
+        created_at: new Date(),
+        updated_at: new Date(),
+        is_admin: true,
+      },
+      {
+        name: "Gerência Adjunta",
+        created_at: new Date(),
+        updated_at: new Date(),
+        is_admin: true,
+      },
+      {
+        name: "Gerência de Identificação",
+        created_at: new Date(),
+        updated_at: new Date(),
+        is_admin: true,
+      },
       {
         name: "Seção AFIS",
         created_at: new Date(),
@@ -202,17 +238,17 @@ module.exports = {
         is_admin: false,
       },
       {
-        name: "none",
+        name: "Unidade de Inteligência",
         created_at: new Date(),
         updated_at: new Date(),
         is_admin: false,
       },
     ];
 
-    return queryInterface.bulkInsert("sections", sections);
+    return queryInterface.bulkInsert("departments", departments);
   },
 
   down: async (queryInterface, Sequelize) => {
-    queryInterface.bulkDelete("sections", null, {});
+    queryInterface.bulkDelete("departments", null, {});
   },
 };

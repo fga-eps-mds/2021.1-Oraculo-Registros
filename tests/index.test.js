@@ -50,7 +50,7 @@ const emptyRecord = {};
 const user = {
   name: "tester",
   email: "tester@email.com",
-  section_id: 1,
+  department_id: 1,
 };
 
 const tag1 = {
@@ -116,13 +116,11 @@ describe("Main test", () => {
 
   it("POST /records - should create a record", async () => {
     const res = await request(app).post("/records").send(validRecord1);
-    last_record_id = res.body.id;
     expect(res.statusCode).toBe(200);
   });
 
   it("POST /records - should create a record", async () => {
     const res = await request(app).post("/records").send(validRecord2);
-
     expect(res.statusCode).toBe(200);
   });
 
@@ -132,13 +130,13 @@ describe("Main test", () => {
     expect(res.body.error).toBeDefined();
   });
 
-  it("POST /records - should get all registered records", async () => {
+  it("GET /records - should get all registered records", async () => {
     const res = await request(app).get("/records");
     expect(res.statusCode).toEqual(200);
   });
 
-  it("POST /records/:id - should return a record", async () => {
-    const res = await request(app).get(`/records/${last_record_id}`);
+  it("GET /records/:id - should return a record", async () => {
+    const res = await request(app).get(`/records/1`);
     expect(res.statusCode).toEqual(200);
   });
 
@@ -169,7 +167,7 @@ describe("Main test", () => {
     expect(res.statusCode).toEqual(200);
   });
 
-  it("POST /records/1/forward - should not forward a record (section mismatch)", async () => {
+  it("POST /records/1/forward - should not forward a record (department mismatch)", async () => {
     const payload = {
       destination_id: 2,
       origin_id: 3,
@@ -182,31 +180,21 @@ describe("Main test", () => {
   });
 
   it("POST /records/500/forward - should not forward (inexistent)", async () => {
-    const section = {
+    const department = {
       destination_id: 3,
       origin_id: 2,
       forwarded_by: 1,
     };
-    const res = await request(app).post("/records/500/forward").send(section);
+    const res = await request(app).post("/records/500/forward").send(department);
     expect(res.statusCode).toEqual(404);
   });
 
-  it("POST /records/1/forward - should not forward (invalid section)", async () => {
+  it("POST /records/1/forward - should not forward (invalid department)", async () => {
     const invalid = '\
-            {"section_id":"invalid"}   \
+            {"department_id":"invalid"}   \
         ';
     const res = await request(app).post("/records/500/forward").send(invalid);
     expect(res.statusCode).toEqual(400);
-  });
-
-  it("GET /records/1/sections - should return section history", async () => {
-    const res = await request(app).get("/records/1/sections");
-    expect(res.statusCode).toEqual(200);
-  });
-
-  it("GET /records/500/sections - should not return (inexistent record)", async () => {
-    const res = await request(app).get("/records/500/sections");
-    expect(res.statusCode).toEqual(404);
   });
 
   it("GET /records/500 - should not return a inexistent record", async () => {
@@ -270,11 +258,6 @@ describe("Main test", () => {
     expect(res.body).toBeDefined();
   });
 
-  it("GET /records/1/current-section - should return the current section of a record", async () => {
-    const res = await request(app).get("/records/1/current-section");
-    expect(res.statusCode).toEqual(200);
-    expect(res.body.current_section).toBeDefined();
-  });
   it("GET /count/records - should return some records", async () => {
     const res = await request(app).get("/count/records");
     expect(res.statusCode).toEqual(200);
@@ -352,7 +335,7 @@ describe("Main test", () => {
 
     expect(res.statusCode).toEqual(200);
     expect(res.body.email).toBeDefined();
-    expect(res.body.section_id).toBeDefined();
+    expect(res.body.department_id).toBeDefined();
     expect(res.body.name).toBeDefined();
   });
 
@@ -366,7 +349,7 @@ describe("Main test", () => {
     const res = await request(app).post("/users").send({
       name: "user",
       email: "user",
-      section_id: 2,
+      department_id: 2,
     });
 
     expect(res.statusCode).toEqual(400);
@@ -474,19 +457,13 @@ describe("Main test", () => {
     expect(res.statusCode).toEqual(400);
   });
 
-  it("GET /sections - should list get all existing sections", async () => {
-    const res = await request(app).get("/sections");
-    expect(res.statusCode).toEqual(200);
-    expect(res.body).toBeDefined();
-  });
-
   it("POST /tag/:id/edit - should not edit a tag (inexistent tag)", async () => {
     const res = await request(app).post("/tag/500/edit");
     expect(res.statusCode).toEqual(404);
   });
 
   it("GET /records/with-sei - should not return a record", async () => {
-    const res = await request(app).get("/records/with-sei").send({
+    const res = await request(app).post("/records/with-sei").send({
       sei_number: "abcdef",
     });
 
@@ -495,7 +472,7 @@ describe("Main test", () => {
   });
 
   it("GET /records/with-sei - should not return a record", async () => {
-    const res = await request(app).get("/records/with-sei").send({
+    const res = await request(app).post("/records/with-sei").send({
       sei_number: "",
     });
 
@@ -504,13 +481,29 @@ describe("Main test", () => {
   });
 
   it("GET /records/with-sei - should return a record", async () => {
-    const res = await request(app).get("/records/with-sei").send({
+    const res = await request(app).post("/records/with-sei").send({
       sei_number: "1234",
     });
 
     expect(res.statusCode).toEqual(200);
     expect(res.body.found).toBeDefined();
     expect(res.body.found).toEqual(true);
+  });
+
+  it("GET /departments - should return a list of all departments", async () => {
+    const res = await request(app).get("/departments");
+    expect(res.statusCode).toEqual(200);
+    expect(res.body).toBeDefined();
+  });
+
+  it("GET /records/:id/current-department - should return current department", async () => {
+    const res = await request(app).get("/records/1/current-department");
+    expect(res.statusCode).toEqual(200);
+  });
+
+  it("GET /records/:id/current-department - should return current department", async () => {
+    const res = await request(app).get("/records/a/current-department");
+    expect(res.statusCode).toEqual(400);
   });
 });
 

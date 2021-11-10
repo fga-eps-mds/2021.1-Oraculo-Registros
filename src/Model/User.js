@@ -6,7 +6,7 @@ class User extends Model {
       {
         name: { type: Sequelize.TEXT },
         email: { type: Sequelize.TEXT },
-        section_id: { type: Sequelize.INTEGER },
+        department_id: { type: Sequelize.INTEGER },
       },
       {
         sequelize: db,
