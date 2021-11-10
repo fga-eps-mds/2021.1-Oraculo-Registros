@@ -101,24 +101,19 @@ async function createRecord(req, res) {
     record.assigned_to = createdBy;
     record.situation = Situation.StatusPending;
 
-    const createdRecord = await Record.create(record);
     const departmentID = Number.parseInt(user.department_id);
-    await createdRecord.addDepartment(departmentID);
-
-    const emptyDepartment = await Department.findOne({ where: { name: "none" } });
-    const destinationDepartment = await Department.findByPk(departmentID);
-
-    if (!destinationDepartment) {
+    const createdRecord = await Record.create(record);
+    const department = await Department.findByPk(departmentID);
+    if (!department) {
       return res.status(404).json({ error: "Department not found" });
     }
 
     // Adds entry to history
     const history = {
-      forwarded_by: createdBy,
-      origin_id: emptyDepartment.id,
-      origin_name: emptyDepartment.name,
-      destination_id: departmentID,
-      destination_name: destinationDepartment.name,
+      created_by: createdBy,
+      created_at: new Date(),
+      origin_id: department.id,
+      origin_name: department.name,
       record_id: createdRecord.id,
     };
 
