@@ -331,11 +331,24 @@ Retorna todo o histórico de movimentação de um registro
   "origin_name": "",
   "destination_id": 0,
   "destination_name": "",
-  "createdAt": "",
-  "updatedAt": "",
-  "record_id": 0
+  "closed_by": "",
+  "closed_at": "",
+  "created_by": "",
+  "created_at": "",
+  "reopened_by": "",
+  "reopened_at": "",
+  "record_id": 0,
+  "created_at": "",
+  "updated_at": ""
 }
 ```
+
+**Importante**: alguns campos poderão ser nulos, de acordo com a informação contida na entrada do histórico.
+
+- `created_by` será não nulo caso seja uma entada no histórico que contém informações sobre a data de criação
+- `forwarded_by` será não nulo caso seja uma entrada no histórico que contém informações sobre encaminhamento de um registro
+- `closed_by` será não nulo caso seja uma entrada no histórico que contém informações sobre fechamento de um registro
+- `reopened_by` será não nulo caso seja uma entrada no histórico que contém informações sobre a reabertura de um registro
 
 **GET: `/records/:id/current-department`**
 

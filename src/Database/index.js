@@ -58,6 +58,7 @@ function loadEnvironment(testing) {
 }
 
 async function setupModels(db) {
+  // Initializes models
   Record.init(db);
   Field.init(db);
   History.init(db);
@@ -66,6 +67,7 @@ async function setupModels(db) {
   RecordNumber.init(db);
   Tag.init(db);
 
+  // Perform associations
   Record.associate(db.models);
   History.associate(db.models);
   Department.associate(db.models);
@@ -77,7 +79,7 @@ async function setupSequelize() {
 }
 
 async function configure(auth, db) {
-  return new Promise((resolve, reject) => {
+  return new Promise((resolve) => {
     auth.then(() => {
       setupModels(db);
       resolve(0);
@@ -86,7 +88,10 @@ async function configure(auth, db) {
 }
 
 async function initializeDatabase() {
+  // Initializes sequelize client
   const db = await setupSequelize();
+
+  // Run database authentication process
   const auth = db.authenticate();
   return configure(auth, db);
 }
