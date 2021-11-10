@@ -345,10 +345,9 @@ describe("Main test", () => {
     expect(res.statusCode).toEqual(500);
   });
 
-  it("GET /user/by-mail - should return user information", async () => {
+  it("GET /user/by-mail/:email - should return user information", async () => {
     const res = await request(app)
-      .get("/user/by-mail")
-      .send({ email: "william@pcgo.com" });
+      .get("/user/by-mail/william@pcgo.com");
 
     expect(res.statusCode).toEqual(200);
     expect(res.body.email).toBeDefined();
@@ -357,7 +356,7 @@ describe("Main test", () => {
   });
 
   it("GET /user/by-mail - should not return user information (inexistent user)", async () => {
-    const res = await request(app).get("/user/by-mail").send({ email: "zzz@bol.com" });
+    const res = await request(app).get("/user/by-mail/zzz@bol.com");
 
     expect(res.statusCode).toEqual(404);
   });
