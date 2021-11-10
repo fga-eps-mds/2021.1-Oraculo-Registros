@@ -37,7 +37,7 @@ class Record extends Model {
     this.belongsToMany(models.Department, {
       foreignKey: "record_id",
       through: "record_departments",
-      as: "department",
+      as: "departments",
     });
   }
 }
