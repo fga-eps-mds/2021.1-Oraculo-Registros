@@ -68,7 +68,7 @@ async function setupModels(db) {
 
   Record.associate(db.models);
   History.associate(db.models);
-  Department.associate(db);
+  Department.associate(db.models);
   Tag.associate(db.models);
 }
 
