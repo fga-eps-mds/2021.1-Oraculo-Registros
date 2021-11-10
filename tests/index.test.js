@@ -116,13 +116,11 @@ describe("Main test", () => {
 
   it("POST /records - should create a record", async () => {
     const res = await request(app).post("/records").send(validRecord1);
-    last_record_id = res.body.id;
     expect(res.statusCode).toBe(200);
   });
 
   it("POST /records - should create a record", async () => {
     const res = await request(app).post("/records").send(validRecord2);
-
     expect(res.statusCode).toBe(200);
   });
 
@@ -132,13 +130,13 @@ describe("Main test", () => {
     expect(res.body.error).toBeDefined();
   });
 
-  it("POST /records - should get all registered records", async () => {
+  it("GET /records - should get all registered records", async () => {
     const res = await request(app).get("/records");
     expect(res.statusCode).toEqual(200);
   });
 
-  it("POST /records/:id - should return a record", async () => {
-    const res = await request(app).get(`/records/${last_record_id}`);
+  it("GET /records/:id - should return a record", async () => {
+    const res = await request(app).get(`/records/1`);
     expect(res.statusCode).toEqual(200);
   });
 
