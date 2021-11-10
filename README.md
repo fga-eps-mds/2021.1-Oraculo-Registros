@@ -607,7 +607,7 @@ Edita um registro cadastrado no sistema
 }
 ```
 
-**GET `/user/by-mail`**
+**POST `/user/by-mail`**
 
 Busca as informações de um usuário pelo e-mail
 
