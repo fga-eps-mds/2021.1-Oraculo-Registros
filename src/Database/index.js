@@ -4,6 +4,7 @@ const Field = require("../Model/Field");
 const History = require("../Model/History");
 const { User } = require("../Model/User");
 const { RecordNumber } = require("../Model/RecordNumber");
+const { Department } = require("../Model/Department");
 const { Tag } = require("../Model/Tag");
 require("dotenv").config();
 
@@ -58,6 +59,7 @@ function loadEnvironment(testing) {
 
 async function setupModels(db) {
   Record.init(db);
+  Department.init(db);
   Field.init(db);
   History.init(db);
   User.init(db);
@@ -67,6 +69,7 @@ async function setupModels(db) {
   Record.associate(db.models);
   History.associate(db.models);
   Tag.associate(db.models);
+  Department.associate(db);
 }
 
 async function setupSequelize() {
