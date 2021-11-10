@@ -650,7 +650,7 @@ Finaliza as tramitações de um registro
 * HTTP 200 se o registro for fechado com sucesso
 * HTTP 400 se o registro já estiver fechado ou se reason é vazio
 
-**PSOT `/records/:id/reopen`**
+**POST `/records/:id/reopen`**
 
 Reabre as tramitações de um registro
 
