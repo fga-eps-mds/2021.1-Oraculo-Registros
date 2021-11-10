@@ -29,6 +29,6 @@ routes.post("/records/:id/add-tag", RecordController.addTagToRecord);
 routes.get("/departments", DepartmentController.listDepartments);
 routes.post("/records/:id/edit", RecordController.editRecord);
 routes.post("/users", UserController.createUser);
-routes.get("/user/by-mail", UserController.getUserByMail);
+routes.post("/user/by-mail/", UserController.getUserByMail);
 
 module.exports = routes;

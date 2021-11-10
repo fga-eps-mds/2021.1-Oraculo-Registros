@@ -21,12 +21,19 @@ async function createUser(req, res) {
 
 async function getUserByMail(req, res) {
   const { email } = req.body;
-  const user = await User.findOne({ where: { email } });
-  if (!user) {
-    return res.status(404).json({ error: "user not found" });
-  }
+  console.log(req.body);
 
-  return res.status(200).json(user);
+  try{
+    const user = await User.findOne({ where: { email } });
+    if (!user) {
+      return res.status(404).json({ error: "user not found" });
+    }
+
+    return res.status(200).json(user);
+  } catch (err) {
+    console.error(`failed to search user: ${err}`);
+    return res.status(404).json({ error: "could not find user" });
+  }
 }
 
 module.exports = { createUser, getUserByMail };
