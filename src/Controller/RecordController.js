@@ -1,5 +1,4 @@
 const Record = require("../Model/Record");
-const { Section } = require("../Model/Section");
 const Field = require("../Model/Field");
 const History = require("../Model/History");
 const { User } = require("../Model/User");
@@ -12,8 +11,9 @@ const {
 } = require("../Constants/errors");
 const { formatRecordSequence, getNextRecordNumber } = require("./RecordNumberController");
 const { Op } = require("sequelize");
+const { Department } = require("../Model/Department");
 
-async function findCurrentSection(req, res) {
+async function findCurrentDepartment(req, res) {
   const { id } = req.params;
   const recordID = Number.parseInt(id);
 
@@ -30,8 +30,8 @@ async function findCurrentSection(req, res) {
   const lastEntry = history[history.length - 1];
 
   return res.status(200).json({
-    current_section: lastEntry.destination_id,
-    current_section_name: lastEntry.destination_name,
+    current_department: lastEntry.destination_id,
+    current_department_name: lastEntry.destination_name,
   });
 }
 
@@ -101,31 +101,30 @@ async function createRecord(req, res) {
     record.assigned_to = createdBy;
     record.situation = Situation.StatusPending;
 
+    const departmentID = Number.parseInt(user.department_id);
     const createdRecord = await Record.create(record);
-    const sectionID = Number.parseInt(user.section_id);
-    await createdRecord.addSection(sectionID);
-
-    const emptySection = await Section.findOne({ where: { name: "none" } });
-    const destinationSection = await Section.findByPk(sectionID);
-
-    if (!destinationSection) {
-      return res.status(404).json({ error: "section not found" });
+    const department = await Department.findByPk(departmentID);
+    if (!department) {
+      return res.status(404).json({ error: "Department not found" });
     }
 
     // Adds entry to history
     const history = {
-      forwarded_by: createdBy,
-      origin_id: emptySection.id,
-      origin_name: emptySection.name,
-      destination_id: sectionID,
-      destination_name: destinationSection.name,
+      created_by: createdBy,
+      created_at: new Date(),
+      origin_id: department.id,
+      origin_name: department.name,
       record_id: createdRecord.id,
     };
+
+    const tag = await Tag.findOne({ where: { name: "Tramitar" } });
+    await createdRecord.setDepartments([department]);
+    await createdRecord.setTags([tag]);
 
     await History.create(history);
 
     const fullRecord = await Record.findByPk(createdRecord.id, {
-      include: [{ association: "tags" }, { association: "sections" }],
+      include: [{ association: "tags" }, { association: "departments" }],
     });
 
     return res.status(200).json(fullRecord);
@@ -165,13 +164,13 @@ async function forwardRecord(req, res) {
   const forwardedBy = String(forwarded_by);
 
   if (!Number.isFinite(originID) || !Number.isFinite(destinationID)) {
-    return res.status(400).json({ error: "invalid section id provided" });
+    return res.status(400).json({ error: "invalid Department id provided" });
   }
 
   const record = await Record.findByPk(recordID);
-  const originSection = await Section.findByPk(originID);
-  const destinationSection = await Section.findByPk(destinationID);
-  if (!record || !destinationSection || !originSection) {
+  const originDepartment = await Department.findByPk(originID);
+  const destinationDepartment = await Department.findByPk(destinationID);
+  if (!record || !destinationDepartment || !originDepartment) {
     return res.status(404).json({ error: "session or record not found" });
   }
 
@@ -183,40 +182,40 @@ async function forwardRecord(req, res) {
       .json({ error: "record cannot be forwarded by a inexistent user" });
   }
 
-  if (user.section_id !== originID) {
+  if (user.department_id !== originID) {
     return res.status(400).json({
-      error: `section mismatch for '${user.name}': ${user.section_id} is not ${originID}`,
+      error: `department mismatch for '${user.name}': ${user.department_id} is not ${originID}`,
     });
   }
 
   const history = {
     forwarded_by: forwardedBy,
     origin_id: originID,
-    origin_name: originSection.name,
+    origin_name: originDepartment.name,
     destination_id: destinationID,
-    destination_name: destinationSection.name,
+    destination_name: destinationDepartment.name,
     record_id: recordID,
   };
 
   // updates history
-  // forward record to section
-  await record.addSection(destinationSection);
+  // forward record to department
+  await record.addDepartment(destinationDepartment);
   await History.create(history);
 
   return res.status(200).json({
     forwarded_by: `${user.email}`,
     forwarded_by_name: `${user.name}`,
-    forwarded_from: `${originSection.name}`,
-    forwarded_to: `${destinationSection.name}`,
+    forwarded_from: `${originDepartment.name}`,
+    forwarded_to: `${destinationDepartment.name}`,
   });
 }
 
-async function getRecordSectionsByID(req, res) {
+async function getDepartmentsByID(req, res) {
   const { id } = req.params;
 
   const record = await Record.findByPk(id, {
     include: {
-      association: "sections",
+      association: "departments",
       attributes: ["id", "name"],
     },
     through: {
@@ -228,7 +227,7 @@ async function getRecordSectionsByID(req, res) {
     return res.status(404).json(ERR_RECORD_NOT_FOUND);
   }
 
-  return res.status(200).json(record.sections);
+  return res.status(200).json(record.departments);
 }
 
 async function updateRecordStatus(situation, id) {
@@ -315,14 +314,14 @@ async function getDepartmentRecords(req, res) {
   const { id } = req.params;
   const departmentID = Number.parseInt(id);
 
-  const section = await Section.findByPk(departmentID, {
+  const department = await Department.findByPk(departmentID, {
     include: ["records"],
   });
-  if (!section) {
+  if (!department) {
     return res.status(404).json({ error: "department not found" });
   }
 
-  const records = await section.getRecords();
+  const records = await department.getRecords();
   if (records.length === 0) {
     return res.status(204).json({
       message: "no records could be found on the specified department",
@@ -511,17 +510,33 @@ async function reopenRecord(req, res) {
   }
 }
 
+async function findRecordWithSeiNumber(req, res) {
+  const { sei_number } = req.body;
+  const seiNumber = String(sei_number);
+
+  if (seiNumber.length === 0) {
+    return res.status(400).json({ error: "empty sei number provided" });
+  }
+
+  const record = await Record.findOne({ where: { sei_number: seiNumber } });
+  if (!record) {
+    return res.status(200).json({ found: false });
+  }
+
+  return res.status(200).json({ found: true });
+}
+
 module.exports = {
   getRecordByID,
   getAllRecords,
   createRecord,
   forwardRecord,
-  getRecordSectionsByID,
+  getDepartmentsByID,
   getRecordsByPage,
   setRecordSituation,
   getFields,
   getRecordsHistory,
-  findCurrentSection,
+  findCurrentDepartment,
   getTotalNumberOfRecords,
   getDepartmentRecords,
   getRecordTags,
@@ -529,4 +544,5 @@ module.exports = {
   editRecord,
   closeRecord,
   reopenRecord,
+  findRecordWithSeiNumber,
 };

@@ -2,25 +2,26 @@
 
 module.exports = {
   up: async (queryInterface, Sequelize) => {
-    return queryInterface.createTable("users", {
+    return queryInterface.createTable("record_departments", {
       id: {
         type: Sequelize.INTEGER,
-        allowNull: false,
-        autoIncrement: true,
         primaryKey: true,
-      },
-      name: {
-        type: Sequelize.TEXT,
+        autoIncrement: true,
         allowNull: false,
       },
-      email: {
-        type: Sequelize.TEXT,
+      record_id: {
+        type: Sequelize.INTEGER,
         allowNull: false,
-        unique: true,
+        references: { model: "records", key: "id" },
+        onUpdate: "CASCADE",
+        onDelete: "CASCADE",
       },
       department_id: {
         type: Sequelize.INTEGER,
         allowNull: false,
+        references: { model: "departments", key: "id" },
+        onUpdate: "CASCADE",
+        onDelete: "CASCADE",
       },
       created_at: {
         type: Sequelize.DATE,
@@ -34,6 +35,6 @@ module.exports = {
   },
 
   down: async (queryInterface, Sequelize) => {
-    return queryInterface.dropTable("users");
+    queryInterface.dropTable("record_departments");
   },
 };

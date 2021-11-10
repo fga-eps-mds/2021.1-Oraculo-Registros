@@ -15,7 +15,7 @@ services:
     networks:
       - registros-network
     volumes:
-      - postgresdb:/var/lib/postgresql/data
+      - postgresdb_registros:/var/lib/postgresql/data
 
   pgadmin:
     image: dpage/pgadmin4
@@ -49,8 +49,8 @@ services:
       DATABASE_URL: postgres://${DB_USER}:${DB_PASS}@${DB_HOST}:${DB_PORT}/${DB_NAME}
 
 volumes:
-  node_modules:
-  postgresdb:
+  node_modules_registros:
+  postgresdb_registros:
 
 networks:
   registros-network:

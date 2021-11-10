@@ -11,6 +11,8 @@ class History extends Model {
         origin_name: { type: DataTypes.TEXT },
         destination_id: { type: DataTypes.INTEGER },
         destination_name: { type: DataTypes.TEXT },
+        created_at: { type: DataTypes.DATE },
+        created_by: { type: DataTypes.TEXT },
         forwarded_by: { type: DataTypes.TEXT },
         closed_at: { type: DataTypes.DATE },
         closed_by: { type: DataTypes.TEXT },

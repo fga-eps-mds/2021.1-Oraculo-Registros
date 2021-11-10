@@ -25,6 +25,14 @@ module.exports = {
         type: Sequelize.TEXT,
         allowNull: true,
       },
+      created_by: {
+        type: Sequelize.TEXT,
+        allowNull: true,
+      },
+      created_at: {
+        type: Sequelize.TEXT,
+        allowNull: true,
+      },
       forwarded_by: {
         type: Sequelize.TEXT,
         allowNull: true,

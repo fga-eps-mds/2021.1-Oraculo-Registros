@@ -228,18 +228,18 @@ Para criar um registro, envie os dados nesse formato:
   "createdAt": "",
   "situation": "",
   "tags": [],
-  "sections": [
+  "departments": [
     {
       "id": 2,
       "name": "",
       "is_admin": false,
       "createdAt": "2021-11-06T00:56:10.590Z",
       "updatedAt": "2021-11-06T00:56:10.590Z",
-      "record_sections": {
+      "record_departments": {
         "createdAt": "2021-11-06T01:11:55.798Z",
         "updatedAt": "2021-11-06T01:11:55.798Z",
         "record_id": 2,
-        "section_id": 0
+        "department_id": 0
       }
     }
   ]
@@ -275,7 +275,7 @@ Resposta esperada:
 - **forwarded_by** é o email do usuário que encaminhou o registro. Na resposta esse campo será uma string que contém o nome do usuário que encaminhou o registro
 - **origin_id** é o id da seção de origem (é o id da seção ao qual o usuário que encaminhou pertence)
 
-**GET: `/records/:id/sections`**
+**GET: `/records/:id/departments`**
 
 Para obter o histórico de seções por onde um registro passou, envie uma request
 contendo o **id** do registro do qual você quer obter o histórico de seções
@@ -331,23 +331,36 @@ Retorna todo o histórico de movimentação de um registro
   "origin_name": "",
   "destination_id": 0,
   "destination_name": "",
-  "createdAt": "",
-  "updatedAt": "",
-  "record_id": 0
+  "closed_by": "",
+  "closed_at": "",
+  "created_by": "",
+  "created_at": "",
+  "reopened_by": "",
+  "reopened_at": "",
+  "record_id": 0,
+  "created_at": "",
+  "updated_at": ""
 }
 ```
 
-**GET: `/records/:id/current-section`**
+**Importante**: alguns campos poderão ser nulos, de acordo com a informação contida na entrada do histórico.
+
+- `created_by` será não nulo caso seja uma entada no histórico que contém informações sobre a data de criação
+- `forwarded_by` será não nulo caso seja uma entrada no histórico que contém informações sobre encaminhamento de um registro
+- `closed_by` será não nulo caso seja uma entrada no histórico que contém informações sobre fechamento de um registro
+- `reopened_by` será não nulo caso seja uma entrada no histórico que contém informações sobre a reabertura de um registro
+
+**GET: `/records/:id/current-department`**
 
 Retorna a localização da seção atual
 
 ```json
 {
-  "current_section": 0
+  "current_department": 0
 }
 ```
 
-- **current_section** é o id da seção em que o registro está localizado no momento
+- **current_department** é o id da seção em que o registro está localizado no momento
 
 **POST: `/users`**
 
@@ -356,7 +369,8 @@ Registra um novo usuário
 ```json
 {
   "name": "",
-  "email": ""
+  "email": "",
+  "department_id": ""
 }
 ```
 
@@ -547,7 +561,7 @@ Cria uma nova tag
 - **name** é o nome da nova tag
 - **color** é a cor da nova tag (em hexadecimal)
 
-**GET `/sections`**
+**GET `/departments`**
 
 Retorna a lista de seções disponíveis
 
@@ -612,7 +626,7 @@ Busca as informações de um usuário pelo e-mail
   "id": 1,
   "name": "william the police",
   "email": "william@pcgo.com",
-  "section_id": 2,
+  "department_id": 2,
   "createdAt": "2021-11-06T03:05:20.572Z",
   "updatedAt": "2021-11-06T03:05:20.572Z"
 }
@@ -636,7 +650,7 @@ Finaliza as tramitações de um registro
 * HTTP 200 se o registro for fechado com sucesso
 * HTTP 400 se o registro já estiver fechado ou se reason é vazio
 
-**PSOT `/records/:id/reopen`**
+**POST `/records/:id/reopen`**
 
 Reabre as tramitações de um registro
 
@@ -646,3 +660,17 @@ Reabre as tramitações de um registro
   "reason": ""
 }
 ```
+
+**POST `/records/with-sei`**
+
+Busca um registro de acordo com o número do SEI
+
+- Body
+
+```json
+{
+  "sei_number": ""
+}
+```
+
+**sei_number** deverá conter o número do sei a ser pesquisado

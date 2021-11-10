@@ -1,7 +1,7 @@
 const { User } = require("../Model/User");
 
 async function createUser(req, res) {
-  const { name, email, section_id } = req.body;
+  const { name, email, department_id } = req.body;
   const emailRegex =
     /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/;
 
@@ -10,7 +10,7 @@ async function createUser(req, res) {
   }
 
   try {
-    await User.create({ name, email, section_id });
+    await User.create({ name, email, department_id });
   } catch (err) {
     console.error(`failed to create user: ${err}`);
     return res.status(500).json({ error: "could not create user" });
