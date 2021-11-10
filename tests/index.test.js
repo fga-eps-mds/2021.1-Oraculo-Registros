@@ -495,6 +495,16 @@ describe("Main test", () => {
     expect(res.statusCode).toEqual(200);
     expect(res.body).toBeDefined();
   });
+
+  it("GET /records/:id/current-department - should return current department", async () => {
+    const res = await request(app).get("/records/1/current-department");
+    expect(res.statusCode).toEqual(200);
+  });
+
+  it("GET /records/:id/current-department - should return current department", async () => {
+    const res = await request(app).get("/records/a/current-department");
+    expect(res.statusCode).toEqual(400);
+  });
 });
 
 afterAll((done) => {
