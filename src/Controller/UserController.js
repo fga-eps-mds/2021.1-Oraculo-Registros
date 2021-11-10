@@ -20,7 +20,7 @@ async function createUser(req, res) {
 }
 
 async function getUserByMail(req, res) {
-  const { email } = req.body;
+  const { email } = req.query;
 
   try{
     const user = await User.findOne({ where: { email } });
