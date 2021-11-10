@@ -661,7 +661,7 @@ Reabre as tramitações de um registro
 }
 ```
 
-**GET `/records/with-sei`**
+**POST `/records/with-sei`**
 
 Busca um registro de acordo com o número do SEI
 
