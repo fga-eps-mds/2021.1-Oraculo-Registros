@@ -489,6 +489,12 @@ describe("Main test", () => {
     expect(res.body.found).toBeDefined();
     expect(res.body.found).toEqual(true);
   });
+
+  it("GET /departments - should return a list of all departments", async () => {
+    const res = await request(app).get("/departments");
+    expect(res.statusCode).toEqual(200);
+    expect(res.body).toBeDefined();
+  });
 });
 
 afterAll((done) => {
