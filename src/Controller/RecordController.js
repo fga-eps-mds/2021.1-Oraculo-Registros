@@ -4,6 +4,7 @@ const History = require("../Model/History");
 const { User } = require("../Model/User");
 const { Situation } = require("../Model/Situation");
 const { Tag } = require("../Model/Tag");
+const _ = require("lodash");
 const {
   ERR_RECORD_NOT_FOUND,
   ERR_NO_ERROR,
@@ -136,13 +137,38 @@ async function createRecord(req, res) {
 
 async function getRecordsByPage(req, res) {
   const { page } = req.params;
+  const { searchString = '', where } = req.body;
   const itemsPerPage = 30;
 
   try {
-    const { rows, count } = await Record.findAndCountAll({
+  
+  const fields = Object.keys(
+      _.omit(Record.rawAttributes, [
+          "id",
+          "createdAt",
+          "updatedAt",
+      ])
+  );
+
+  const _where = where ? [{ ...where}] : [];
+
+  searchString.split(' ').forEach((search) => {
+    const filters = {};
+
+    fields.forEach((item) => (filters[item] = {
+      [Op.like]: "%" + search + "%"
+    }));
+
+    _where.push({ [Op.or]: filters });
+  })
+  
+  const { rows, count } = await Record.findAndCountAll({
+      where: {
+           [Op.and]: _where
+      },
       limit: itemsPerPage,
       offset: page,
-    });
+  });
 
     if (count === 0) {
       return res.status(204).json({ info: "there are no records matching this query" });
