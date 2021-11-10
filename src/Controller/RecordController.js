@@ -119,7 +119,6 @@ async function createRecord(req, res) {
 
     const tag = await Tag.findOne({ where: { name: "Tramitar" } });
     await createdRecord.setDepartments([department]);
-    await createdRecord.createSituation(Situation.StatusPending);
     await createdRecord.setTags([tag]);
 
     await History.create(history);
