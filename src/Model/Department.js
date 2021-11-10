@@ -1,11 +1,11 @@
-const { Model, Sequelize } = require("sequelize");
+const { Model, DataTypes } = require("sequelize");
 
 class Department extends Model {
   static init(sequelize) {
     super.init(
       {
-        name: { type: Sequelize.TEXT },
-        is_admin: { type: Sequelize.BOOLEAN },
+        name: { type: DataTypes.TEXT },
+        is_admin: { type: DataTypes.BOOLEAN },
       },
       {
         sequelize,

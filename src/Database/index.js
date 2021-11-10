@@ -59,17 +59,17 @@ function loadEnvironment(testing) {
 
 async function setupModels(db) {
   Record.init(db);
-  Department.init(db);
   Field.init(db);
   History.init(db);
   User.init(db);
+  Department.init(db);
   RecordNumber.init(db);
   Tag.init(db);
 
   Record.associate(db.models);
   History.associate(db.models);
-  Tag.associate(db.models);
   Department.associate(db);
+  Tag.associate(db.models);
 }
 
 async function setupSequelize() {
