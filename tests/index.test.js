@@ -98,19 +98,24 @@ describe("Main test", () => {
     done();
   });
 
-  it("GET /records - should not return any records", async () => {
-    const res = await request(app).get("/records");
-    expect(res.statusCode).toEqual(204);
+  it("GET /records/:id/tags - should return tags", async () => {
+    const res = await request(app).get("/records/1/tags");
+    expect(res.statusCode).toEqual(200);
   });
 
-  it("GET /count/records - should raise a error", async () => {
-    const res = await request(app).get("/count/records");
-    expect(res.statusCode).toEqual(204);
+  it("GET /records/:id/tags - should return error (no record)", async () => {
+    const res = await request(app).get("/records/5000/tags");
+    expect(res.statusCode).toEqual(404);
   });
 
   it("POST /records/page/0 - should not return any records", async () => {
-    const res = await request(app).post("/records/page/0").send({});
+    const res = await request(app).post("/records/page/40").send({ department_id: 5699 });
     expect(res.statusCode).toEqual(204);
+  });
+
+  it("POST /records/page/0 - should not return any records (where error)", async () => {
+    const res = await request(app).post("/records/page/40").send({ where: { teste: "teste"} });
+    expect(res.statusCode).toEqual(500);
   });
 
   it("POST /records - should create a record", async () => {
@@ -423,6 +428,22 @@ describe("Main test", () => {
     expect(res.statusCode).toEqual(200);
   });
 
+  it("POST /records/:id/close - should return a error (no record)", async () => {
+    const res = await request(app)
+      .post("/records/5000/close")
+      .send({ closed_by: "william@pcgo.com", reason: "any reason" });
+
+    expect(res.statusCode).toEqual(404);
+  });
+
+  it("POST /records/:id/close - should return a error (no closed_by)", async () => {
+    const res = await request(app)
+      .post("/records/1/close")
+      .send({ reason: "any reason" });
+
+    expect(res.statusCode).toEqual(400);
+  });
+
   it("POST /records/:id/reopen - should reopen a record", async () => {
     const res = await request(app)
       .post("/records/1/reopen")
@@ -439,12 +460,28 @@ describe("Main test", () => {
     expect(res.statusCode).toEqual(400);
   });
 
+  it("POST /records/:id/reopen - should not reopen a record (no record)", async () => {
+    const res = await request(app)
+      .post("/records/5000/reopen")
+      .send({ reopened_by: "william@pcgo.com", reason: "any reason" });
+
+    expect(res.statusCode).toEqual(404);
+  });
+
   it("POST /records/:id/close - should not close (invalid field type)", async () => {
     const res = await request(app)
       .post("/records/1/close")
       .send({ closed_by: 1, reason: "any reason" });
 
     expect(res.statusCode).toEqual(500);
+  });
+
+  it("POST /records/:id/close - should not close (already set)", async () => {
+    const res = await request(app)
+      .post("/records/1/close")
+      .send({ closed_by: 5000, reason: "any reason" });
+
+    expect(res.statusCode).toEqual(400);
   });
 
   it("POST /records/:id/reopen - should not reopen (invalid field type)", async () => {
@@ -475,7 +512,7 @@ describe("Main test", () => {
   it("POST /records/:id/close - should not reopen (record not found)", async () => {
     const res = await request(app)
       .post("/records/500/close")
-      .send({ reason: "any reason" });
+      .send({ reason: "any reason", closed_by: "william@pcgo.com" });
     expect(res.statusCode).toEqual(404);
   });
 
@@ -492,6 +529,12 @@ describe("Main test", () => {
       .send({ closed_by: "william@pcgo.com", reason: "any reason" });
 
     expect(res.statusCode).toEqual(400);
+
+    const res2 = await request(app)
+      .post("/records/1/close")
+      .send({ closed_by: "william@pcgo.com", reason: "any reason" });
+
+    expect(res2.statusCode).toEqual(400);
   });
 
   it("POST /tag/:id/edit - should not edit a tag (inexistent tag)", async () => {

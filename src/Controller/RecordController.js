@@ -470,16 +470,16 @@ async function closeRecord(req, res) {
       .json({ error: "you should specify a reason to close a record" });
   }
 
+  if (!closed_by) {
+    return res.status(400).json({ error: "invalid user information provided" });
+  }
+
   try {
     const result = await updateRecordStatus(Situation.StatusFinished, recordID);
     if (result === ERR_RECORD_NOT_FOUND) {
       return res.status(404).json(result);
     } else if (result === ERR_STATUS_ALREADY_SET) {
       return res.status(400).json(result);
-    }
-
-    if (!closed_by) {
-      return res.status(400).json({ error: "invalid user information provided" });
     }
 
     const user = await User.findOne({ where: { email: closed_by } });
