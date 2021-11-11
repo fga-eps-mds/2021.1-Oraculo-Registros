@@ -163,17 +163,16 @@ async function getRecordsByPage(req, res) {
 
     if(history) {
       historyFields.forEach((item) => {
-        const keyValue = '$histories.' + item + '$';
-        historyFilters.push({[keyValue]: {
+        historyFilters.push({[item]: {
           [Op.like]: "%" + history + "%"
         }})
       });
     }
 
-    filters = { ...exact, ...filters, ...(history && { [Op.or]: historyFilters }) };
+    filters = { ...exact, ...filters };
 
     const { rows, count } = await Record.findAndCountAll({
-      include: [{ model: History, as: 'histories', attributes: historyFields },
+      include: [{ model: History, as: 'histories', ...(history && { where: { [Op.or]: historyFilters }})},
        { model: Department, as: 'departments', ...(department_id && { where: { id: department_id}})}],
       where: filters,
       limit: itemsPerPage,
