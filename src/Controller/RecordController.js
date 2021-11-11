@@ -176,6 +176,7 @@ async function getRecordsByPage(req, res) {
        { model: Department, as: 'departments', ...(department_id && { where: { id: department_id}})}],
       where: filters,
       limit: itemsPerPage,
+      order: [['register_number', 'ASC']],
       offset: page,
     });
 
