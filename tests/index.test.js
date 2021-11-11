@@ -108,8 +108,8 @@ describe("Main test", () => {
     expect(res.statusCode).toEqual(204);
   });
 
-  it("GET /records/page/0 - should not return any records", async () => {
-    const res = await request(app).post("/records/page/0");
+  it("POST /records/page/0 - should not return any records", async () => {
+    const res = await request(app).post("/records/page/0").send({});
     console.log(`data: ${JSON.stringify(res.body)}`);
     expect(res.statusCode).toEqual(204);
   });
@@ -146,13 +146,15 @@ describe("Main test", () => {
     expect(res.body.error).toBeDefined();
   });
 
-  it("GET /records/page/0 - should return at least one record", async () => {
-    const res = await request(app).post("/records/page/0");
+  it("POST /records/page/0 - should return at least one record", async () => {
+    const res = await request(app).post("/records/page/0").send({});
+    console.log(`data: ${JSON.stringify(res.body)}`);
     expect(res.statusCode).toEqual(200);
   });
 
-  it("GET /records/page/-1 - should not return any records (invalid page)", async () => {
-    const res = await request(app).post("/records/page/-1");
+  it("POST /records/page/-1 - should not return any records (invalid page)", async () => {
+    const res = await request(app).post("/records/page/-1").send({});
+    console.log(`data: ${JSON.stringify(res.body)}`);
     expect(res.statusCode).toEqual(500);
   });
 
