@@ -185,7 +185,9 @@ describe("Main test", () => {
       origin_id: 2,
       forwarded_by: 1,
     };
-    const res = await request(app).post("/records/500/forward").send(department);
+    const res = await request(app)
+      .post("/records/500/forward")
+      .send(department);
     expect(res.statusCode).toEqual(404);
   });
 
@@ -308,30 +310,38 @@ describe("Main test", () => {
   });
 
   it("POST /records/:id/add-tag - should add tag 1 to record 1", async () => {
-    const res = await request(app).post("/records/1/add-tag").send({ tag_id: 1 });
+    const res = await request(app)
+      .post("/records/1/add-tag")
+      .send({ tag_id: 1 });
     expect(res.statusCode).toEqual(200);
   });
 
   it("POST /records/:id/add-tag - should not add tag to record", async () => {
-    const res = await request(app).post("/records/1/add-tag").send({ tag_id: 500 });
+    const res = await request(app)
+      .post("/records/1/add-tag")
+      .send({ tag_id: 500 });
     expect(res.statusCode).toEqual(404);
   });
 
   it("POST /records/:id/edit - should edit a record", async () => {
-    const res = await request(app).post("/records/1/edit").send({ city: "Goiania" });
+    const res = await request(app)
+      .post("/records/1/edit")
+      .send({ city: "Goiania" });
     expect(res.statusCode).toEqual(200);
     expect(res.body).toBeDefined();
   });
 
   it("POST /records/:id/edit - should edit a record", async () => {
-    const res = await request(app).post("/records/a/edit").send({ city: "Goiania" });
+    const res = await request(app)
+      .post("/records/a/edit")
+      .send({ city: "Goiania" });
     expect(res.statusCode).toEqual(500);
   });
 
   it("GET /user/by-mail/ - should return user information", async () => {
     const res = await request(app)
       .post("/user/by-mail")
-      .send({email: "william@pcgo.com"});
+      .send({ email: "william@pcgo.com" });
 
     expect(res.statusCode).toEqual(200);
     expect(res.body.email).toBeDefined();
@@ -340,7 +350,9 @@ describe("Main test", () => {
   });
 
   it("GET /user/by-mail - should not return user information (inexistent user)", async () => {
-    const res = await request(app).post("/user/by-mail").send({ email: "zzz@bol.com"});
+    const res = await request(app)
+      .post("/user/by-mail")
+      .send({ email: "zzz@bol.com" });
 
     expect(res.statusCode).toEqual(404);
   });
@@ -503,6 +515,16 @@ describe("Main test", () => {
 
   it("GET /records/:id/current-department - should return current department", async () => {
     const res = await request(app).get("/records/a/current-department");
+    expect(res.statusCode).toEqual(400);
+  });
+
+  it("POST /departments - should create a department", async () => {
+    const res = await request(app).post("/departments").send({ name: "teste" });
+    expect(res.statusCode).toEqual(200);
+  });
+
+  it("POST /departments - should not create a department", async () => {
+    const res = await request(app).post("/departments").send({});
     expect(res.statusCode).toEqual(400);
   });
 });

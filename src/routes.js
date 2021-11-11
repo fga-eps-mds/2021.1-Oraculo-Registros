@@ -30,5 +30,6 @@ routes.get("/departments", DepartmentController.listDepartments);
 routes.post("/records/:id/edit", RecordController.editRecord);
 routes.post("/users", UserController.createUser);
 routes.post("/user/by-mail/", UserController.getUserByMail);
+routes.post("/departments", DepartmentController.createDepartment);
 
 module.exports = routes;

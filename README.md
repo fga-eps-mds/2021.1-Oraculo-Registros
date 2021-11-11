@@ -674,3 +674,13 @@ Busca um registro de acordo com o número do SEI
 ```
 
 **sei_number** deverá conter o número do sei a ser pesquisado
+
+**POST `/departments`**
+
+Cria um departamento novo
+
+```json
+{
+  "name": ""
+}
+```
