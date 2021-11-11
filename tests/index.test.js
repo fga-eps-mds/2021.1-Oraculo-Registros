@@ -109,7 +109,7 @@ describe("Main test", () => {
   });
 
   it("GET /records/page/0 - should not return any records", async () => {
-    const res = await request(app).get("/records/page/0");
+    const res = await request(app).post("/records/page/0");
     console.log(`data: ${JSON.stringify(res.body)}`);
     expect(res.statusCode).toEqual(204);
   });
@@ -147,12 +147,12 @@ describe("Main test", () => {
   });
 
   it("GET /records/page/0 - should return at least one record", async () => {
-    const res = await request(app).get("/records/page/0");
+    const res = await request(app).post("/records/page/0");
     expect(res.statusCode).toEqual(200);
   });
 
   it("GET /records/page/-1 - should not return any records (invalid page)", async () => {
-    const res = await request(app).get("/records/page/-1");
+    const res = await request(app).post("/records/page/-1");
     expect(res.statusCode).toEqual(500);
   });
 
