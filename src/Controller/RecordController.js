@@ -4,6 +4,7 @@ const History = require("../Model/History");
 const { User } = require("../Model/User");
 const { Situation } = require("../Model/Situation");
 const { Tag } = require("../Model/Tag");
+
 const {
   ERR_RECORD_NOT_FOUND,
   ERR_NO_ERROR,
@@ -136,11 +137,46 @@ async function createRecord(req, res) {
 
 async function getRecordsByPage(req, res) {
   const { page } = req.params;
+  const { where, department_id } = req.body;
   const itemsPerPage = 30;
 
   try {
+
+    const historyFields = [
+      'origin_name',
+      'destination_name',
+      'created_by',
+      'forwarded_by',
+      'reason'
+    ]
+
+    const { exact = {}, history, ..._where } = where || {};
+
+    let filters = {};
+    const historyFilters = [];
+
+    Object.entries(_where).forEach(([key, value]) => {
+      filters[key] = {
+        [Op.like]: "%" + value + "%"
+      }
+    });
+
+    if(history) {
+      historyFields.forEach((item) => {
+        historyFilters.push({[item]: {
+          [Op.like]: "%" + history + "%"
+        }})
+      });
+    }
+
+    filters = { ...exact, ...filters };
+
     const { rows, count } = await Record.findAndCountAll({
+      include: [{ model: History, as: 'histories', ...(history && { where: { [Op.or]: historyFilters }})},
+       { model: Department, as: 'departments', ...(department_id && { where: { id: department_id}})}],
+      where: filters,
       limit: itemsPerPage,
+      order: [['register_number', 'ASC']],
       offset: page,
     });
 
@@ -435,16 +471,16 @@ async function closeRecord(req, res) {
       .json({ error: "you should specify a reason to close a record" });
   }
 
+  if (!closed_by) {
+    return res.status(400).json({ error: "invalid user information provided" });
+  }
+
   try {
     const result = await updateRecordStatus(Situation.StatusFinished, recordID);
     if (result === ERR_RECORD_NOT_FOUND) {
       return res.status(404).json(result);
     } else if (result === ERR_STATUS_ALREADY_SET) {
       return res.status(400).json(result);
-    }
-
-    if (!closed_by) {
-      return res.status(400).json({ error: "invalid user information provided" });
     }
 
     const user = await User.findOne({ where: { email: closed_by } });
