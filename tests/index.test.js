@@ -322,6 +322,16 @@ describe("Main test", () => {
     expect(res.statusCode).toEqual(404);
   });
 
+  it("POST /records/:id/add-tag - should return error", async () => {
+    const res = await request(app).post("/records/asd/add-tag").send({ tag_id: 500 });
+    expect(res.statusCode).toEqual(500);
+  });
+
+  it("POST /records/:id/add-tag - should return error for record not found", async () => {
+    const res = await request(app).post("/records/5000/add-tag").send({ tag_id: 1 });
+    expect(res.statusCode).toEqual(404);
+  });
+
   it("POST /records/:id/edit - should edit a record", async () => {
     const res = await request(app)
       .post("/records/1/edit")
@@ -337,7 +347,12 @@ describe("Main test", () => {
     expect(res.statusCode).toEqual(500);
   });
 
-  it("GET /user/by-mail/ - should return user information", async () => {
+  it("POST /records/:id/edit - should not find a record", async () => {
+    const res = await request(app).post("/records/50000/edit").send({ city: "Goiania" });
+    expect(res.statusCode).toEqual(404);
+  });
+
+  it("GET /user/by-mail - should return user information", async () => {
     const res = await request(app)
       .post("/user/by-mail")
       .send({ email: "william@pcgo.com" });
