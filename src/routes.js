@@ -12,7 +12,7 @@ routes.post("/records/with-sei", RecordController.findRecordWithSeiNumber);
 routes.get("/records/department/:id", RecordController.getDepartmentRecords);
 routes.get("/records/:id", RecordController.getRecordByID);
 routes.post("/records", RecordController.createRecord);
-routes.get("/records/page/:page", RecordController.getRecordsByPage);
+routes.post("/records/page/:page", RecordController.getRecordsByPage);
 routes.post("/records/:id/forward", RecordController.forwardRecord);
 routes.get("/records/:id/departments", RecordController.getDepartmentsByID);
 routes.post("/records/:id/status", RecordController.setRecordSituation);
