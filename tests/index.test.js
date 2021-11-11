@@ -99,9 +99,7 @@ describe("Main test", () => {
   });
 
   it("GET /records/:id/tags - should return tags", async () => {
-    const res1 = await request(app).post("/records/1/status").send({
-      situation: "finished",
-    });
+    const res1 = await request(app).post("/records").send(validRecord1);
     expect(res1.statusCode).toEqual(200);
 
     const res = await request(app).get("/records/1/tags");
