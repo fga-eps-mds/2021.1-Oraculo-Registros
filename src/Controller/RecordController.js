@@ -150,7 +150,7 @@ async function getRecordsByPage(req, res) {
       'reason'
     ]
 
-    const { exact = {}, history, ..._where } = where;
+    const { exact = {}, history, ..._where } = where || {};
 
     let filters = {};
     let historyFilters = [];
