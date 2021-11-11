@@ -3,7 +3,6 @@ const RecordController = require("./Controller/RecordController");
 const UserController = require("./Controller/UserController");
 const TagController = require("./Controller/TagController");
 const DepartmentController = require("./Controller/DepartmentController");
-const { router } = require(".");
 
 const routes = express.Router();
 
