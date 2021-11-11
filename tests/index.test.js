@@ -99,6 +99,11 @@ describe("Main test", () => {
   });
 
   it("GET /records/:id/tags - should return tags", async () => {
+    const res1 = await request(app).post("/records/1/status").send({
+      situation: "finished",
+    });
+    expect(res1.statusCode).toEqual(200);
+
     const res = await request(app).get("/records/1/tags");
     expect(res.statusCode).toEqual(200);
   });
@@ -529,12 +534,6 @@ describe("Main test", () => {
       .send({ closed_by: "william@pcgo.com", reason: "any reason" });
 
     expect(res.statusCode).toEqual(400);
-
-    const res2 = await request(app)
-      .post("/records/1/close")
-      .send({ closed_by: "william@pcgo.com", reason: "any reason" });
-
-    expect(res2.statusCode).toEqual(400);
   });
 
   it("POST /tag/:id/edit - should not edit a tag (inexistent tag)", async () => {
