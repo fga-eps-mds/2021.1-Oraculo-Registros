@@ -4,7 +4,7 @@ const History = require("../Model/History");
 const { User } = require("../Model/User");
 const { Situation } = require("../Model/Situation");
 const { Tag } = require("../Model/Tag");
-const _ = require("lodash");
+
 const {
   ERR_RECORD_NOT_FOUND,
   ERR_NO_ERROR,
@@ -137,38 +137,48 @@ async function createRecord(req, res) {
 
 async function getRecordsByPage(req, res) {
   const { page } = req.params;
-  const { searchString = '', where } = req.body;
+  const { where, department_id } = req.body;
   const itemsPerPage = 30;
 
   try {
-  
-  const fields = Object.keys(
-      _.omit(Record.rawAttributes, [
-          "id",
-          "createdAt",
-          "updatedAt",
-      ])
-  );
 
-  const _where = where ? [{ ...where}] : [];
+    const historyFields = [
+      'origin_name',
+      'destination_name',
+      'created_by',
+      'forwarded_by',
+      'reason'
+    ]
 
-  searchString.split(' ').forEach((search) => {
-    const filters = {};
+    const { exact = {}, history, ..._where } = where;
 
-    fields.forEach((item) => (filters[item] = {
-      [Op.like]: "%" + search + "%"
-    }));
+    let filters = {};
+    let historyFilters = [];
 
-    _where.push({ [Op.or]: filters });
-  })
-  
-  const { rows, count } = await Record.findAndCountAll({
-      where: {
-           [Op.and]: _where
-      },
+    Object.entries(_where).forEach(([key, value]) => {
+      filters[key] = {
+        [Op.like]: "%" + value + "%"
+      }
+    });
+
+    if(history) {
+      historyFields.forEach((item) => {
+        const keyValue = '$histories.' + item + '$';
+        historyFilters.push({[keyValue]: {
+          [Op.like]: "%" + history + "%"
+        }})
+      });
+    }
+
+    filters = { ...exact, ...filters, ...(history && { [Op.or]: historyFilters }) };
+
+    const { rows, count } = await Record.findAndCountAll({
+      include: [{ model: History, as: 'histories', attributes: historyFields },
+       { model: Department, as: 'departments', ...(department_id && { where: { id: department_id}})}],
+      where: filters,
       limit: itemsPerPage,
       offset: page,
-  });
+    });
 
     if (count === 0) {
       return res.status(204).json({ info: "there are no records matching this query" });
