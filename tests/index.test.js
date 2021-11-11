@@ -166,6 +166,17 @@ describe("Main test", () => {
     expect(res.statusCode).toEqual(200);
   });
 
+  it("POST /records/1/forward - should not forward a record (forwarded mismatch)", async () => {
+    const payload = {
+      destination_id: 2,
+      origin_id: 2,
+      forwarded_by: '',
+    };
+
+    const res = await request(app).post("/records/1/forward").send(payload);
+    expect(res.statusCode).toEqual(404);
+  });
+
   it("POST /records/1/forward - should not forward a record (department mismatch)", async () => {
     const payload = {
       destination_id: 2,

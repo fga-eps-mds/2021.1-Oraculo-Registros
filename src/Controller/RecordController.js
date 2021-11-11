@@ -153,7 +153,7 @@ async function getRecordsByPage(req, res) {
     const { exact = {}, history, ..._where } = where || {};
 
     let filters = {};
-    let historyFilters = [];
+    const historyFilters = [];
 
     Object.entries(_where).forEach(([key, value]) => {
       filters[key] = {
