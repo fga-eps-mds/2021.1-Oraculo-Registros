@@ -162,14 +162,14 @@ async function getRecordsByPage(req, res) {
 
     Object.entries(_where).forEach(([key, value]) => {
       filters[key] = {
-        [Op.iLike]: "%" + value + "%"
+        [Op.iLike]: `%${value}%`
       }
     });
-
+    `%${tag}%`
     if(history) {
       historyFields.forEach((item) => {
         historyFilters.push({[item]: {
-          [Op.iLike]: "%" + history + "%"
+          [Op.iLike]: `%${history}%`
         }})
       });
     }
@@ -177,7 +177,7 @@ async function getRecordsByPage(req, res) {
     if(tag) {
       tagFields.forEach((item) => {
         tagFilters.push({[item]: {
-          [Op.iLike]: "%" + tag + "%"
+          [Op.iLike]: `%${tag}%`
         }})
       });
     }
