@@ -78,6 +78,7 @@ async function createRecord(req, res) {
     receipt_form,
     contact_info,
     created_by,
+    tags = []
   } = req.body);
 
   try {
@@ -119,7 +120,7 @@ async function createRecord(req, res) {
 
     const tag = await Tag.findOne({ where: { name: "Tramitar" } });
     await createdRecord.setDepartments([department]);
-    await createdRecord.setTags([tag]);
+    await createdRecord.setTags([tag, ...tags]);
 
     await History.create(history);
 
