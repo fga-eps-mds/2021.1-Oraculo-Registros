@@ -356,7 +356,7 @@ describe("Main test", () => {
   it("POST /records/:id/edit - should edit a record", async () => {
     const res = await request(app)
       .post("/records/1/edit")
-      .send({ city: "Goiania" });
+      .send({ city: "Goiania", tags: [] });
     expect(res.statusCode).toEqual(200);
     expect(res.body).toBeDefined();
   });
