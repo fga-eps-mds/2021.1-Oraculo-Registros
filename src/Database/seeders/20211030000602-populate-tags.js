@@ -21,6 +21,12 @@ module.exports = {
         created_at: new Date(),
         updated_at: new Date(),
       },
+      {
+        name: "Acompanha registro físico",
+        color: "#09e343",
+        created_at: new Date(),
+        updated_at: new Date(),
+      },
     ];
 
     return queryInterface.bulkInsert("tags", tags);
