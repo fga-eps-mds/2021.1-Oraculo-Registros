@@ -165,7 +165,7 @@ async function getRecordsByPage(req, res) {
         [Op.iLike]: `%${value}%`
       }
     });
-    `%${tag}%`
+    
     if(history) {
       historyFields.forEach((item) => {
         historyFilters.push({[item]: {
