@@ -149,10 +149,16 @@ async function getRecordsByPage(req, res) {
       'reason'
     ]
 
-    const { exact = {}, history, ..._where } = where || {};
+    const tagFields = [
+      'name',
+      'color'
+    ]
+
+    const { history, tag, ..._where } = where || {};
 
     let filters = {};
     const historyFilters = [];
+    const tagFilters = [];
 
     Object.entries(_where).forEach(([key, value]) => {
       filters[key] = {
@@ -168,11 +174,18 @@ async function getRecordsByPage(req, res) {
       });
     }
 
-    filters = { ...exact, ...filters };
+    if(tag) {
+      tagFields.forEach((item) => {
+        tagFilters.push({[item]: {
+          [Op.iLike]: "%" + tag + "%"
+        }})
+      });
+    }
 
     const { rows, count } = await Record.findAndCountAll({
       include: [{ model: History, as: 'histories', ...(history && { where: { [Op.or]: historyFilters }})},
-       { model: Department, as: 'departments', ...(department_id && { where: { id: department_id}})}],
+      { model: Tag, as: 'tags', ...(tag && { where: { [Op.or]: tagFilters }})},
+      { model: Department, as: 'departments', ...(department_id && { where: { id: department_id}})}],
       where: filters,
       limit: itemsPerPage,
       order: [['register_number', 'ASC']],
