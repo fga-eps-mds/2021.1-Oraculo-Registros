@@ -115,12 +115,20 @@ module.exports = {
         created_at: new Date(),
         updated_at: new Date(),
       },
+      {
+        name: "Usuário associado",
+        db_field_name: "assigned_to",
+        description: "Id do usuário que está responsável pelo registro em questão",
+        created_by: 0,
+        created_at: new Date(),
+        updated_at: new Date(),
+      },
     ];
 
-    return queryInterface.bulkInsert("records.fields", fields);
+    return queryInterface.bulkInsert("records_fields", fields);
   },
 
   down: async (queryInterface, Sequelize) => {
-    queryInterface.bulkDelete("records.fields", null, {});
+    queryInterface.bulkDelete("records_fields", null, {});
   },
 };

@@ -2,71 +2,65 @@
 
 module.exports = {
   up: async (queryInterface, Sequelize) => {
-    return queryInterface.createTable("records", {
+    return queryInterface.createTable("history", {
       id: {
         type: Sequelize.INTEGER,
+        primaryKey: true,
         autoIncrement: true,
         allowNull: false,
-        primaryKey: true,
       },
-      register_number: {
-        type: Sequelize.DataTypes.TEXT,
+      origin_id: {
+        type: Sequelize.INTEGER,
         allowNull: true,
-        unique: true,
       },
-      inclusion_date: {
-        type: Sequelize.DATE,
-        allowNull: false,
-      },
-      city: {
-        type: Sequelize.TEXT,
-        allowNull: false,
-      },
-      state: {
-        type: Sequelize.TEXT,
-        allowNull: false,
-      },
-      requester: {
-        type: Sequelize.TEXT,
-        allowNull: false,
-      },
-      document_type: {
+      origin_name: {
         type: Sequelize.TEXT,
         allowNull: true,
       },
-      document_number: {
-        type: Sequelize.TEXT,
+      destination_id: {
+        type: Sequelize.INTEGER,
         allowNull: true,
       },
-      document_date: {
-        type: Sequelize.TEXT,
-        allowNull: false,
-      },
-      description: {
-        type: Sequelize.TEXT,
-        allowNull: false,
-      },
-      sei_number: {
+      destination_name: {
         type: Sequelize.TEXT,
         allowNull: true,
-      },
-      receipt_form: {
-        type: Sequelize.TEXT,
-        allowNull: false,
-      },
-      contact_info: {
-        type: Sequelize.TEXT,
-        allowNull: true,
-      },
-      situation: {
-        type: Sequelize.TEXT,
-        allowNull: false,
       },
       created_by: {
         type: Sequelize.TEXT,
-        allowNull: false,
+        allowNull: true,
       },
-      assigned_to: {
+      created_at: {
+        type: Sequelize.TEXT,
+        allowNull: true,
+      },
+      forwarded_by: {
+        type: Sequelize.TEXT,
+        allowNull: true,
+      },
+      closed_at: {
+        type: Sequelize.DATE,
+        allowNull: true,
+      },
+      closed_by: {
+        type: Sequelize.TEXT,
+        allowNull: true,
+      },
+      reopened_at: {
+        type: Sequelize.DATE,
+        allowNull: true,
+      },
+      reopened_by: {
+        type: Sequelize.TEXT,
+        allowNull: true,
+      },
+      record_id: {
+        type: Sequelize.INTEGER,
+        allowNull: false,
+        references: { model: "records", key: "id" },
+        onUpdate: "CASCADE",
+        onDelete: "CASCADE",
+      },
+      reason: {
         type: Sequelize.TEXT,
         allowNull: true,
       },
@@ -82,6 +76,6 @@ module.exports = {
   },
 
   down: async (queryInterface, Sequelize) => {
-    return queryInterface.dropTable("records");
+    return queryInterface.dropTable("history");
   },
 };

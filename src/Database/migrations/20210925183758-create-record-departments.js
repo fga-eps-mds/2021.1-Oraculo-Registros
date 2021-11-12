@@ -2,16 +2,26 @@
 
 module.exports = {
   up: async (queryInterface, Sequelize) => {
-    return queryInterface.createTable("sections", {
+    return queryInterface.createTable("record_departments", {
       id: {
         type: Sequelize.INTEGER,
         primaryKey: true,
         autoIncrement: true,
         allowNull: false,
       },
-      name: {
-        type: Sequelize.TEXT,
+      record_id: {
+        type: Sequelize.INTEGER,
         allowNull: false,
+        references: { model: "records", key: "id" },
+        onUpdate: "CASCADE",
+        onDelete: "CASCADE",
+      },
+      department_id: {
+        type: Sequelize.INTEGER,
+        allowNull: false,
+        references: { model: "departments", key: "id" },
+        onUpdate: "CASCADE",
+        onDelete: "CASCADE",
       },
       created_at: {
         type: Sequelize.DATE,
@@ -25,6 +35,6 @@ module.exports = {
   },
 
   down: async (queryInterface, Sequelize) => {
-    return queryInterface.dropTable("sections");
+    queryInterface.dropTable("record_departments");
   },
 };

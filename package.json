@@ -10,10 +10,14 @@
     "db:seeders": "export DATABASE_URL=postgres://oraculo:oraculo123@localhost:5431/oraculo && npx sequelize db:seed:all",
     "db:seeders:prod": "npx sequelize db:seed:all --env production",
     "docker:clean": "sudo docker container rm -f oraculo-banco-registros oraculo-registros oraculo-pgadmin-registros",
-    "docker:up": "sudo docker-compose up -d --build",
+    "docker:up": "sudo docker-compose up -d --build banco && sleep 5 && sudo docker-compose up -d --build",
     "db:up": "sudo docker-compose up -d --build banco",
+    "db:seeders:undo": "export DATABASE_URL=postgres://oraculo:oraculo123@localhost:5431/oraculo && npx sequelize db:seed:undo:all",
     "start": "node src/index.js",
-    "start:prod": "node src/index.js"
+    "start:prod": "node src/index.js",
+    "all": "yarn run docker:clean && yarn run docker:up && yarn run db:migrate && sleep 5 && yarn run db:seeders",
+    "all:prod": "yarn docker:up && npx sequelize db:migrate && sleep 5 && npx sequelize db:seed:all",
+    "update:all": "sudo docker-compose up -d --build"
   },
   "repository": {
     "type": "git",

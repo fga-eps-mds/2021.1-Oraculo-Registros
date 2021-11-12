@@ -1,8 +1,11 @@
 const { Sequelize } = require("sequelize");
-const { Situation } = require("../Model/Situation");
 const Record = require("../Model/Record");
-const Section = require("../Model/Section");
 const Field = require("../Model/Field");
+const History = require("../Model/History");
+const { User } = require("../Model/User");
+const { RecordNumber } = require("../Model/RecordNumber");
+const { Department } = require("../Model/Department");
+const { Tag } = require("../Model/Tag");
 require("dotenv").config();
 
 const { PROD, DATABASE_URL } = process.env;
@@ -55,14 +58,20 @@ function loadEnvironment(testing) {
 }
 
 async function setupModels(db) {
+  // Initializes models
   Record.init(db);
-  Situation.init(db);
-  Section.init(db);
   Field.init(db);
+  History.init(db);
+  User.init(db);
+  Department.init(db);
+  RecordNumber.init(db);
+  Tag.init(db);
 
+  // Perform associations
   Record.associate(db.models);
-  Situation.associate(db.models);
-  Section.associate(db.models);
+  History.associate(db.models);
+  Department.associate(db.models);
+  Tag.associate(db.models);
 }
 
 async function setupSequelize() {
@@ -70,7 +79,7 @@ async function setupSequelize() {
 }
 
 async function configure(auth, db) {
-  return new Promise((resolve, reject) => {
+  return new Promise((resolve) => {
     auth.then(() => {
       setupModels(db);
       resolve(0);
@@ -79,7 +88,10 @@ async function configure(auth, db) {
 }
 
 async function initializeDatabase() {
+  // Initializes sequelize client
   const db = await setupSequelize();
+
+  // Run database authentication process
   const auth = db.authenticate();
   return configure(auth, db);
 }
