@@ -4,7 +4,6 @@ const History = require("../Model/History");
 const { User } = require("../Model/User");
 const { Situation } = require("../Model/Situation");
 const { Tag } = require("../Model/Tag");
-
 const {
   ERR_RECORD_NOT_FOUND,
   ERR_NO_ERROR,
@@ -79,6 +78,7 @@ async function createRecord(req, res) {
     receipt_form,
     contact_info,
     created_by,
+    tags
   } = req.body);
 
   try {
@@ -118,9 +118,8 @@ async function createRecord(req, res) {
       record_id: createdRecord.id,
     };
 
-    const tag = await Tag.findOne({ where: { name: "Tramitar" } });
     await createdRecord.setDepartments([department]);
-    await createdRecord.setTags([tag]);
+    await createdRecord.setTags(tags);
 
     await History.create(history);
 
@@ -150,30 +149,43 @@ async function getRecordsByPage(req, res) {
       'reason'
     ]
 
-    const { exact = {}, history, ..._where } = where || {};
+    const tagFields = [
+      'name',
+      'color'
+    ]
 
-    let filters = {};
+    const { history, tag, ..._where } = where || {};
+
+    const filters = {};
     const historyFilters = [];
+    const tagFilters = [];
 
     Object.entries(_where).forEach(([key, value]) => {
       filters[key] = {
-        [Op.like]: "%" + value + "%"
+        [Op.iLike]: `%${value}%`
       }
     });
-
+    
     if(history) {
       historyFields.forEach((item) => {
         historyFilters.push({[item]: {
-          [Op.like]: "%" + history + "%"
+          [Op.iLike]: `%${history}%`
         }})
       });
     }
 
-    filters = { ...exact, ...filters };
+    if(tag) {
+      tagFields.forEach((item) => {
+        tagFilters.push({[item]: {
+          [Op.iLike]: `%${tag}%`
+        }})
+      });
+    }
 
     const { rows, count } = await Record.findAndCountAll({
       include: [{ model: History, as: 'histories', ...(history && { where: { [Op.or]: historyFilters }})},
-       { model: Department, as: 'departments', ...(department_id && { where: { id: department_id}})}],
+      { model: Tag, as: 'tags', ...(tag && { where: { [Op.or]: tagFilters }})},
+      { model: Department, as: 'departments', ...(department_id && { where: { id: department_id}})}],
       where: filters,
       limit: itemsPerPage,
       order: [['register_number', 'ASC']],
@@ -429,6 +441,7 @@ async function editRecord(req, res) {
     sei_number,
     receipt_form,
     contact_info,
+    tags
   } = req.body);
 
   try {
@@ -452,6 +465,7 @@ async function editRecord(req, res) {
     await record.save();
 
     const editedRecord = await Record.findByPk(recordID);
+    await editedRecord.setTags(tags);
 
     return res.status(200).json(editedRecord);
   } catch (err) {
