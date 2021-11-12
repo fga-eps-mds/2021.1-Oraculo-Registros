@@ -104,7 +104,10 @@ describe("Main test", () => {
     const res1 = await request(app).post("/records").send(validRecord1);
     expect(res1.statusCode).toEqual(200);
 
-    const res = await request(app).get("/records/1/tags");
+    const res2 = await request(app).post(`/records/${res1.body.id}/add-tag`).send({ tag_id: 1 });
+    expect(res2.statusCode).toEqual(200);
+
+    const res = await request(app).get(`/records/${res1.body.id}/tags`);
     expect(res.statusCode).toEqual(200);
   });
 
@@ -324,7 +327,7 @@ describe("Main test", () => {
     expect(res.body.message).toBeDefined();
   });
 
-  it("GET /records/1/tags - should list tags of a record (empty tags)", async () => {
+  it("GET /records/:id/tags - should list tags of a record (empty tags)", async () => {
     const res = await request(app).get("/records/1/tags");
     expect(res.statusCode).toEqual(200);
   });
@@ -356,7 +359,7 @@ describe("Main test", () => {
   it("POST /records/:id/edit - should edit a record", async () => {
     const res = await request(app)
       .post("/records/1/edit")
-      .send({ city: "Goiania" });
+      .send({ city: "Goiania", tags: [] });
     expect(res.statusCode).toEqual(200);
     expect(res.body).toBeDefined();
   });

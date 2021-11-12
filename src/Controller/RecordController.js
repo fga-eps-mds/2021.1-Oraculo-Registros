@@ -118,9 +118,8 @@ async function createRecord(req, res) {
       record_id: createdRecord.id,
     };
 
-    const tag = await Tag.findOne({ where: { name: "Tramitar" } });
     await createdRecord.setDepartments([department]);
-    await createdRecord.setTags([tag, ...tags]);
+    await createdRecord.setTags(tags);
 
     await History.create(history);
 
@@ -442,6 +441,7 @@ async function editRecord(req, res) {
     sei_number,
     receipt_form,
     contact_info,
+    tags
   } = req.body);
 
   try {
@@ -465,6 +465,7 @@ async function editRecord(req, res) {
     await record.save();
 
     const editedRecord = await Record.findByPk(recordID);
+    await editedRecord.setTags(tags);
 
     return res.status(200).json(editedRecord);
   } catch (err) {
