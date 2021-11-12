@@ -150,30 +150,43 @@ async function getRecordsByPage(req, res) {
       'reason'
     ]
 
-    const { exact = {}, history, ..._where } = where || {};
+    const tagFields = [
+      'name',
+      'color'
+    ]
 
-    let filters = {};
+    const { history, tag, ..._where } = where || {};
+
+    const filters = {};
     const historyFilters = [];
+    const tagFilters = [];
 
     Object.entries(_where).forEach(([key, value]) => {
       filters[key] = {
-        [Op.iLike]: "%" + value + "%"
+        [Op.iLike]: `%${value}%`
       }
     });
-
+    
     if(history) {
       historyFields.forEach((item) => {
         historyFilters.push({[item]: {
-          [Op.iLike]: "%" + history + "%"
+          [Op.iLike]: `%${history}%`
         }})
       });
     }
 
-    filters = { ...exact, ...filters };
+    if(tag) {
+      tagFields.forEach((item) => {
+        tagFilters.push({[item]: {
+          [Op.iLike]: `%${tag}%`
+        }})
+      });
+    }
 
     const { rows, count } = await Record.findAndCountAll({
       include: [{ model: History, as: 'histories', ...(history && { where: { [Op.or]: historyFilters }})},
-       { model: Department, as: 'departments', ...(department_id && { where: { id: department_id}})}],
+      { model: Tag, as: 'tags', ...(tag && { where: { [Op.or]: tagFilters }})},
+      { model: Department, as: 'departments', ...(department_id && { where: { id: department_id}})}],
       where: filters,
       limit: itemsPerPage,
       order: [['register_number', 'ASC']],
