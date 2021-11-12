@@ -14,6 +14,7 @@ const validRecord1 = {
   receipt_form: "form",
   contact_info: "info@gmail.com",
   created_by: "william@pcgo.com",
+  tags: []
 };
 
 const validRecord2 = {
@@ -29,6 +30,7 @@ const validRecord2 = {
   contact_info: "info@gmail.com",
   situation: 2,
   created_by: "william@pcgo.com",
+  tags: []
 };
 
 const invalidRecord1 = {
