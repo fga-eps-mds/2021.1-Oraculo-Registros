@@ -4,7 +4,6 @@ const History = require("../Model/History");
 const { User } = require("../Model/User");
 const { Situation } = require("../Model/Situation");
 const { Tag } = require("../Model/Tag");
-
 const {
   ERR_RECORD_NOT_FOUND,
   ERR_NO_ERROR,
@@ -157,14 +156,14 @@ async function getRecordsByPage(req, res) {
 
     Object.entries(_where).forEach(([key, value]) => {
       filters[key] = {
-        [Op.like]: "%" + value + "%"
+        [Op.iLike]: "%" + value + "%"
       }
     });
 
     if(history) {
       historyFields.forEach((item) => {
         historyFilters.push({[item]: {
-          [Op.like]: "%" + history + "%"
+          [Op.iLike]: "%" + history + "%"
         }})
       });
     }
