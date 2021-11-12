@@ -327,9 +327,9 @@ describe("Main test", () => {
     expect(res.body.message).toBeDefined();
   });
 
-  it("GET /records/1/tags - should list tags of a record (empty tags)", async () => {
+  it("GET /records/:id/tags - should list tags of a record (empty tags)", async () => {
     const res = await request(app).get("/records/1/tags");
-    expect(res.statusCode).toEqual(204);
+    expect(res.statusCode).toEqual(200);
   });
 
   it("POST /records/:id/add-tag - should add tag 1 to record 1", async () => {
