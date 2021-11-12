@@ -78,7 +78,7 @@ async function createRecord(req, res) {
     receipt_form,
     contact_info,
     created_by,
-    tags = []
+    tags
   } = req.body);
 
   try {
