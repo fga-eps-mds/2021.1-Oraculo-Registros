@@ -156,7 +156,7 @@ async function getRecordsByPage(req, res) {
 
     const { history, tag, ..._where } = where || {};
 
-    let filters = {};
+    const filters = {};
     const historyFilters = [];
     const tagFilters = [];
 
