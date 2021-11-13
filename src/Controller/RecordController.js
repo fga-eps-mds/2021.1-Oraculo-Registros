@@ -78,6 +78,7 @@ async function createRecord(req, res) {
     receipt_form,
     contact_info,
     created_by,
+    tags
   } = req.body);
 
   try {
@@ -117,9 +118,8 @@ async function createRecord(req, res) {
       record_id: createdRecord.id,
     };
 
-    const tag = await Tag.findOne({ where: { name: "Tramitar" } });
     await createdRecord.setDepartments([department]);
-    await createdRecord.setTags([tag]);
+    await createdRecord.setTags(tags);
 
     await History.create(history);
 
@@ -136,11 +136,59 @@ async function createRecord(req, res) {
 
 async function getRecordsByPage(req, res) {
   const { page } = req.params;
+  const { where, department_id } = req.body;
   const itemsPerPage = 30;
 
   try {
+
+    const historyFields = [
+      'origin_name',
+      'destination_name',
+      'created_by',
+      'forwarded_by',
+      'reason'
+    ]
+
+    const tagFields = [
+      'name',
+      'color'
+    ]
+
+    const { history, tag, ..._where } = where || {};
+
+    const filters = {};
+    const historyFilters = [];
+    const tagFilters = [];
+
+    Object.entries(_where).forEach(([key, value]) => {
+      filters[key] = {
+        [Op.iLike]: `%${value}%`
+      }
+    });
+    
+    if(history) {
+      historyFields.forEach((item) => {
+        historyFilters.push({[item]: {
+          [Op.iLike]: `%${history}%`
+        }})
+      });
+    }
+
+    if(tag) {
+      tagFields.forEach((item) => {
+        tagFilters.push({[item]: {
+          [Op.iLike]: `%${tag}%`
+        }})
+      });
+    }
+
     const { rows, count } = await Record.findAndCountAll({
+      include: [{ model: History, as: 'histories', ...(history && { where: { [Op.or]: historyFilters }})},
+      { model: Tag, as: 'tags', ...(tag && { where: { [Op.or]: tagFilters }})},
+      { model: Department, as: 'departments', ...(department_id && { where: { id: department_id}})}],
+      where: filters,
       limit: itemsPerPage,
+      order: [['register_number', 'ASC']],
       offset: page,
     });
 
@@ -393,6 +441,7 @@ async function editRecord(req, res) {
     sei_number,
     receipt_form,
     contact_info,
+    tags
   } = req.body);
 
   try {
@@ -416,6 +465,7 @@ async function editRecord(req, res) {
     await record.save();
 
     const editedRecord = await Record.findByPk(recordID);
+    await editedRecord.setTags(tags);
 
     return res.status(200).json(editedRecord);
   } catch (err) {
@@ -435,16 +485,16 @@ async function closeRecord(req, res) {
       .json({ error: "you should specify a reason to close a record" });
   }
 
+  if (!closed_by) {
+    return res.status(400).json({ error: "invalid user information provided" });
+  }
+
   try {
     const result = await updateRecordStatus(Situation.StatusFinished, recordID);
     if (result === ERR_RECORD_NOT_FOUND) {
       return res.status(404).json(result);
     } else if (result === ERR_STATUS_ALREADY_SET) {
       return res.status(400).json(result);
-    }
-
-    if (!closed_by) {
-      return res.status(400).json({ error: "invalid user information provided" });
     }
 
     const user = await User.findOne({ where: { email: closed_by } });

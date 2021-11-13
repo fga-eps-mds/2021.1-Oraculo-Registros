@@ -40,6 +40,12 @@ module.exports = {
         is_admin: true,
       },
       {
+        name: "Unidade de Inteligência",
+        created_at: new Date(),
+        updated_at: new Date(),
+        is_admin: false,
+      },
+      {
         name: "Seção AFIS",
         created_at: new Date(),
         updated_at: new Date(),
@@ -233,12 +239,6 @@ module.exports = {
       },
       {
         name: "Seção Papiloscópica Especializada no Combate à Organização Criminosa e Lavagem de Dinheiro",
-        created_at: new Date(),
-        updated_at: new Date(),
-        is_admin: false,
-      },
-      {
-        name: "Unidade de Inteligência",
         created_at: new Date(),
         updated_at: new Date(),
         is_admin: false,
