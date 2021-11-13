@@ -78,7 +78,7 @@ async function createRecord(req, res) {
     receipt_form,
     contact_info,
     created_by,
-    tags
+    tags,
   } = req.body);
 
   try {
@@ -140,19 +140,15 @@ async function getRecordsByPage(req, res) {
   const itemsPerPage = 30;
 
   try {
-
     const historyFields = [
-      'origin_name',
-      'destination_name',
-      'created_by',
-      'forwarded_by',
-      'reason'
-    ]
+      "origin_name",
+      "destination_name",
+      "created_by",
+      "forwarded_by",
+      "reason",
+    ];
 
-    const tagFields = [
-      'name',
-      'color'
-    ]
+    const tagFields = ["name", "color"];
 
     const { history, tag, ..._where } = where || {};
 
@@ -162,33 +158,47 @@ async function getRecordsByPage(req, res) {
 
     Object.entries(_where).forEach(([key, value]) => {
       filters[key] = {
-        [Op.iLike]: `%${value}%`
-      }
+        [Op.iLike]: `%${value}%`,
+      };
     });
-    
-    if(history) {
+
+    if (history) {
       historyFields.forEach((item) => {
-        historyFilters.push({[item]: {
-          [Op.iLike]: `%${history}%`
-        }})
+        historyFilters.push({
+          [item]: {
+            [Op.iLike]: `%${history}%`,
+          },
+        });
       });
     }
 
-    if(tag) {
+    if (tag) {
       tagFields.forEach((item) => {
-        tagFilters.push({[item]: {
-          [Op.iLike]: `%${tag}%`
-        }})
+        tagFilters.push({
+          [item]: {
+            [Op.iLike]: `%${tag}%`,
+          },
+        });
       });
     }
 
     const { rows, count } = await Record.findAndCountAll({
-      include: [{ model: History, as: 'histories', ...(history && { where: { [Op.or]: historyFilters }})},
-      { model: Tag, as: 'tags', ...(tag && { where: { [Op.or]: tagFilters }})},
-      { model: Department, as: 'departments', ...(department_id && { where: { id: department_id}})}],
+      include: [
+        {
+          model: History,
+          as: "histories",
+          ...(history && { where: { [Op.or]: historyFilters } }),
+        },
+        { model: Tag, as: "tags", ...(tag && { where: { [Op.or]: tagFilters } }) },
+        {
+          model: Department,
+          as: "departments",
+          ...(department_id && { where: { id: department_id } }),
+        },
+      ],
       where: filters,
       limit: itemsPerPage,
-      order: [['register_number', 'ASC']],
+      order: [["register_number", "ASC"]],
       offset: page,
     });
 
@@ -223,7 +233,7 @@ async function forwardRecord(req, res) {
   }
 
   // find user in database
-  const user = await User.findOrCreate({ where: { email: forwardedBy } });
+  const user = await User.findOne({ where: { email: forwardedBy } });
   if (!user) {
     return res
       .status(404)
@@ -441,7 +451,7 @@ async function editRecord(req, res) {
     sei_number,
     receipt_form,
     contact_info,
-    tags
+    tags,
   } = req.body);
 
   try {
