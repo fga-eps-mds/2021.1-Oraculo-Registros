@@ -175,7 +175,7 @@ async function forwardRecord(req, res) {
   }
 
   // find user in database
-  const user = await User.findOne({ where: { email: forwardedBy } });
+  const user = await User.findOrCreate({ where: { email: forwardedBy } });
   if (!user) {
     return res
       .status(404)
