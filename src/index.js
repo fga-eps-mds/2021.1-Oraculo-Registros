@@ -13,7 +13,7 @@ let corsOptions = {
   origin: (CORS === "") ? "http://localhost:3000" : `${CORS}`,
 };
 
-app.use(cors(corsOptions));
+app.use(cors());
 app.use(morgan("short"));
 app.use(express.json());
 app.use(routes);
