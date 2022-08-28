@@ -142,6 +142,69 @@ describe("Main test", () => {
     expect(res.body.error).toBeDefined();
   });
 
+  it("POST /records - should not create a record, date is not valid", async () => {
+    const invalidDateRecord = {
+      city: "df",
+      state: "bahia",
+      requester: "policia civil",
+      document_type: "fisico",
+      document_number: "1020304050",
+      document_date: "15/04/2045", // The date is too greater!
+      description: "ABCDEFGHIJKL",
+      sei_number: "12345",
+      receipt_form: "form",
+      contact_info: "info@gmail.com",
+      situation: 2,
+      created_by: "william@pcgo.com",
+      tags: []
+    };
+    const res = await request(app).post("/records").send(invalidDateRecord);
+    expect(res.statusCode).toEqual(404);
+    expect(res.body.error).toBeDefined();
+  });
+
+  it("POST /records - should create a record, date is valid and lesser than today", async () => {
+    const validDateRecord = {
+      city: "df",
+      state: "bahia",
+      requester: "policia civil",
+      document_type: "fisico",
+      document_number: "1020304050",
+      document_date: "15/04/2021", // The date is too lesser!
+      description: "ABCDEFGHIJKL",
+      sei_number: "12345",
+      receipt_form: "form",
+      contact_info: "info@gmail.com",
+      situation: 2,
+      created_by: "william@pcgo.com",
+      tags: []
+    };
+    const res = await request(app).post("/records").send(validDateRecord);
+    expect(res.statusCode).toEqual(200);
+  });
+
+  it("POST /records - should create a record, date is valid and equal than today", async () => {
+    const validDateRecord = {
+      city: "df",
+      state: "bahia",
+      requester: "policia civil",
+      document_type: "fisico",
+      document_number: "1020304050",
+      document_date: new Date(), // The date is equal today!
+      description: "ABCDEFGHIJKL",
+      sei_number: "12345",
+      receipt_form: "form",
+      contact_info: "info@gmail.com",
+      situation: 2,
+      created_by: "william@pcgo.com",
+      tags: []
+    };
+    const res = await request(app).post("/records").send(validDateRecord);
+    console.log(validDateRecord.document_date)
+    expect(res.statusCode).toEqual(200);
+  });
+
+
   it("GET /records - should get all registered records", async () => {
     const res = await request(app).get("/records");
     expect(res.statusCode).toEqual(200);
