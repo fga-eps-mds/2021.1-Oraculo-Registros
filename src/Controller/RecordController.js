@@ -64,6 +64,21 @@ async function getAllRecords(request, response) {
 }
 
 async function createRecord(req, res) {
+  function verify_date(date) {
+    // Verify if the date is equal or lesser than the current date
+  
+    var inserted_date = new Date(date)
+  
+    var today = new Date();
+    today.setHours(0,0,0,0);
+  
+    if(inserted_date <= today) {
+      return inserted_date
+    } else {
+      return -1
+    }
+  }
+
   const record = ({
     register_number,
     inclusion_date,
@@ -89,6 +104,12 @@ async function createRecord(req, res) {
       return res
         .status(404)
         .json({ error: "could not find user who created the record" });
+    }
+
+    if(!verify_date(String(record.document_date)) === -1){
+      return res
+        .status(402)
+        .json({ error: "the inserted date is not valid" });
     }
 
     const sequence = await getNextRecordNumber();
