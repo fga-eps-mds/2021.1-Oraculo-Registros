@@ -576,6 +576,27 @@ async function findRecordWithSeiNumber(req, res) {
   return res.status(200).json({ found: true });
 }
 
+async function findAllRecordsOfOneDate(req, res) {
+  const { document_date } = req.body;
+  const documentDate = String(document_date);
+  const dateRegex = /^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/;
+
+  if (documentDate.length === 0) {
+    return res.status(400).json({ error: "empty sei number provided"});
+  }
+
+  if (!dateRegex.test(documentDate)) {
+    return res.status(400).json({ error: "invalid date provided" });
+  }
+
+  const record = await Record.findAll({ where: { document_date: documentDate } });
+  if (!record) {
+    return res.status(200).json({ found: false });
+  }
+
+  return res.status(200).json({found: true});
+}
+
 module.exports = {
   getRecordByID,
   getAllRecords,
@@ -595,4 +616,5 @@ module.exports = {
   closeRecord,
   reopenRecord,
   findRecordWithSeiNumber,
+  findAllRecordsOfOneDate,
 };
