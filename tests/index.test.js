@@ -597,6 +597,33 @@ describe("Main test", () => {
     const res = await request(app).post("/departments").send({});
     expect(res.statusCode).toEqual(400);
   });
+
+  it("GET /records/with-date - should not return a record", async () => {
+    const res = await request(app).post("/records/with-date").send({
+      document_date: "ab/cd/12",
+    });
+
+    expect(res.statusCode).toEqual(400);
+  });
+
+  it("GET /records/with-date - should not return a record", async () => {
+    const res = await request(app).post("/records/with-date").send({
+      document_date: "",
+    });
+
+    expect(res.statusCode).toEqual(400);
+    expect(res.body.error).toBeDefined();
+  });
+
+  it("GET /records/with-date - should return a record", async () => {
+    const res = await request(app).post("/records/with-date").send({
+      document_date: "15/04/2021",
+    });
+
+    expect(res.statusCode).toEqual(200);
+    expect(res.body.found).toBeDefined();
+    expect(res.body.found).toEqual(true);
+  });
 });
 
 afterAll((done) => {
