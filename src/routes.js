@@ -31,5 +31,6 @@ routes.post("/records/:id/edit", RecordController.editRecord);
 routes.post("/users", UserController.createUser);
 routes.post("/user/by-mail/", UserController.getUserByMail);
 routes.post("/departments", DepartmentController.createDepartment);
+routes.post("/records/with-date", RecordController.findAllRecordsOfOneDate);
 
 module.exports = routes;
